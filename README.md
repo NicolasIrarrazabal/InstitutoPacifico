@@ -83,3 +83,16 @@ with open("README.md", "w", encoding="utf-8") as f:
     f.write(readme_content)
 
 print("README.md file generated successfully.")
+
+
+### Comandos (Actualizar GitHub)
+
+git pull origin master --rebase      (Atraer todos los cambios que se hicieron en GitHub)
+git checkout -b develop  (Rama donde se tiene que probar todo, evitar saltar a rama master)
+
+## (Cambiar a ramas de acuerdo de donte estes trabajando)
+
+git checkout feature/ms-asignaturas     
+git checkout feature/ms-docente     
+git checkout feature/ms-estudiante     
+git checkout feature/ms-matriculas     
