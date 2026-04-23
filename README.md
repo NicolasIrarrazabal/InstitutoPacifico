@@ -1,92 +1,97 @@
-### Comandos (Actualizar GitHub)
+# Sistema de Gestion Academica - Instituto Pacifico
 
-git pull origin master --rebase      (Atraer todos los cambios que se hicieron en GitHub)
-git checkout -b develop  (Rama donde se tiene que probar todo, evitar saltar a rama master)
+## Comandos de Gestion de Repositorio
 
-## (Cambiar a ramas de acuerdo de donte estes trabajando)
+### Actualizacion y Sincronizacion
+Para asegurar que el entorno local se encuentre alineado con el repositorio remoto, se deben utilizar los siguientes comandos:
 
-git checkout feature/ms-asignaturas     
-git checkout feature/ms-docente     
-git checkout feature/ms-estudiante     
-git checkout feature/ms-matriculas   
+* **Sincronizacion con Master**: `git pull origin master --rebase`
+    (Atrae los cambios de la rama principal evitando commits de merge innecesarios).
+* **Creacion de Rama de Integracion**: `git checkout -b develop`
+    (Rama principal de desarrollo donde se integran las funcionalidades antes de pasar a produccion).
 
+### Gestion de Ramas por Funcionalidad
+Cada microservicio debe desarrollarse en su propia rama para mantener la independencia del codigo:
 
-## Descripción General
-Este repositorio contiene los primeros cinco microservicios que integran la plataforma de digitalización del Instituto Pacífico. El sistema ha sido diseñado bajo una arquitectura de microservicios utilizando Spring Boot 3.x, con el objetivo de centralizar y automatizar los procesos de registro de estudiantes, gestión docente, estructura curricular y procesos de matrícula.
+* `git checkout feature/ms-asignaturas`
+* `git checkout feature/ms-docente`
+* `git checkout feature/ms-estudiante`
+* `git checkout feature/ms-matriculas`
 
-## Requisitos Técnicos Generales
-Para el cumplimiento de los estándares de la Evaluación Parcial 2 (DSY1103), todos los microservicios implementados en este proyecto adhieren a las siguientes especificaciones:
+---
 
-* **Persistencia Independiente**: Cada microservicio posee su propia base de datos, garantizando el aislamiento de datos.
-* **Validación de Datos**: Implementación de Bean Validation (`@NotNull`, `@Size`, `@Min`, `@Max`) en los Objetos de Transferencia de Datos (DTOs).
-* **Gestión de Excepciones**: Uso de `@ControllerAdvice` para capturar y procesar excepciones como `EntityNotFoundException` y `ConstraintViolationException`.
-* **Respuestas HTTP Estructuradas**: Retorno de errores en formato JSON con códigos de estado adecuados (400, 404, 409, 422).
-* **Trazabilidad**: Implementación de registros mediante SLF4J en operaciones críticas (creación, modificación y errores de negocio).
-* **Comunicación Inter-servicios**: Uso de `WebClient` o `Feign Client` para la validación de reglas de negocio que requieren datos de otros dominios.
+## Descripcion General
+Este repositorio contiene la arquitectura base de los microservicios que integran la plataforma de digitalizacion del Instituto Pacifico. El sistema utiliza Spring Boot 3.x para automatizar los procesos criticos de registro estudiantil, gestion de personal docente, estructura curricular y el flujo de matricula, resolviendo la problematica de registros manuales y falta de trazabilidad detectada en auditorias previas.
+
+## Requisitos Tecnicos Generales
+Para el cumplimiento de los estandares de la Evaluacion Parcial 2 (DSY1103), todos los microservicios implementados adhieren a las siguientes especificaciones:
+
+* **Persistencia Independiente**: Cada microservicio posee su propia base de datos, garantizando el aislamiento de datos y la escalabilidad.
+* **Validacion de Datos**: Implementacion de Bean Validation (@NotNull, @Size, @Min, @Max) en los Objetos de Transferencia de Datos (DTOs).
+* **Gestion de Excepciones**: Uso de @ControllerAdvice para capturar y procesar excepciones de forma centralizada.
+* **Respuestas HTTP Estructuradas**: Retorno de errores en formato JSON con codigos de estado estandarizados (400, 404, 409, 422).
+* **Trazabilidad**: Implementacion de registros mediante SLF4J para el monitoreo de operaciones criticas y auditoria de cambios.
+* **Comunicacion Inter-servicios**: Implementacion de llamadas sincronas mediante OpenFeign o WebClient para la validacion de reglas de negocio complejas.
 
 ## Estructura de Microservicios (Fase 1)
 
 ### 1. ms-estudiantes
-**Responsabilidad:** Gestión del ciclo de vida y perfil del alumnado.
-* **Entidades Principales:** Estudiante, Contacto, Estado.
-* **Funcionalidades:**
-    * Registro de datos personales y académicos.
-    * Actualización de información de contacto.
-    * Gestión de estados de vigencia estudiantil.
-* **Endpoints Principales:**
-    * `GET /api/v1/estudiantes/`: Listado con paginación.
-    * `POST /api/v1/estudiantes/`: Creación con validación de DTO.
-    * `GET /api/v1/estudiantes/{id}/detalle`: Consulta enriquecida con información de matrícula activa.
+**Responsabilidad:** Gestion del ciclo de vida y perfil del alumnado.
+* **Entidades:** Estudiante, Contacto, Estado.
+* **Dependencias Clave:**
+    * Spring Data JPA (Persistencia)
+    * Validation (Validacion de entradas)
+    * MapStruct (Mapeo optimizado entre Entidades y DTOs)
+    * SpringDoc OpenAPI (Documentacion Swagger para pruebas de endpoints)
 
 ### 2. ms-docentes
-**Responsabilidad:** Administración del personal académico y sus especialidades.
-* **Entidades Principales:** Docente, Especialidad, Contrato.
-* **Funcionalidades:**
-    * Mantenimiento de perfiles docentes.
-    * Asignación de áreas de especialización por carrera.
-    * Seguimiento administrativo de contratos vigentes.
-* **Endpoints Principales:**
-    * `GET /api/v1/docentes/{id}`: Detalle del docente.
-    * `PUT /api/v1/docentes/{id}`: Actualización de contrato o especialidad.
+**Responsabilidad:** Administracion del personal academico y sus especialidades.
+* **Entidades:** Docente, Especialidad, Contrato.
+* **Dependencias Clave:**
+    * Spring Data JPA
+    * Lombok (Reduccion de codigo repetitivo)
+    * MySQL/PostgreSQL Connector
+    * Spring Boot Actuator (Monitoreo del estado del servicio)
 
 ### 3. ms-carreras
-**Responsabilidad:** Definición de la oferta académica y estructura de sedes.
-* **Entidades Principales:** Carrera, Malla, Sede.
-* **Funcionalidades:**
-    * Gestión de las 12 carreras técnicas de nivel superior.
-    * Definición de mallas curriculares y semestres.
-    * Asignación de carreras por sede (Puerto Montt, Puerto Varas, Osorno).
+**Responsabilidad:** Definicion de la oferta academica y gestion de sedes regionales.
+* **Entidades:** Carrera, Malla, Sede.
+* **Dependencias Clave:**
+    * Spring Data JPA
+    * Hibernate Envers (Para auditoria y trazabilidad de cambios en mallas curriculares)
+    * Spring Web
 
 ### 4. ms-asignaturas
-**Responsabilidad:** Control del catálogo de asignaturas y sus dependencias académicas.
-* **Entidades Principales:** Asignatura, Prerequisito, Créditos.
-* **Funcionalidades:**
-    * Definición de contenidos y carga de créditos.
-    * Gestión de la jerarquía de prerrequisitos necesaria para el flujo académico.
-* **Comunicación Externa:** Provee datos críticos al servicio de matrículas para la validación de avance académico.
+**Responsabilidad:** Control del catalogo de asignaturas y jerarquia de prerrequisitos.
+* **Entidades:** Asignatura, Prerequisito, Creditos.
+* **Dependencias Clave:**
+    * Spring Data JPA
+    * Jackson Dataformat (Manejo eficiente de estructuras jerarquicas/recursivas de prerrequisitos)
+    * Validation
 
 ### 5. ms-matriculas
-**Responsabilidad:** Orquestación del proceso de inscripción de estudiantes en secciones académicas.
-* **Entidades Principales:** Matricula, Seccion, Estudiante.
-* **Lógica de Negocio (Regla R1):** * El servicio implementa una validación obligatoria donde no se permite la inscripción si el estudiante no cuenta con los prerrequisitos aprobados.
-    * Realiza llamadas sincrónicas al `ms-asignaturas` para verificar la malla y al `ms-notas` (Fase 2) para validar el historial académico.
-* **Endpoints Principales:**
-    * `POST /api/v1/matriculas/`: Inicia el proceso de inscripción validando disponibilidad de cupos y prerrequisitos.
+**Responsabilidad:** Orquestacion del proceso de inscripcion y validacion de Regla de Negocio R1.
+* **Entidades:** Matricula, Seccion, Estudiante.
+* **Lógica de Negocio (Regla R1):** El servicio bloquea la inscripcion si no se cumplen los prerrequisitos, consultando al ms-asignaturas.
+* **Dependencias de Alto Nivel:**
+    * Spring Cloud OpenFeign (Comunicacion declarativa entre servicios)
+    * Resilience4j (Circuit Breaker para manejar fallos en llamadas a otros microservicios)
+    * Spring Web
 
 ---
 
-## Estructura del Código Fuente
-Cada microservicio sigue el patrón de diseño por capas:
-1.  **Controller**: Definición de endpoints REST y manejo de peticiones.
-2.  **Service**: Implementación de la lógica de negocio y reglas obligatorias.
-3.  **Repository**: Interfaz de acceso a datos utilizando Spring Data JPA.
-4.  **Model**: Definición de entidades JPA y mapeo relacional.
-5.  **DTO**: Objetos para la transferencia de datos con anotaciones de validación.
-6.  **Exception**: Manejadores de errores personalizados.
+## Estructura del Codigo Fuente
+Cada modulo sigue un patron de diseño por capas estrictamente separado para maximizar la cohesividad:
+
+1.  **Controller**: Gestion de endpoints REST y mapeo de solicitudes.
+2.  **Service**: Implementacion de la logica de negocio y validacion de reglas obligatorias.
+3.  **Repository**: Abstraccion de acceso a datos mediante Spring Data JPA.
+4.  **Model**: Definicion de entidades persistentes y relaciones.
+5.  **DTO**: Objetos de transferencia de datos con anotaciones de validacion.
+6.  **Exception**: Configuracion de manejadores globales de errores.
 
 ## Instrucciones de Despliegue
-1.  Configurar las variables de entorno para las bases de datos individuales.
-2.  Ejecutar cada servicio de manera independiente (puertos configurados en `application.properties`).
-3.  Asegurar la visibilidad de red entre servicios para el funcionamiento de `WebClient/Feign`.
-    
-
+1.  Configurar las variables de entorno para las bases de datos independientes de cada servicio.
+2.  Asegurar que el entorno cuente con Java 21 y Maven instalado.
+3.  Ejecutar cada servicio de manera independiente respetando la asignacion de puertos en los archivos `application.properties`.
+4.  Verificar la visibilidad de red entre servicios para habilitar las llamadas inter-microservicio.
