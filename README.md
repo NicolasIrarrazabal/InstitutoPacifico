@@ -7,7 +7,7 @@ Sistema de gestión académica para el Instituto Pacífico (Puerto Montt), dise�
 | Nombre | GitHub |
 |--------|--------|
 | [ Vicente Herrera ]| @cafesincuchara |
-| [ Nicolas Irarrazabal ] | @  |
+| [ Nicolas Irarrazabal ] | @NicolasIrarrazabal |
 
 ## Microservicios Implementados
 | # | Microservicio | Puerto | Descripción |
@@ -18,7 +18,7 @@ Sistema de gestión académica para el Instituto Pacífico (Puerto Montt), dise�
 | 4 | ms-asignaturas| 8084   | Asignaturas, prerrequisitos y créditos. |
 
 ## Tecnologías Utilizadas
-- Java 17 / Spring Boot 3.x
+- Java 21 / Spring Boot 3.x
 - JPA + Hibernate
 - MySQL / PostgreSQL
 - WebClient / Feign Client
