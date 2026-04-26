@@ -20,7 +20,7 @@ Sistema de gestión académica para el Instituto Pacífico (Puerto Montt), dise�
 ## Tecnologías Utilizadas
 - Java 21 / Spring Boot 3.x
 - JPA + Hibernate
-- MySQL / PostgreSQL
+- PostgreSQL
 - WebClient / Feign Client
 - SLF4J para logs
 
