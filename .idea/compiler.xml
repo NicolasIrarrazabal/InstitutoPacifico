@@ -6,19 +6,19 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="ms-docente" />
+        <module name="ms-carreras" />
+        <module name="ms-docentes" />
         <module name="ms-asignaturas" />
         <module name="ms-estudiante" />
-        <module name="ms-matriculas" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="ms-asignaturas" options="-parameters" />
-      <module name="ms-docente" options="-parameters" />
+      <module name="ms-carreras" options="-parameters" />
+      <module name="ms-docentes" options="-parameters" />
       <module name="ms-estudiante" options="-parameters" />
-      <module name="ms-matriculas" options="-parameters" />
     </option>
   </component>
 </project>
