@@ -2,19 +2,37 @@ package com.proyecto.ms_estudiante.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@AllArgsConstructor // Lombok genera el constructor
-@Getter // Lombok genera los getters automáticamente
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class EstudianteDTO {
 
-    @NotBlank
+    @NotBlank(message = "El nombre es obligatorio")
+    @Size(min = 2, max = 100, message = "El nombre debe tener entre 2 y 100 caracteres")
     private String nombre;
 
-    @NotBlank
+    @NotBlank(message = "El RUT es obligatorio")
+    @Pattern(
+            regexp = "^\\d{7,8}-[\\dkK]$",
+            message = "El RUT debe tener el formato 12345678-9 o 12345678-K"
+    )
     private String rut;
 
-    @Email
+    @NotBlank(message = "El email es obligatorio")
+    @Email(message = "El email no tiene un formato valido")
     private String email;
+
+    @Pattern(regexp = "^\\+?[0-9]{7,15}$", message = "El telefono no es valido")
+    private String telefono;
+
+    @Size(max = 200, message = "La direccion no puede superar 200 caracteres")
+    private String direccion;
 }
