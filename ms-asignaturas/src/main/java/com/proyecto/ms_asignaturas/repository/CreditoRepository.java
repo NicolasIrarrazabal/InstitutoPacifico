@@ -5,5 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;
 
+@Repository
 public interface CreditoRepository extends JpaRepository<Credito, UUID> {
 }
