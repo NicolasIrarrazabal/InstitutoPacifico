@@ -14,7 +14,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PrerequisitoService {
 
-    private PrerequisitoRepository prerequisitoRepository;
+    private final PrerequisitoRepository prerequisitoRepository;
 
     public List<Prerequisito> listarPorAsignatura(UUID asignaturaId) {
         return prerequisitoRepository.findAll().stream()
