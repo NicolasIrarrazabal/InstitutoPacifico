@@ -22,5 +22,6 @@ public class Especialidad {
     @NotBlank(message = "El nombre de la especialidad es obligatorio")
     private String nombre;
 
+    @NotBlank(message = "La descripcion de la especialidad es obligatorio")
     private String descripcion;
 }
