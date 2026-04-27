@@ -91,17 +91,6 @@ public class MatriculaService {
         log.info("Validando prerrequisitos estudiante {} sección {}",
                 estudianteId, seccionId);
 
-        /*
-         * 🔴 FLUJO REAL DE MICROSERVICIOS:
-         *
-         * ms-matriculas →
-         *   ms-secciones (obtener asignaturaId)
-         *      ↓
-         *   ms-asignaturas (obtener prerrequisitos)
-         *      ↓
-         *   ms-notas (validar aprobaciones del estudiante)
-         */
-
         boolean estudianteValido = validarEstudiante(estudianteId);
         boolean seccionValida = validarSeccion(seccionId);
         boolean cumpleHistorial = validarHistorialAcademico(estudianteId, seccionId);
@@ -109,9 +98,6 @@ public class MatriculaService {
         return estudianteValido && seccionValida && cumpleHistorial;
     }
 
-    // =====================================
-    // SIMULACIONES (DESPUÉS FEIGN/WEBCLIENT)
-    // =====================================
     private boolean validarEstudiante(Long estudianteId) {
         log.info("Validando estudiante {}", estudianteId);
         return estudianteId != null;
@@ -126,7 +112,6 @@ public class MatriculaService {
         log.info("Validando historial académico estudiante {} sección {}",
                 estudianteId, seccionId);
 
-        // aquí después va ms-notas + ms-asignaturas
         return true;
     }
 }

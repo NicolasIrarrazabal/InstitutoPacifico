@@ -19,7 +19,15 @@ public class Estudiante {
     @Column(nullable = false, unique = true)
     private String rut;
 
+    @Column(nullable = false, unique = true)
     private String email;
 
+    @Column
+    private String telefono;
+
+    @Column
+    private String direccion;
+
+    @Column(nullable = false)
     private String estado; // ACTIVO, INACTIVO
 }
