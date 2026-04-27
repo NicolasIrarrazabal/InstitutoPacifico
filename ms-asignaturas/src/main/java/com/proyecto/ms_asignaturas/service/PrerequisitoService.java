@@ -16,9 +16,9 @@ public class PrerequisitoService {
 
     private final PrerequisitoRepository prerequisitoRepository;
 
-    public List<Prerequisito> listarPorAsignatura(UUID asignaturaId) {
+    public List<Prerequisito> listarPorAsignatura(UUID id) {
         return prerequisitoRepository.findAll().stream()
-                .filter(p -> p.getAsignaturaPrincipal().getId().equals(asignaturaId))
+                .filter(p -> p.getAsignaturaPrincipal().getId().equals(id))
                 .toList();
     }
 
