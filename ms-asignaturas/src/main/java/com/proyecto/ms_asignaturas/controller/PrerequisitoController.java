@@ -1,12 +1,13 @@
 package com.proyecto.ms_asignaturas.controller;
 
-import com.proyecto.ms_asignaturas.repository.PrerequisitoRepository;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Service
-@AllArgsConstructor
+@RestController
+@RequestMapping("/api/v1/prerequisitos")
+@RequiredArgsConstructor
 public class PrerequisitoController {
 
-    private PrerequisitoRepository prerequisitoRepository;
+
 }
