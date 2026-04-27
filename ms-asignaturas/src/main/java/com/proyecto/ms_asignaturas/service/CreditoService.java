@@ -2,7 +2,6 @@ package com.proyecto.ms_asignaturas.service;
 
 import com.proyecto.ms_asignaturas.model.Credito;
 import com.proyecto.ms_asignaturas.repository.CreditoRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
