@@ -29,6 +29,15 @@ public class AsignaturasService {
         return asignaturasRepository.save(asignatura);
     }
 
+    public Asignatura actualizarAsignatura(UUID id,Asignatura asignatura){
+        Asignatura asignaturaNueva= asignaturasRepository.findById(id).orElseThrow(()-> new RuntimeException("No se encontro la asignatura con el id"));
+
+        asignaturaNueva.setNombre(asignatura.getNombre());
+        asignaturaNueva.setCredito(asignatura.getCredito());
+        log.info("La asignatura se actualizo, nombre de la asignatura: {}", asignatura.getNombre());
+        return asignaturasRepository.save(asignaturaNueva);
+
+    }
     public void elimiarPorId(UUID id){
         log.warn("Se elimino la asignatura");
         asignaturasRepository.deleteById(id);
