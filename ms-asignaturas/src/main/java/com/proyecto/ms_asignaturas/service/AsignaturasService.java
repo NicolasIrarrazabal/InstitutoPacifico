@@ -14,7 +14,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AsignaturasService {
 
-    private AsignaturasRepository asignaturasRepository;
+    private final AsignaturasRepository asignaturasRepository;
 
     public List<Asignatura> listarTodas(){
         return asignaturasRepository.findAll();
