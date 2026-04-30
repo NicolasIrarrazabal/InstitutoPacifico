@@ -1,7 +1,10 @@
 package com.proyecto.ms_estudiante.model;
 
+import com.proyecto.ms_estudiante.model.enums.EstadoEstudiante;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "estudiantes")
@@ -10,8 +13,8 @@ import lombok.*;
 public class Estudiante {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(nullable = false)
     private String nombre;
@@ -28,6 +31,6 @@ public class Estudiante {
     @Column
     private String direccion;
 
-    @Column(nullable = false)
-    private String estado; // ACTIVO, INACTIVO
+    @Enumerated(EnumType.STRING)
+    private EstadoEstudiante estado;
 }
