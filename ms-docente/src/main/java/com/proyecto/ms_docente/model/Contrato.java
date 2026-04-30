@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -30,7 +31,7 @@ public class Contrato {
 
     @NotNull(message = "El sueldo base no puede ser nulo")
     @Min(value = 0, message = "El sueldo no puede ser negativo")
-    private Double sueldoBase;
+    private BigDecimal sueldoBase;
 
     @OneToOne
     @JoinColumn(name = "docente_id", unique = true)
