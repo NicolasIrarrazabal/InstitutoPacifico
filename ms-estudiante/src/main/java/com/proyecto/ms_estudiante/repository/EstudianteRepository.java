@@ -4,12 +4,11 @@ import com.proyecto.ms_estudiante.model.Estudiante;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
+import java.util.UUID;
 
-public interface EstudianteRepository extends JpaRepository<Estudiante, Long> {
+public interface EstudianteRepository extends JpaRepository<Estudiante, UUID> {
 
     Optional<Estudiante> findByRut(String rut);
-
     boolean existsByRut(String rut);
-
     boolean existsByEmail(String email);
 }
