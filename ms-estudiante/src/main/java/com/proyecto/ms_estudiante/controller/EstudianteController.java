@@ -1,7 +1,6 @@
 package com.proyecto.ms_estudiante.controller;
 
 import com.proyecto.ms_estudiante.dto.EstudianteDTO;
-import com.proyecto.ms_estudiante.model.Estudiante;
 import com.proyecto.ms_estudiante.service.EstudianteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,47 +18,46 @@ public class EstudianteController {
 
     private final EstudianteService service;
 
-    // GET /api/v1/estudiantes
+    // GET todos los estudiantes
     @GetMapping
-    public ResponseEntity<List<Estudiante>> getAll() {
+    public ResponseEntity<List<EstudianteDTO>> getAll() {
         return ResponseEntity.ok(service.findAll());
     }
 
-    // GET /api/v1/estudiantes/{id}
+    // GET por id
     @GetMapping("/{id}")
-    public ResponseEntity<Estudiante> getById(@PathVariable Long id) {
+    public ResponseEntity<EstudianteDTO> getById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
-    // GET /api/v1/estudiantes/rut/{rut}
+    // GET por rut
     @GetMapping("/rut/{rut}")
-    public ResponseEntity<Estudiante> getByRut(@PathVariable String rut) {
+    public ResponseEntity<EstudianteDTO> getByRut(@PathVariable String rut) {
         return ResponseEntity.ok(service.findByRut(rut));
     }
 
-    // GET /api/v1/estudiantes/{id}/puede-matricular
-    // Usado por ms-matriculas via WebClient para validar R1/R4
+    // validar matrícula (ms-matriculas lo consume)
     @GetMapping("/{id}/puede-matricular")
     public ResponseEntity<Map<String, Boolean>> puedeMatricular(@PathVariable Long id) {
         boolean resultado = service.puedeMatricular(id);
         return ResponseEntity.ok(Map.of("puedeMatricular", resultado));
     }
 
-    // POST /api/v1/estudiantes
+    // crear estudiante
     @PostMapping
-    public ResponseEntity<Estudiante> create(@Valid @RequestBody EstudianteDTO dto) {
-        Estudiante creado = service.save(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(creado);
+    public ResponseEntity<EstudianteDTO> create(@Valid @RequestBody EstudianteDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(service.save(dto));
     }
 
-    // PUT /api/v1/estudiantes/{id}
+    // actualizar estudiante
     @PutMapping("/{id}")
-    public ResponseEntity<Estudiante> update(@PathVariable Long id,
-                                             @Valid @RequestBody EstudianteDTO dto) {
+    public ResponseEntity<EstudianteDTO> update(@PathVariable Long id,
+                                                @Valid @RequestBody EstudianteDTO dto) {
         return ResponseEntity.ok(service.update(id, dto));
     }
 
-    // DELETE /api/v1/estudiantes/{id}
+    // eliminar lógico
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String, String>> delete(@PathVariable Long id) {
         service.delete(id);
