@@ -19,7 +19,7 @@ public class DocenteService {
     }
 
     public Docente guardar(Docente docente) {
-        if (repository.existeByEmail(docente.getEmail())) {
+        if (repository.existsByEmail(docente.getEmail())) {
             throw new RuntimeException("Email ya existe");
         }
         return repository.save(docente);

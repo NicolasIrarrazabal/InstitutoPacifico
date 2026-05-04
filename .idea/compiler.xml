@@ -17,7 +17,7 @@
         </processorPath>
         <module name="ms-asignaturas" />
       </profile>
-      <profile name="Annotation profile for ms-matriculas" enabled="true">
+      <profile name="Annotation profile for ms-docente" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -31,7 +31,6 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="ms-docente" target="21" />
-      <module name="ms-matriculas" target="21" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
@@ -40,6 +39,7 @@
       <module name="ms-carreras" options="-parameters" />
       <module name="ms-docentes" options="-parameters" />
       <module name="ms-estudiante" options="-parameters" />
+      <module name="ms-matriculas" options="-parameters" />
     </option>
   </component>
 </project>
