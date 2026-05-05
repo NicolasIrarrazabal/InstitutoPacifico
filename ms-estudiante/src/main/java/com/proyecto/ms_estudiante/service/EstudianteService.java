@@ -36,20 +36,20 @@ public class EstudianteService {
     }
 
     public Estudiante save(EstudianteDTO dto) {
-        if (repository.existsByRut(dto.getRut())) {
-            throw new IllegalArgumentException("Ya existe un estudiante registrado con el RUT: " + dto.getRut());
+        if (repository.existsByRut(dto.rut())) {
+            throw new IllegalArgumentException("Ya existe un estudiante registrado con el RUT: " + dto.rut());
         }
 
-        if (repository.existsByEmail(dto.getEmail())) {
-            throw new IllegalArgumentException("Ya existe un estudiante registrado con el email: " + dto.getEmail());
+        if (repository.existsByEmail(dto.email())) {
+            throw new IllegalArgumentException("Ya existe un estudiante registrado con el email: " + dto.email());
         }
 
         Estudiante est = new Estudiante();
-        est.setNombre(dto.getNombre());
-        est.setRut(dto.getRut());
-        est.setEmail(dto.getEmail());
-        est.setTelefono(dto.getTelefono());
-        est.setDireccion(dto.getDireccion());
+        est.setNombre(dto.nombre());
+        est.setRut(dto.rut());
+        est.setEmail(dto.email());
+        est.setTelefono(dto.telefono());
+        est.setDireccion(dto.direccion());
 
         est.setEstado(EstadoEstudiante.ACTIVO);
 
@@ -65,14 +65,14 @@ public class EstudianteService {
             throw new IllegalStateException("No se puede modificar un estudiante en estado INACTIVO");
         }
 
-        if (!est.getEmail().equals(dto.getEmail()) && repository.existsByEmail(dto.getEmail())) {
+        if (!est.getEmail().equals(dto.email()) && repository.existsByEmail(dto.email())) {
             throw new IllegalArgumentException("El email ya esta en uso por otro estudiante");
         }
 
-        est.setNombre(dto.getNombre());
-        est.setEmail(dto.getEmail());
-        est.setTelefono(dto.getTelefono());
-        est.setDireccion(dto.getDireccion());
+        est.setNombre(dto.nombre());
+        est.setEmail(dto.email());
+        est.setTelefono(dto.telefono());
+        est.setDireccion(dto.direccion());
 
         Estudiante actualizado = repository.save(est);
         log.info("Estudiante actualizado correctamente, ID {}", id);
