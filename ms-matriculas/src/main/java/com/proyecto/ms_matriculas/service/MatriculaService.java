@@ -1,6 +1,6 @@
 package com.proyecto.ms_matriculas.service;
 
-import com.proyecto.ms_matriculas.client.EstudianteClient;
+import com.proyecto.ms_matriculas.client.EstudianteClientService;
 import com.proyecto.ms_matriculas.client.PuedeMatricularResponse;
 import com.proyecto.ms_matriculas.model.Matricula;
 import com.proyecto.ms_matriculas.dto.MatriculaDTO;
@@ -20,7 +20,7 @@ import java.util.UUID;
 public class MatriculaService {
 
     private final MatriculaRepository repository;
-    private final EstudianteClient estudianteClient;
+    private final EstudianteClientService estudianteClient;
 
     public List<Matricula> findAll() {
         log.info("Listando todas las matrículas");
