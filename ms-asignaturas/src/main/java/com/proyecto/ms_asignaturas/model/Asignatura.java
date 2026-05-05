@@ -1,7 +1,6 @@
 package com.proyecto.ms_asignaturas.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
@@ -22,8 +21,7 @@ public class Asignatura {
     @NotBlank(message = "El nombre de la asignatura no puede estar vacío")
     private String nombre;
 
-    @Min(value = 1, message = "Debe tener al menos 1 crédito")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "credito_id")
     private Credito credito;
 

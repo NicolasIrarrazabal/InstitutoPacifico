@@ -2,7 +2,9 @@ package com.proyecto.ms_asignaturas.service;
 
 import com.proyecto.ms_asignaturas.dto.AsignaturaDTO;
 import com.proyecto.ms_asignaturas.model.Asignatura;
+import com.proyecto.ms_asignaturas.model.Credito;
 import com.proyecto.ms_asignaturas.repository.AsignaturasRepository;
+import com.proyecto.ms_asignaturas.repository.CreditoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,7 @@ import java.util.UUID;
 public class AsignaturasService {
 
     private final AsignaturasRepository asignaturasRepository;
+    private final CreditoRepository creditoRepository;
 
     public List<Asignatura> listarTodas(){
         log.info("Listando todas las asignaturas");
@@ -30,13 +33,24 @@ public class AsignaturasService {
                 .orElseThrow(() -> new EntityNotFoundException("Asignatura no encontrada con ID: " + id));
     }
 
+    private Credito findOrCreateCredito(Integer cantidad) {
+        return creditoRepository.findAll().stream()
+                .filter(c -> c.getCantidad().equals(cantidad))
+                .findFirst()
+                .orElseGet(() -> {
+                    Credito nuevo = new Credito();
+                    nuevo.setCantidad(cantidad);
+                    return creditoRepository.save(nuevo);
+                });
+    }
+
     @Transactional
     public Asignatura crear(AsignaturaDTO dto){
         log.info("Creando asignatura: {}", dto.nombre());
 
         Asignatura asignatura = new Asignatura();
         asignatura.setNombre(dto.nombre());
-        asignatura.setCredito(dto.creditos());
+        asignatura.setCredito(findOrCreateCredito(dto.creditos()));
 
         Asignatura guardada = asignaturasRepository.save(asignatura);
         log.info("Asignatura creada con ID: {}", guardada.getId());
@@ -49,7 +63,7 @@ public class AsignaturasService {
         Asignatura asignatura = buscarPorId(id);
 
         asignatura.setNombre(dto.nombre());
-        asignatura.setCredito(dto.creditos());
+        asignatura.setCredito(findOrCreateCredito(dto.creditos()));
 
         return asignaturasRepository.save(asignatura);
     }
