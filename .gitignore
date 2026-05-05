@@ -3,3 +3,4 @@ ms-asignaturas/.env
 ms-docente/.env
 ms-matriculas/.env
 ms-carreras/.env
+ms-estudiante/.env
