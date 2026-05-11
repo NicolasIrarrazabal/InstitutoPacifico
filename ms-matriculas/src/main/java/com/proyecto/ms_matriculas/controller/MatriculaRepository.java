@@ -1,4 +1,4 @@
-package com.proyecto.ms_matriculas.repository;
+package com.proyecto.ms_matriculas.controller;
 
 import com.proyecto.ms_matriculas.model.Matricula;
 import org.springframework.data.jpa.repository.JpaRepository;
