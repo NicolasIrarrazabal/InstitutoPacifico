@@ -1,0 +1,105 @@
+[33m52aa062[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m FIX: ENV
+[33m3411015[m Merge branch 'vicente_herrera'
+[33m6efb222[m[33m ([m[1;31morigin/vicente_herrera[m[33m, [m[1;32mvicente_herrera[m[33m)[m fix: cambiar spring-boot-starter-webmvc a web en ms-estudiante
+[33m7d584da[m refactor: crear EstudianteClientService con RestTemplate
+[33m10d5d1b[m fix: quitar Spring Cloud de ms-matriculas y usar RestTemplate
+[33m30ab8f5[m fix: corregir entidad Asignatura con relacion ManyToOne a Credito
+[33m0744120[m feat: agregar PropertySource y configurar base de datos en microservicios
+[33mb3b5ec2[m feat: actualizar README con puertos correctos y microservicios complete
+[33m9d78398[m fix: corregir puertos - ms-asignaturas 8080, ms-estudiante 8085 para evitar conflictos
+[33m04cb354[m fix: configurar ms-matriculas y ms-carreras para compartir BDD con ms-asignaturas y ms-docente
+[33m123a091[m refactor: actualizar README con informacion del sistema y ajustar exception handler en ms-estudiante
+[33m05c1027[m refactor: actualizar controladores con mejoras en logging y eliminar MatriculaRepository duplicado
+[33m90d6164[m feat: agregar GlobalExceptionHandler en ms-asignaturas y ms-docente
+[33md1c2cbc[m fix: corregir ubicacion de MatriculaRepository de repository a controller
+[33m99aa6f4[m fix: actualizar Spring Boot a version 4.0.5 en ms-asignaturas
+[33m8bd49cd[m feat: crear microservicio ms-carreras completo
+[33m91a9a4a[m feat: agregar cliente Feign para validacion de prerrequisitos en ms-matriculas
+[33md5309b2[m refactor: actualizar services para usar metodos accesores de records
+[33m90681a5[m refactor: convertir DTOs a records en ms-estudiante, ms-docente, ms-matriculas, ms-asignaturas, ms-carreras
+[33mcc6bb7b[m feat: agregar documento CASOUSO con requisitos del sistema
+[33m4981738[m fix: resolve merge conflicts with master branch
+[33me5c0beb[m feat: agregar dependencias flyway y spring-dotenv en pom.xml
+[33m3604d15[m feat: uniformar configuracion de puertos y flyway para 4 microservicios
+[33m0517c2e[m fix: add folder enums with the enum ACTIVO, INACTIVO
+[33mb584dbb[m Remove ports from microservices table in README
+[33m22f7916[m fix: ms-docente working
+[33md18af6b[m Merge pull request #7 from NicolasIrarrazabal/vicente_herrera
+[33mce2e31c[m Merge branch 'master' into vicente_herrera
+[33mbe7571b[m feat: implement rest controllers with slf4j auditing logs for teacher domain and others controllers
+[33me7e07f8[m feat: implement service layer with business logic and SLF4J logging for auditing
+[33mc3004b4[m feat: implement jpa repositories for teachers, specialties and contracts using UUID
+[33m800e0c8[m feat: server.port added
+[33m84c57b3[m Merge branch 'master' of https://github.com/NicolasIrarrazabal/InstitutoPacifico
+[33me8beb68[m feat: adding db settings and microservices
+[33mab19ae0[m refactor: code cleanup, minor fixes and formatting improvements
+[33m042816a[m feat: adding db settings and microservices
+[33m17f1083[m settings
+[33mebead95[m feat: adding db settings
+[33m3f77906[m Fix comment formatting in main method
+[33m7c0732f[m Fix test annotation formatting in MsEstudianteApplicationTests
+[33mb1a0346[m Merge pull request #6 from NicolasIrarrazabal/vicente_herrera
+[33mf8e524f[m Merge pull request #5 from NicolasIrarrazabal/nicolasirarrazabal
+[33m03d8ef4[m fix: Comments are removed from the file
+[33m1b6d44b[m refactor: code cleanup, minor fixes and formatting improvements
+[33m069e1e1[m feat: adding the new file to flyway (V1_Initial_Schema.sql)
+[33m547babe[m feat: new content in the entiy Contrato
+[33m369061e[m feat: new content in the entiy Docente
+[33mc72c4d6[m fix: Adds @NotBlank to the Description attribute
+[33m5ff0a5f[m feat: new content in the entity Especialidad with the atributes
+[33m7a6bcce[m update: added different validations based on business rules.
+[33mbd2bcef[m fix: update name
+[33md1c1e0c[m update: sql connection detailes updated.
+[33m2acfd38[m update: update connection data
+[33mf852e07[m feat: adding new conection to the data base
+[33mb75c2da[m feat: creation package controler and class MatriculaController
+[33m44a3f8a[m feat: creation package service and class MatriculaService
+[33m19d5a36[m feat: creation package repository and class MatriculaRepository
+[33m1e533eb[m feat: creation package repository and class MatriculaRepository
+[33m9067212[m Creacion model y matricula.java
+[33m7dc03aa[m Conexion a base de datos ms-estudiante insforge.
+[33m1b4fa8b[m creacion controller package y clase EstudianteController
+[33m7f58d74[m Creacion service package y clase EstudianteService
+[33m5079bf0[m Creacion Repository package y clase EstudianteRepository
+[33mcb3d323[m Creacion  Clase Estudiante - EstudianteDTO y packages Respectivos
+[33m5b289ed[m fix: Changing the port number of the properties file
+[33m9c3f769[m Merge pull request #4 from NicolasIrarrazabal/vicente_herrera
+[33m8648cbd[m Merge pull request #3 from NicolasIrarrazabal/master
+[33m1f4a3ff[m feat: adding aplication.properties
+[33m1248c35[m Merge pull request #2 from NicolasIrarrazabal/vicente_herrera
+[33m684aebf[m refactor: change the function
+[33m908996d[m feat: adding Prerequisito Controller
+[33m559f6c3[m feat: adding Credito Controller with the endpoints
+[33m873adbb[m fix: adding the final to the Prerequisito Service
+[33m39b1399[m fix: the import to the Credito Repository
+[33m035c34b[m fix: adding the @Repository
+[33m655fecd[m fix: import to the Prerequisito Repository
+[33m4463db4[m fix: import
+[33m907a7b4[m fix: add the @
+[33m5ad5458[m fix: add the @
+[33m14b53bc[m fix: add final to AsignaturasService
+[33m20c0be9[m feat: new function to update the Asignatura
+[33md8e7e5a[m feat: Asignatura Controller finished
+[33m4222536[m feat: adding the functions to PrerequisitoService
+[33mcba2507[m feat: adding the functions to AsignaturaService
+[33mbf75feb[m feat: adding the functions to CreditoService
+[33m4e8769d[m feat: adding dependencies to the service
+[33me1ed2d7[m feat: adding dependencies to the service
+[33m5939dcf[m feat: adding new controllers to the folder Controller
+[33m203d898[m feat: adding new entities to the folder Service, CreditoService and PrerequisitoService
+[33md0c62a6[m feat: change the entities to interfaces and and the extend JpaRepository with the entity and the atribute type
+[33mfd83359[m feat: new repositories to asignaturas
+[33m346e925[m feat: new attributes to the entities Asignatura, Prerequisitos and Credito
+[33me8b8dd7[m Merge pull request #1 from NicolasIrarrazabal/vicente_herrera
+[33mc7cdeb1[m feat
+[33ma3a061e[m first commit
+[33m33cf070[m Update database technology mention in README
+[33m0d29ba4[m Fix team member GitHub handle and update Java version
+[33md0c4d70[m Revise README with project details and structure
+[33m7f80284[m Revise README for clarity and command updates
+[33mff68b01[m Update README with Git commands and instructions
+[33m4a11895[m Update README with GitHub commands and branch info
+[33mfe09954[m[33m ([m[1;31morigin/feature/ms-matriculas[m[33m, [m[1;31morigin/feature/ms-estudiantes[m[33m, [m[1;31morigin/feature/ms-docente[m[33m, [m[1;31morigin/feature/ms-asignaturas[m[33m, [m[1;31morigin/develop[m[33m)[m Create README.md
+[33m470bf18[m Progreso estructuracion proyecto
+[33m2077f04[m Progreso estructuracion proyecto
+[33m3d3246a[m primer commit

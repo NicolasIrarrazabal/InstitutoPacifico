@@ -1,0 +1,6 @@
+DB_HOST=cirxv9cp.us-east.database.insforge.app
+DB_PORT=5432
+DB_NAME=insforge
+DB_USER=postgres
+DB_PASSWORD=81809dcb1ba3560defb5ce98abd6ba64
+
