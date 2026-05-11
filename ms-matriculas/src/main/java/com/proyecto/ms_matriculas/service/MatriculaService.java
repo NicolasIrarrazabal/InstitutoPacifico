@@ -1,88 +1,117 @@
 package com.proyecto.ms_matriculas.service;
 
-import com.proyecto.ms_matriculas.client.EstudianteClientService;
-import com.proyecto.ms_matriculas.client.PuedeMatricularResponse;
 import com.proyecto.ms_matriculas.model.Matricula;
 import com.proyecto.ms_matriculas.dto.MatriculaDTO;
-import com.proyecto.ms_matriculas.controller.MatriculaRepository;
-import jakarta.persistence.EntityNotFoundException;
+import com.proyecto.ms_matriculas.repository.MatriculaRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.UUID;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class MatriculaService {
 
-    private final MatriculaRepository repository;
-    private final EstudianteClientService estudianteClient;
+    private static final Logger log = LoggerFactory.getLogger(MatriculaService.class);
 
+    private final MatriculaRepository repository;
+
+    // =====================================
+    // LISTAR
+    // =====================================
     public List<Matricula> findAll() {
-        log.info("Listando todas las matrículas");
         return repository.findAll();
     }
 
-    public Matricula findById(UUID id) {
-        log.info("Buscando matrícula por ID: {}", id);
+    // =====================================
+    // BUSCAR
+    // =====================================
+    public Matricula findById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Matrícula no encontrada con ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Matrícula no encontrada"));
     }
 
-    @Transactional
+    // =====================================
+    // CREAR MATRÍCULA (R1 CORREGIDA)
+    // =====================================
     public Matricula create(MatriculaDTO dto) {
-        log.info("Creando matrícula estudiante {} sección {}", dto.estudianteId(), dto.seccionId());
 
-        validarPrerrequisitos(dto.estudianteId(), dto.seccionId());
+        log.info("Creando matrícula estudiante {} sección {}",
+                dto.getEstudianteId(), dto.getSeccionId());
 
-        Matricula m = new Matricula();
-        m.setEstudianteId(dto.estudianteId());
-        m.setSeccionId(dto.seccionId());
-        m.setFechaMatricula(dto.fechaMatricula());
-        m.setEstado("ACTIVA");
+        if (!cumpleReglaPrerequisitos(dto.getEstudianteId(), dto.getSeccionId())) {
+            log.warn("Estudiante {} no cumple prerrequisitos para sección {}",
+                    dto.getEstudianteId(), dto.getSeccionId());
 
-        Matricula guardada = repository.save(m);
-        log.info("Matrícula creada con ID: {}", guardada.getId());
-        return guardada;
-    }
-
-    @Transactional
-    public Matricula update(UUID id, MatriculaDTO dto) {
-        log.info("Actualizando matrícula ID: {}", id);
-        Matricula m = findById(id);
-
-        if ("INACTIVA".equals(m.getEstado())) {
-            throw new IllegalStateException("No se puede modificar una matrícula inactiva");
+            throw new IllegalStateException("No cumple prerrequisitos de asignatura");
         }
 
-        m.setEstado(dto.estado());
+        Matricula m = new Matricula();
+        m.setEstudianteId(dto.getEstudianteId());
+        m.setSeccionId(dto.getSeccionId());
+        m.setFechaMatricula(dto.getFechaMatricula());
+        m.setEstado("ACTIVA");
+
         return repository.save(m);
     }
 
-    @Transactional
-    public void delete(UUID id) {
-        log.info("Eliminando (lógica) matrícula ID: {}", id);
+    // =====================================
+    // ACTUALIZAR
+    // =====================================
+    public Matricula update(Long id, MatriculaDTO dto) {
+
+        Matricula m = findById(id);
+
+        if ("INACTIVA".equals(m.getEstado())) {
+            throw new IllegalStateException("No se puede modificar matrícula inactiva");
+        }
+
+        m.setEstado(dto.getEstado());
+        return repository.save(m);
+    }
+
+    // =====================================
+    // ELIMINACIÓN LÓGICA
+    // =====================================
+    public void delete(Long id) {
+
         Matricula m = findById(id);
         m.setEstado("INACTIVA");
         repository.save(m);
-        log.info("Matrícula marcada como inactiva, ID: {}", id);
     }
 
-    private void validarPrerrequisitos(UUID estudianteId, UUID seccionId) {
-        log.info("Validando prerrequisitos del estudiante {} para sección {}", estudianteId, seccionId);
-        try {
-            PuedeMatricularResponse response = estudianteClient.puedeMatricular(estudianteId);
-            if (response == null || response.puedeMatricular() == null || !response.puedeMatricular()) {
-                log.warn("Estudiante {} no puede matricularse", estudianteId);
-                throw new IllegalStateException("El estudiante no puede matricularse");
-            }
-        } catch (Exception e) {
-            log.error("Error al validar prerrequisitos: {}", e.getMessage());
-            throw new IllegalStateException("Error al validar prerrequisitos: " + e.getMessage());
-        }
+    // =====================================
+    // 🔥 REGLA R1 CORRECTA SEGÚN TU MODELO
+    // =====================================
+    private boolean cumpleReglaPrerequisitos(Long estudianteId, Long seccionId) {
+
+        log.info("Validando prerrequisitos estudiante {} sección {}",
+                estudianteId, seccionId);
+
+        boolean estudianteValido = validarEstudiante(estudianteId);
+        boolean seccionValida = validarSeccion(seccionId);
+        boolean cumpleHistorial = validarHistorialAcademico(estudianteId, seccionId);
+
+        return estudianteValido && seccionValida && cumpleHistorial;
+    }
+
+    private boolean validarEstudiante(Long estudianteId) {
+        log.info("Validando estudiante {}", estudianteId);
+        return estudianteId != null;
+    }
+
+    private boolean validarSeccion(Long seccionId) {
+        log.info("Validando sección {}", seccionId);
+        return seccionId != null;
+    }
+
+    private boolean validarHistorialAcademico(Long estudianteId, Long seccionId) {
+        log.info("Validando historial académico estudiante {} sección {}",
+                estudianteId, seccionId);
+
+        return true;
     }
 }

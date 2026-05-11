@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Entity
 @Table(name = "matriculas")
@@ -14,14 +13,14 @@ import java.util.UUID;
 public class Matricula {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "estudiante_id", nullable = false)
-    private UUID estudianteId;
+    private Long estudianteId; // Solo almacenamos el ID del estudiante
 
     @Column(name = "seccion_id", nullable = false)
-    private UUID seccionId;
+    private Long seccionId; // Solo almacenamos el ID de la sección
 
     @Column(name = "fecha_matricula", nullable = false)
     private LocalDate fechaMatricula;
