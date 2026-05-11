@@ -4,7 +4,7 @@ import com.proyecto.ms_matriculas.client.EstudianteClientService;
 import com.proyecto.ms_matriculas.client.PuedeMatricularResponse;
 import com.proyecto.ms_matriculas.model.Matricula;
 import com.proyecto.ms_matriculas.dto.MatriculaDTO;
-import com.proyecto.ms_matriculas.controller.MatriculaRepository;
+import com.proyecto.ms_matriculas.repository.MatriculaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
