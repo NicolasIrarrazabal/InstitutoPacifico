@@ -2,6 +2,10 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/ms-asignaturas/src/main/java" charset="UTF-8" />
+<<<<<<< HEAD
+=======
+    <file url="file://$PROJECT_DIR$/ms-carreras/src/main/java" charset="UTF-8" />
+>>>>>>> fa0c9f7d3e1e5d3ade7459411904e5793176644e
     <file url="file://$PROJECT_DIR$/ms-docente/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ms-estudiante/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ms-matriculas/src/main/java" charset="UTF-8" />

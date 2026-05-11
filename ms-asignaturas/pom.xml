@@ -6,7 +6,11 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
+<<<<<<< HEAD
 		<version>3.4.0</version> <relativePath/>
+=======
+		<version>4.0.5</version> <relativePath/>
+>>>>>>> fa0c9f7d3e1e5d3ade7459411904e5793176644e
 	</parent>
 
 	<groupId>com.proyecto</groupId>

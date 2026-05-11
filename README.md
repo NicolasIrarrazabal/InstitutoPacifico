@@ -12,6 +12,7 @@ Sistema de gestión académica para el Instituto Pacífico (Puerto Montt), dise�
 ## Microservicios Implementados
 | # | Microservicio | Puerto | Descripción |
 |---|---------------|--------|-------------|
+<<<<<<< HEAD
 | 1 | ms-estudiantes| 8081   | Registro y perfil de estudiantes. |
 | 2 | ms-docentes   | 8082   | Docentes, especialidades y contratos. |
 | 3 | ms-carreras   | 8083   | Carreras, mallas curriculares y sedes. |
@@ -19,6 +20,16 @@ Sistema de gestión académica para el Instituto Pacífico (Puerto Montt), dise�
 
 ## Tecnologías Utilizadas
 - Java 21 / Spring Boot 3.x
+=======
+| 1 | ms-asignaturas | 8080   | Asignaturas, prerrequisitos y créditos. |
+| 2 | ms-docentes   | 8082   | Docentes, especialidades y contratos. |
+| 3 | ms-matriculas | 8083   | Gestión de matrículas. |
+| 4 | ms-carreras   | 8084   | Carreras, mallas curriculares y sedes. |
+| 5 | ms-estudiantes| 8085   | Registro y perfil de estudiantes. |
+
+## Tecnologías Utilizadas
+- Java 21 / Spring Boot 4.0.5
+>>>>>>> fa0c9f7d3e1e5d3ade7459411904e5793176644e
 - JPA + Hibernate
 - PostgreSQL
 - WebClient / Feign Client

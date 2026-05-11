@@ -8,6 +8,10 @@
         <option value="$PROJECT_DIR$/ms-docente/pom.xml" />
         <option value="$PROJECT_DIR$/ms-estudiante/pom.xml" />
         <option value="$PROJECT_DIR$/ms-matriculas/pom.xml" />
+<<<<<<< HEAD
+=======
+        <option value="$PROJECT_DIR$/ms-carreras/pom.xml" />
+>>>>>>> fa0c9f7d3e1e5d3ade7459411904e5793176644e
       </list>
     </option>
   </component>

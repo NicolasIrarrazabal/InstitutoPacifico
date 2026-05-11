@@ -7,6 +7,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+<<<<<<< HEAD
         <module name="ms-matriculas" />
       </profile>
       <profile name="Annotation profile for ms-carreras" enabled="true">
@@ -21,14 +22,29 @@
         <module name="ms-docentes" />
       </profile>
       <profile name="Annotation profile for ms-asignaturas" enabled="true">
+=======
+        <module name="ms-carreras" />
+      </profile>
+      <profile name="Annotation profile for ms-matriculas" enabled="true">
+>>>>>>> fa0c9f7d3e1e5d3ade7459411904e5793176644e
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
+<<<<<<< HEAD
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
         </processorPath>
         <module name="ms-estudiante" />
         <module name="ms-asignaturas" />
+=======
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.44/lombok-1.18.44.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.44/lombok-1.18.44.jar" />
+        </processorPath>
+        <module name="ms-docentes" />
+        <module name="ms-asignaturas" />
+        <module name="ms-estudiante" />
+        <module name="ms-matriculas" />
+>>>>>>> fa0c9f7d3e1e5d3ade7459411904e5793176644e
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
