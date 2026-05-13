@@ -17,10 +17,10 @@ public class Matricula {
     private Long id;
 
     @Column(name = "estudiante_id", nullable = false)
-    private Long estudianteId; // Solo almacenamos el ID del estudiante
+    private Long estudianteId;
 
     @Column(name = "seccion_id", nullable = false)
-    private Long seccionId; // Solo almacenamos el ID de la sección
+    private Long seccionId;
 
     @Column(name = "fecha_matricula", nullable = false)
     private LocalDate fechaMatricula;

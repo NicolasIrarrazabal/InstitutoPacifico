@@ -19,24 +19,15 @@ public class MatriculaService {
 
     private final MatriculaRepository repository;
 
-    // =====================================
-    // LISTAR
-    // =====================================
     public List<Matricula> findAll() {
         return repository.findAll();
     }
 
-    // =====================================
-    // BUSCAR
-    // =====================================
     public Matricula findById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Matrícula no encontrada"));
     }
 
-    // =====================================
-    // CREAR MATRÍCULA (R1 CORREGIDA)
-    // =====================================
     public Matricula create(MatriculaDTO dto) {
 
         log.info("Creando matrícula estudiante {} sección {}",
@@ -58,9 +49,6 @@ public class MatriculaService {
         return repository.save(m);
     }
 
-    // =====================================
-    // ACTUALIZAR
-    // =====================================
     public Matricula update(Long id, MatriculaDTO dto) {
 
         Matricula m = findById(id);
@@ -73,9 +61,6 @@ public class MatriculaService {
         return repository.save(m);
     }
 
-    // =====================================
-    // ELIMINACIÓN LÓGICA
-    // =====================================
     public void delete(Long id) {
 
         Matricula m = findById(id);
@@ -83,9 +68,6 @@ public class MatriculaService {
         repository.save(m);
     }
 
-    // =====================================
-    // 🔥 REGLA R1 CORRECTA SEGÚN TU MODELO
-    // =====================================
     private boolean cumpleReglaPrerequisitos(Long estudianteId, Long seccionId) {
 
         log.info("Validando prerrequisitos estudiante {} sección {}",

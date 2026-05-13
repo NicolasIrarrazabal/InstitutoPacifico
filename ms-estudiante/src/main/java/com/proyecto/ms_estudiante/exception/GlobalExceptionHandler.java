@@ -19,28 +19,24 @@ public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    // cuando no se encuentra un registro en la base de datos
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleEntityNotFound(EntityNotFoundException ex) {
         log.error("No se encontró el recurso: {}", ex.getMessage());
         return buildResponse(HttpStatus.NOT_FOUND, "RECURSO_NO_ENCONTRADO", ex.getMessage());
     }
 
-    // cuando hay errores de lógica o datos inválidos (ej: RUT duplicado, email repetido)
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, Object>> handleIllegalArgument(IllegalArgumentException ex) {
         log.error("Datos inválidos: {}", ex.getMessage());
         return buildResponse(HttpStatus.BAD_REQUEST, "DATO_INVALIDO", ex.getMessage());
     }
 
-    // cuando la operación no se puede hacer por el estado del registro (ej: estudiante inactivo)
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<Map<String, Object>> handleIllegalState(IllegalStateException ex) {
         log.error("Estado no válido para la operación: {}", ex.getMessage());
         return buildResponse(HttpStatus.CONFLICT, "ESTADO_INVALIDO", ex.getMessage());
     }
 
-    // cuando fallan las validaciones del DTO (@NotBlank, @Email, etc.)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationErrors(MethodArgumentNotValidException ex) {
 
@@ -61,7 +57,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT).body(body);
     }
 
-    // cuando algo falla y no lo estamos controlando explícitamente
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex) {
         log.error("Error inesperado en el servidor: {}", ex.getMessage(), ex);
@@ -72,7 +67,6 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // metodo auxiliar para no repetir código en las respuestas
     private ResponseEntity<Map<String, Object>> buildResponse(HttpStatus status, String error, String mensaje) {
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", LocalDateTime.now().toString());

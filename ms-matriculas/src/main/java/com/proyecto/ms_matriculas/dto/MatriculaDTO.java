@@ -13,10 +13,10 @@ import java.time.LocalDate;
 public class MatriculaDTO {
 
     @NotNull
-    private Long estudianteId; // Ahora solo tenemos el ID del estudiante
+    private Long estudianteId;
 
     @NotNull
-    private Long seccionId; // Ahora solo tenemos el ID de la sección
+    private Long seccionId;
 
     @NotNull
     private LocalDate fechaMatricula;

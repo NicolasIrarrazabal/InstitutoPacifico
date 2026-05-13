@@ -19,7 +19,6 @@ public class EstudianteService {
 
     private final EstudianteRepository repository;
 
-    // mapea entity a dto
     private EstudianteDTO toDTO(Estudiante est) {
         return new EstudianteDTO(
                 est.getNombre(),
@@ -30,9 +29,6 @@ public class EstudianteService {
         );
     }
 
-    // =========================================================
-    // LISTAR TODOS
-    // =========================================================
     public List<EstudianteDTO> findAll() {
         log.info("Listando estudiantes");
 
@@ -42,9 +38,6 @@ public class EstudianteService {
                 .toList();
     }
 
-    // =========================================================
-    // BUSCAR POR ID
-    // =========================================================
     public EstudianteDTO findById(Long id) {
         log.info("Buscando estudiante con id {}", id);
 
@@ -57,9 +50,6 @@ public class EstudianteService {
         return toDTO(est);
     }
 
-    // =========================================================
-    // BUSCAR POR RUT
-    // =========================================================
     public EstudianteDTO findByRut(String rut) {
         log.info("Buscando estudiante con rut {}", rut);
 
@@ -72,9 +62,6 @@ public class EstudianteService {
         return toDTO(est);
     }
 
-    // =========================================================
-    // CREAR ESTUDIANTE
-    // =========================================================
     public EstudianteDTO save(EstudianteDTO dto) {
         log.info("Creando estudiante con rut {}", dto.getRut());
 
@@ -101,9 +88,6 @@ public class EstudianteService {
         return toDTO(saved);
     }
 
-    // =========================================================
-    // ACTUALIZAR
-    // =========================================================
     public EstudianteDTO update(Long id, EstudianteDTO dto) {
         log.info("Actualizando estudiante {}", id);
 
@@ -127,9 +111,6 @@ public class EstudianteService {
         return toDTO(repository.save(est));
     }
 
-    // =========================================================
-    // ELIMINACION LOGICA
-    // =========================================================
     public void delete(Long id) {
         log.info("Desactivando estudiante {}", id);
 
@@ -144,9 +125,6 @@ public class EstudianteService {
         repository.save(est);
     }
 
-    // =========================================================/
-    // VALIDACION MATRICULA
-    // =========================================================
     public boolean puedeMatricular(Long id) {
         Estudiante est = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("No existe estudiante"));

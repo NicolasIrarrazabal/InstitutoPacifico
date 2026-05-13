@@ -22,27 +22,19 @@ public class MatriculaController {
 
     private final MatriculaService service;
 
-    // =========================
-    // LISTAR TODAS
-    // =========================
     @GetMapping
     public ResponseEntity<List<Matricula>> getAll() {
         log.info("GET /matriculas");
         return ResponseEntity.ok(service.findAll());
     }
 
-    // =========================
-    // BUSCAR POR ID
-    // =========================
     @GetMapping("/{id}")
     public ResponseEntity<Matricula> getById(@PathVariable Long id) {
         log.info("GET /matriculas/{}", id);
         return ResponseEntity.ok(service.findById(id));
     }
 
-    // =========================
-    // CREAR MATRÍCULA
-    // =========================
+
     @PostMapping
     public ResponseEntity<Matricula> create(@Valid @RequestBody MatriculaDTO dto) {
         log.info("POST /matriculas");
@@ -52,9 +44,6 @@ public class MatriculaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    // =========================
-    // ACTUALIZAR MATRÍCULA
-    // =========================
     @PutMapping("/{id}")
     public ResponseEntity<Matricula> update(
             @PathVariable Long id,
@@ -65,9 +54,6 @@ public class MatriculaController {
         return ResponseEntity.ok(service.update(id, dto));
     }
 
-    // =========================
-    // ELIMINACIÓN LÓGICA
-    // =========================
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
 
