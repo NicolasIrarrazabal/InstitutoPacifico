@@ -8,7 +8,7 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource("classpath:.env")
 public class MsMatriculasApplication {
 
-	public static void main(String[] args) {//
+	public static void main(String[] args) {
 		SpringApplication.run(MsMatriculasApplication.class, args);
 	}
 
