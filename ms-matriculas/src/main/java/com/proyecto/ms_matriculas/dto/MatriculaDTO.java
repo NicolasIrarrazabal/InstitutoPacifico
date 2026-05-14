@@ -1,26 +1,20 @@
 package com.proyecto.ms_matriculas.dto;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class MatriculaDTO {
+public record MatriculaDTO(
+        @NotNull(message = "El ID del estudiante es obligatorio")
+        UUID estudianteId,
 
-    @NotNull
-    private Long estudianteId;
+        @NotNull(message = "El ID de la sección es obligatorio")
+        UUID seccionId,
 
-    @NotNull
-    private Long seccionId;
+        @NotNull(message = "La fecha de matrícula es obligatoria")
+        LocalDate fechaMatricula,
 
-    @NotNull
-    private LocalDate fechaMatricula;
-
-    @NotNull
-    private String estado;
-}
+        @NotNull(message = "El estado es obligatorio")
+        String estado
+) {}

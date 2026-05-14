@@ -2,6 +2,7 @@ package com.proyecto.ms_estudiante.service;
 
 import com.proyecto.ms_estudiante.dto.EstudianteDTO;
 import com.proyecto.ms_estudiante.model.Estudiante;
+import com.proyecto.ms_estudiante.model.enums.EstadoEstudiante;
 import com.proyecto.ms_estudiante.repository.EstudianteRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -19,116 +21,79 @@ public class EstudianteService {
 
     private final EstudianteRepository repository;
 
-    private EstudianteDTO toDTO(Estudiante est) {
-        return new EstudianteDTO(
-                est.getNombre(),
-                est.getRut(),
-                est.getEmail(),
-                est.getTelefono(),
-                est.getDireccion()
-        );
+    public List<Estudiante> findAll() {
+        return repository.findAll();
     }
 
-    public List<EstudianteDTO> findAll() {
-        log.info("Listando estudiantes");
-
-        return repository.findAll()
-                .stream()
-                .map(this::toDTO)
-                .toList();
+    public Estudiante findById(UUID id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Estudiante no encontrado con ID: " + id));
     }
 
-    public EstudianteDTO findById(Long id) {
-        log.info("Buscando estudiante con id {}", id);
-
-        Estudiante est = repository.findById(id)
-                .orElseThrow(() -> {
-                    log.error("No existe estudiante con id {}", id);
-                    return new EntityNotFoundException("Estudiante no encontrado: " + id);
-                });
-
-        return toDTO(est);
+    public Estudiante findByRut(String rut) {
+        return repository.findByRut(rut)
+                .orElseThrow(() -> new EntityNotFoundException("Estudiante no encontrado con RUT: " + rut));
     }
 
-    public EstudianteDTO findByRut(String rut) {
-        log.info("Buscando estudiante con rut {}", rut);
-
-        Estudiante est = repository.findByRut(rut)
-                .orElseThrow(() -> {
-                    log.error("No existe estudiante con rut {}", rut);
-                    return new EntityNotFoundException("Estudiante no encontrado: " + rut);
-                });
-
-        return toDTO(est);
-    }
-
-    public EstudianteDTO save(EstudianteDTO dto) {
-        log.info("Creando estudiante con rut {}", dto.getRut());
-
-        if (repository.existsByRut(dto.getRut())) {
-            throw new IllegalArgumentException("Ya existe un estudiante con ese rut");
+    public Estudiante save(EstudianteDTO dto) {
+        if (repository.existsByRut(dto.rut())) {
+            throw new IllegalArgumentException("Ya existe un estudiante registrado con el RUT: " + dto.rut());
         }
 
-        if (repository.existsByEmail(dto.getEmail())) {
-            throw new IllegalArgumentException("Ya existe un estudiante con ese email");
+        if (repository.existsByEmail(dto.email())) {
+            throw new IllegalArgumentException("Ya existe un estudiante registrado con el email: " + dto.email());
         }
 
         Estudiante est = new Estudiante();
-        est.setNombre(dto.getNombre());
-        est.setRut(dto.getRut());
-        est.setEmail(dto.getEmail());
-        est.setTelefono(dto.getTelefono());
-        est.setDireccion(dto.getDireccion());
-        est.setEstado("ACTIVO");
+        est.setNombre(dto.nombre());
+        est.setRut(dto.rut());
+        est.setEmail(dto.email());
+        est.setTelefono(dto.telefono());
+        est.setDireccion(dto.direccion());
 
-        Estudiante saved = repository.save(est);
+        est.setEstado(EstadoEstudiante.ACTIVO);
 
-        log.info("Estudiante creado con id {}", saved.getId());
-
-        return toDTO(saved);
+        Estudiante guardado = repository.save(est);
+        log.info("Estudiante creado correctamente con ID {} y RUT {}", guardado.getId(), guardado.getRut());
+        return guardado;
     }
 
-    public EstudianteDTO update(Long id, EstudianteDTO dto) {
-        log.info("Actualizando estudiante {}", id);
+    public Estudiante update(UUID id, EstudianteDTO dto) {
+        Estudiante est = findById(id);
 
-        Estudiante est = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("No existe estudiante"));
-
-        if ("INACTIVO".equals(est.getEstado())) {
-            throw new IllegalStateException("No se puede modificar un estudiante inactivo");
+        if (EstadoEstudiante.INACTIVO.equals(est.getEstado())) {
+            throw new IllegalStateException("No se puede modificar un estudiante en estado INACTIVO");
         }
 
-        if (!est.getEmail().equals(dto.getEmail())
-                && repository.existsByEmail(dto.getEmail())) {
-            throw new IllegalArgumentException("Email ya en uso");
+        if (!est.getEmail().equals(dto.email()) && repository.existsByEmail(dto.email())) {
+            throw new IllegalArgumentException("El email ya esta en uso por otro estudiante");
         }
 
-        est.setNombre(dto.getNombre());
-        est.setEmail(dto.getEmail());
-        est.setTelefono(dto.getTelefono());
-        est.setDireccion(dto.getDireccion());
+        est.setNombre(dto.nombre());
+        est.setEmail(dto.email());
+        est.setTelefono(dto.telefono());
+        est.setDireccion(dto.direccion());
 
-        return toDTO(repository.save(est));
+        Estudiante actualizado = repository.save(est);
+        log.info("Estudiante actualizado correctamente, ID {}", id);
+        return actualizado;
     }
 
-    public void delete(Long id) {
-        log.info("Desactivando estudiante {}", id);
+    public void delete(UUID id) {
+        Estudiante est = findById(id);
 
-        Estudiante est = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("No existe estudiante"));
-
-        if ("INACTIVO".equals(est.getEstado())) {
-            throw new IllegalStateException("Ya está inactivo");
+        if (EstadoEstudiante.INACTIVO.equals(est.getEstado())) {
+            throw new IllegalStateException("El estudiante ya se encuentra en estado INACTIVO");
         }
 
-        est.setEstado("INACTIVO");
+        est.setEstado(EstadoEstudiante.INACTIVO);
         repository.save(est);
+        log.info("Estudiante marcado como INACTIVO, ID {}", id);
     }
 
-    public boolean puedeMatricular(Long id) {
-        Estudiante est = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("No existe estudiante"));
+    public boolean puedeMatricular(UUID estudianteId) {
+        Estudiante est = findById(estudianteId);
 
-        return !"INACTIVO".equals(est.getEstado());
+        return EstadoEstudiante.ACTIVO.equals(est.getEstado());
     }
 }

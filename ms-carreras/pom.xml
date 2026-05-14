@@ -9,7 +9,7 @@
 		<relativePath/>
 	</parent>
 	<groupId>com.proyecto</groupId>
-	<artifactId>ms-matriculas</artifactId>
+	<artifactId>ms-carreras</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>ms-carreras</name>
 	<description>Microservicio de gestión de carreras</description>
