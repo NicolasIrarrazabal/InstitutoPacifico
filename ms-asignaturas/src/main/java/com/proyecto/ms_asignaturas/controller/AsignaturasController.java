@@ -2,7 +2,9 @@ package com.proyecto.ms_asignaturas.controller;
 
 import com.proyecto.ms_asignaturas.dto.AsignaturaDTO;
 import com.proyecto.ms_asignaturas.model.Asignatura;
+import com.proyecto.ms_asignaturas.model.Prerequisito;
 import com.proyecto.ms_asignaturas.service.AsignaturasService;
+import com.proyecto.ms_asignaturas.service.PrerequisitoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,7 @@ import java.util.UUID;
 public class AsignaturasController {
 
     private final AsignaturasService service;
+    private final PrerequisitoService prerequisitoService;
 
     @GetMapping
     public ResponseEntity<List<Asignatura>> listarAsignaturas() {
@@ -32,6 +35,13 @@ public class AsignaturasController {
     public ResponseEntity<Asignatura> obtenerAsignaturaPorId(@PathVariable UUID id) {
         log.info("GET /api/v1/asignaturas/{}", id);
         return ResponseEntity.ok(service.buscarPorId(id));
+    }
+
+    // R1: ms-matriculas llama aquí para ver los prerrequisitos
+    @GetMapping("/{id}/prerequisitos")
+    public ResponseEntity<List<Prerequisito>> obtenerPrerequisitos(@PathVariable UUID id) {
+        log.info("GET /api/v1/asignaturas/{}/prerequisitos", id);
+        return ResponseEntity.ok(prerequisitoService.listarPorAsignatura(id));
     }
 
     @PostMapping

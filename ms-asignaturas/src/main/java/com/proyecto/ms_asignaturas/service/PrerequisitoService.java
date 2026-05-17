@@ -16,16 +16,15 @@ public class PrerequisitoService {
 
     private final PrerequisitoRepository prerequisitoRepository;
 
-    public List<Prerequisito> listarPorAsignatura(UUID id) {
-        return prerequisitoRepository.findAll().stream()
-                .filter(p -> p.getAsignaturaPrincipal().getId().equals(id))
-                .toList();
+    public List<Prerequisito> listarPorAsignatura(UUID asignaturaId) {
+        log.info("Listando prerrequisitos de la asignatura ID: {}", asignaturaId);
+        return prerequisitoRepository.findByAsignaturaPrincipalId(asignaturaId);
     }
 
     public Prerequisito asignarPrerequisito(Prerequisito prerequisito) {
-                prerequisito.getAsignaturaRequisito().getNombre();
-                prerequisito.getAsignaturaPrincipal().getNombre();
+        log.info("Asignando prerrequisito: {} requiere {}",
+                prerequisito.getAsignaturaPrincipal().getNombre(),
+                prerequisito.getAsignaturaRequisito().getNombre());
         return prerequisitoRepository.save(prerequisito);
     }
-
 }

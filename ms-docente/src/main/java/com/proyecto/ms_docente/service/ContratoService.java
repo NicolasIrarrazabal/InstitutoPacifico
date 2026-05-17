@@ -19,6 +19,9 @@ public class ContratoService {
     }
 
     public Contrato guardar(Contrato contrato) {
-        return repository.save(contrato);
+        log.info("Guardando contrato para docente ID {}", contrato.getDocente().getId());
+        Contrato guardado = repository.save(contrato);
+        log.info("Contrato guardado con ID {}", guardado.getId());
+        return guardado;
     }
 }

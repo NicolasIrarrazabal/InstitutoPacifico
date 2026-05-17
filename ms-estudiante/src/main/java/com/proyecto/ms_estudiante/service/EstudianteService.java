@@ -1,5 +1,11 @@
 package com.proyecto.ms_estudiante.service;
 
+import com.proyecto.ms_estudiante.client.MatriculaClientService;
+import com.proyecto.ms_estudiante.client.MatriculaClientService.MatriculaResponse;
+import com.proyecto.ms_estudiante.client.NotaClientService;
+import com.proyecto.ms_estudiante.client.NotaClientService.NotaResponse;
+import com.proyecto.ms_estudiante.client.NotaClientService.PromedioResponse;
+import com.proyecto.ms_estudiante.dto.DetalleEstudianteResponse;
 import com.proyecto.ms_estudiante.dto.EstudianteDTO;
 import com.proyecto.ms_estudiante.model.Estudiante;
 import com.proyecto.ms_estudiante.model.enums.EstadoEstudiante;
@@ -10,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,6 +27,8 @@ public class EstudianteService {
     private static final Logger log = LoggerFactory.getLogger(EstudianteService.class);
 
     private final EstudianteRepository repository;
+    private final NotaClientService notaClient;
+    private final MatriculaClientService matriculaClient;
 
     public List<Estudiante> findAll() {
         return repository.findAll();
@@ -50,7 +59,6 @@ public class EstudianteService {
         est.setEmail(dto.email());
         est.setTelefono(dto.telefono());
         est.setDireccion(dto.direccion());
-
         est.setEstado(EstadoEstudiante.ACTIVO);
 
         Estudiante guardado = repository.save(est);
@@ -93,7 +101,70 @@ public class EstudianteService {
 
     public boolean puedeMatricular(UUID estudianteId) {
         Estudiante est = findById(estudianteId);
-
         return EstadoEstudiante.ACTIVO.equals(est.getEstado());
+    }
+
+    // trae datos de notas y matrículas para armar la respuesta completa
+    public DetalleEstudianteResponse obtenerDetalle(UUID id) {
+        log.info("Construyendo detalle enriquecido para estudiante {}", id);
+
+        Estudiante est = findById(id);
+
+        List<NotaResponse> notas = notaClient.obtenerNotasEstudiante(id);
+        log.info("ms-notas respondió con {} notas para estudiante {}", notas.size(), id);
+
+        PromedioResponse promedio = calcularPromedioDesdeNotas(notas, id);
+
+        List<MatriculaResponse> matriculas = matriculaClient.obtenerMatriculasActivas(id);
+        log.info("ms-matriculas respondió con {} matrículas activas para estudiante {}", matriculas.size(), id);
+
+        return new DetalleEstudianteResponse(
+                est.getId(),
+                est.getNombre(),
+                est.getRut(),
+                est.getEmail(),
+                est.getTelefono(),
+                est.getDireccion(),
+                est.getEstado() != null ? est.getEstado().name() : null,
+                promedio.promedioPonderado(),
+                promedio.promedioSimple(),
+                promedio.totalNotas(),
+                promedio.aprobado(),
+                notas,
+                matriculas.size(),
+                matriculas
+        );
+    }
+
+    // calcula el promedio con las notas que ya tenemos
+    private PromedioResponse calcularPromedioDesdeNotas(List<NotaResponse> notas, UUID estudianteId) {
+        if (notas.isEmpty()) {
+            return new PromedioResponse(estudianteId, BigDecimal.ZERO, BigDecimal.ZERO, 0, false);
+        }
+
+        BigDecimal sumaPonderada = BigDecimal.ZERO;
+        BigDecimal sumaSimple = BigDecimal.ZERO;
+        BigDecimal sumaPonderaciones = BigDecimal.ZERO;
+
+        for (NotaResponse n : notas) {
+            if (n.ponderacion() != null && n.nota() != null) {
+                sumaPonderada = sumaPonderada.add(n.nota().multiply(n.ponderacion()));
+                sumaPonderaciones = sumaPonderaciones.add(n.ponderacion());
+            }
+            if (n.nota() != null) {
+                sumaSimple = sumaSimple.add(n.nota());
+            }
+        }
+
+        BigDecimal promedioPonderado = sumaPonderaciones.compareTo(BigDecimal.ZERO) > 0
+                ? sumaPonderada.divide(sumaPonderaciones, 2, java.math.RoundingMode.HALF_UP)
+                : BigDecimal.ZERO;
+
+        BigDecimal promedioSimple = sumaSimple.divide(
+                BigDecimal.valueOf(notas.size()), 2, java.math.RoundingMode.HALF_UP);
+
+        boolean aprobado = promedioPonderado.compareTo(new BigDecimal("4.0")) >= 0;
+
+        return new PromedioResponse(estudianteId, promedioPonderado, promedioSimple, notas.size(), aprobado);
     }
 }

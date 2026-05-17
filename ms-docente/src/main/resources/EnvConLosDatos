@@ -1,7 +1,0 @@
-# Configuración de Base de Datos para ms-docente
-DB_HOST=3sacu4zw.us-east.database.insforge.app
-DB_PORT=5432
-DB_NAME=insforge
-DB_USER=postgres
-DB_PASSWORD=344e9f970f8892ea9e9dbea44496c334
-DB_SSL=require

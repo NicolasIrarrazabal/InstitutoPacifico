@@ -1,16 +1,18 @@
 package com.proyecto.ms_matriculas.service;
 
-import com.proyecto.ms_matriculas.client.EstudianteClientService;
-import com.proyecto.ms_matriculas.client.PuedeMatricularResponse;
-import com.proyecto.ms_matriculas.model.Matricula;
+import com.proyecto.ms_matriculas.client.AsignaturaClientService;
+import com.proyecto.ms_matriculas.client.NotaClientService;
+import com.proyecto.ms_matriculas.client.PrerequisitosResponse;
 import com.proyecto.ms_matriculas.dto.MatriculaDTO;
-import com.proyecto.ms_matriculas.controller.MatriculaRepository;
+import com.proyecto.ms_matriculas.model.Matricula;
+import com.proyecto.ms_matriculas.repository.MatriculaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,7 +22,9 @@ import java.util.UUID;
 public class MatriculaService {
 
     private final MatriculaRepository repository;
-    private final EstudianteClientService estudianteClient;
+    private final AsignaturaClientService asignaturaClient;  // llama a ms-asignaturas
+    private final NotaClientService notaClient;              // llama a ms-notas
+
 
     public List<Matricula> findAll() {
         log.info("Listando todas las matrículas");
@@ -33,11 +37,24 @@ public class MatriculaService {
                 .orElseThrow(() -> new EntityNotFoundException("Matrícula no encontrada con ID: " + id));
     }
 
+    public List<Matricula> findByEstudiante(UUID estudianteId) {
+        log.info("Listando matrículas activas del estudiante {}", estudianteId);
+        return repository.findByEstudianteIdAndEstado(estudianteId, "ACTIVA");
+    }
+
+
     @Transactional
     public Matricula create(MatriculaDTO dto) {
-        log.info("Creando matrícula estudiante {} sección {}", dto.estudianteId(), dto.seccionId());
+        log.info("Intentando matricular estudiante {} en sección {}", dto.estudianteId(), dto.seccionId());
 
-        validarPrerrequisitos(dto.estudianteId(), dto.seccionId());
+        // no dejo matricularse dos veces en la misma sección
+        if (repository.existsByEstudianteIdAndSeccionIdAndEstado(dto.estudianteId(), dto.seccionId(), "ACTIVA")) {
+            log.warn("Estudiante {} ya está matriculado en la sección {}", dto.estudianteId(), dto.seccionId());
+            throw new IllegalStateException("El estudiante ya está matriculado en esta sección");
+        }
+
+        // R1: verifico prerrequisitos antes de matricular
+        validarPrerrequisitosR1(dto.estudianteId(), dto.seccionId());
 
         Matricula m = new Matricula();
         m.setEstudianteId(dto.estudianteId());
@@ -72,17 +89,58 @@ public class MatriculaService {
         log.info("Matrícula marcada como inactiva, ID: {}", id);
     }
 
-    private void validarPrerrequisitos(UUID estudianteId, UUID seccionId) {
-        log.info("Validando prerrequisitos del estudiante {} para sección {}", estudianteId, seccionId);
+
+    // R1: consulta los prerrequisitos en ms-asignaturas y verifica en ms-notas si los aprobó
+    private void validarPrerrequisitosR1(UUID estudianteId, UUID asignaturaId) {
+        log.info("[R1] Validando prerrequisitos — estudiante: {} | asignatura: {}", estudianteId, asignaturaId);
+
+        // pido los prerrequisitos de la asignatura
+        List<PrerequisitosResponse> prerequisitos;
         try {
-            PuedeMatricularResponse response = estudianteClient.puedeMatricular(estudianteId);
-            if (response == null || response.puedeMatricular() == null || !response.puedeMatricular()) {
-                log.warn("Estudiante {} no puede matricularse", estudianteId);
-                throw new IllegalStateException("El estudiante no puede matricularse");
-            }
+            prerequisitos = asignaturaClient.obtenerPrerequisitos(asignaturaId);
         } catch (Exception e) {
-            log.error("Error al validar prerrequisitos: {}", e.getMessage());
-            throw new IllegalStateException("Error al validar prerrequisitos: " + e.getMessage());
+            log.error("[R1] Error consultando ms-asignaturas: {}", e.getMessage());
+            throw new IllegalStateException("No se pudo verificar los prerrequisitos: " + e.getMessage());
         }
+
+        if (prerequisitos.isEmpty()) {
+            log.info("[R1] La asignatura {} no tiene prerrequisitos. Matrícula permitida.", asignaturaId);
+            return;
+        }
+
+        // por cada prerrequisito reviso si el estudiante lo aprobó en ms-notas
+        List<String> faltantes = new ArrayList<>();
+
+        for (PrerequisitosResponse prereq : prerequisitos) {
+            UUID asigRequisito = prereq.asignaturaRequisito().id();
+            String nombreRequisito = prereq.asignaturaRequisito().nombre();
+
+            log.info("[R1] Verificando si estudiante {} aprobó prerrequisito '{}' ({})",
+                    estudianteId, nombreRequisito, asigRequisito);
+
+            boolean aprobo;
+            try {
+                aprobo = notaClient.estudianteAproboAsignatura(estudianteId, asigRequisito);
+            } catch (Exception e) {
+                log.error("[R1] Error consultando ms-notas para prerrequisito {}: {}", asigRequisito, e.getMessage());
+                throw new IllegalStateException(
+                        "No se pudo verificar si el estudiante aprobó '" + nombreRequisito + "': " + e.getMessage());
+            }
+
+            if (!aprobo) {
+                log.warn("[R1] Estudiante {} NO aprobó prerrequisito '{}'", estudianteId, nombreRequisito);
+                faltantes.add(nombreRequisito);
+            }
+        }
+
+        if (!faltantes.isEmpty()) {
+            String detalle = String.join(", ", faltantes);
+            log.warn("[R1] Matrícula bloqueada — estudiante: {} | prerrequisitos faltantes: {}", estudianteId, detalle);
+            throw new IllegalStateException(
+                    "No se puede matricular. El estudiante no ha aprobado los siguientes prerrequisitos: " + detalle);
+        }
+
+        log.info("[R1] Todos los prerrequisitos cumplidos para estudiante {} en asignatura {}",
+                estudianteId, asignaturaId);
     }
 }

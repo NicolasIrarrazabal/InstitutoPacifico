@@ -1,5 +1,6 @@
 package com.proyecto.ms_estudiante.controller;
 
+import com.proyecto.ms_estudiante.dto.DetalleEstudianteResponse;
 import com.proyecto.ms_estudiante.dto.EstudianteDTO;
 import com.proyecto.ms_estudiante.model.Estudiante;
 import com.proyecto.ms_estudiante.service.EstudianteService;
@@ -39,6 +40,12 @@ public class EstudianteController {
     public ResponseEntity<Map<String, Boolean>> puedeMatricular(@PathVariable UUID id) {
         boolean resultado = service.puedeMatricular(id);
         return ResponseEntity.ok(Map.of("puedeMatricular", resultado));
+    }
+
+    // endpoint que consolida datos de otros microservicios
+    @GetMapping("/{id}/detalle")
+    public ResponseEntity<DetalleEstudianteResponse> getDetalle(@PathVariable UUID id) {
+        return ResponseEntity.ok(service.obtenerDetalle(id));
     }
 
     @PostMapping

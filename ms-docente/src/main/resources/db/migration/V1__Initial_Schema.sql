@@ -1,13 +1,13 @@
 
 -- 1. Crear tabla de Especialidades (No tiene dependencias)
-CREATE TABLE especialidades (
+CREATE TABLE IF NOT EXISTS especialidades (
                                 id UUID PRIMARY KEY, -- Mapeado de @Id UUID
                                 nombre VARCHAR(100) NOT NULL, -- Mapeado de @NotBlank
                                 descripcion TEXT NOT NULL -- Mapeado de @NotBlank
 );
 
 -- 2. Crear tabla de Docentes (Depende de Especialidades)
-CREATE TABLE docentes (
+CREATE TABLE IF NOT EXISTS docentes (
                           id UUID PRIMARY KEY, -- Mapeado de @Id UUID
                           nombre VARCHAR(100) NOT NULL, -- Mapeado de @NotBlank
                           apellido VARCHAR(100) NOT NULL, -- Mapeado de @NotBlank
@@ -19,7 +19,7 @@ CREATE TABLE docentes (
 );
 
 -- 3. Crear tabla de Contratos (Depende de Docentes)
-CREATE TABLE contratos (
+CREATE TABLE IF NOT EXISTS contratos (
                            id UUID PRIMARY KEY, -- Mapeado de @Id UUID
                            tipo_contrato VARCHAR(50) NOT NULL, -- Mapeado de @NotBlank
                            fecha_inicio DATE NOT NULL, -- Mapeado de @NotNull LocalDate

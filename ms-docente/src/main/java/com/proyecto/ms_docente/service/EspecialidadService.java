@@ -12,7 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 public class EspecialidadService {
 
-
     private EspecialidadRepository repository;
 
     public List<Especialidad> listarTodas() {
@@ -20,6 +19,9 @@ public class EspecialidadService {
     }
 
     public Especialidad guardar(Especialidad especialidad) {
-        return repository.save(especialidad);
+        log.info("Guardando especialidad: {}", especialidad.getNombre());
+        Especialidad guardada = repository.save(especialidad);
+        log.info("Especialidad guardada con ID {}", guardada.getId());
+        return guardada;
     }
 }
