@@ -866,4 +866,4 @@ sequenceDiagram
 ## Licencia y créditos
 
 DuocUC — 2026.
-Caso de negocio: **Instituto Pacifico** (caso ficticio para fines docentes).
+Caso de negocio: **Instituto Pacifico**.
