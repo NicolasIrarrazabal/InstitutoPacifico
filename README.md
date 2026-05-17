@@ -1,6 +1,5 @@
 # Instituto Pacifico — Documentación de Endpoints
 
-> Proyecto académico desarrollado para el ramo **DSY1103 - Desarrollo FullStack 1** (DuocUC, 2025).
 
 Sistema completo de **10 microservicios** Spring Boot que digitaliza la gestión académica de un instituto educativo. Este documento describe todos los endpoints disponibles, organizados por fases de ejecución.
 
