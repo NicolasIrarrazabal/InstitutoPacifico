@@ -1,0 +1,735 @@
+{
+  "info": {
+    "name": "Instituto Pacifico - Todos los Microservicios",
+    "description": "Colección completa de endpoints para los 10 microservicios del proyecto Instituto Pacifico.\n\n**Instrucciones:**\n1. Asegúrate de tener todos los microservicios iniciados (puertos 8080-8089)\n2. Usa Collection Runner para ejecutar todo en orden\n3. Los scripts generan IDs automáticos y los capturan de las respuestas\n4. Todo el ciclo CREATE → READ → UPDATE → DELETE funciona sin intervención",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost", "type": "default" },
+    { "key": "aranceles", "value": "8081", "type": "default" },
+    { "key": "asignaturas", "value": "8080", "type": "default" },
+    { "key": "asistencia", "value": "8088", "type": "default" },
+    { "key": "carreras", "value": "8084", "type": "default" },
+    { "key": "docente", "value": "8082", "type": "default" },
+    { "key": "empresas", "value": "8089", "type": "default" },
+    { "key": "estudiante", "value": "8085", "type": "default" },
+    { "key": "matriculas", "value": "8083", "type": "default" },
+    { "key": "notas", "value": "8086", "type": "default" },
+    { "key": "practicas", "value": "8087", "type": "default" },
+    { "key": "estudianteRut", "value": "", "type": "default" },
+    { "key": "empresaRut", "value": "", "type": "default" },
+    { "key": "uniqueRunTag", "value": "", "type": "default" },
+    { "key": "carreraId", "value": "", "type": "default" },
+    { "key": "asignatura1Id", "value": "", "type": "default" },
+    { "key": "asignatura2Id", "value": "", "type": "default" },
+    { "key": "especialidadId", "value": "", "type": "default" },
+    { "key": "docenteId", "value": "", "type": "default" },
+    { "key": "empresaId", "value": "", "type": "default" },
+    { "key": "estudianteId", "value": "", "type": "default" },
+    { "key": "matriculaId", "value": "", "type": "default" },
+    { "key": "arancelId", "value": "", "type": "default" },
+    { "key": "notaId", "value": "", "type": "default" },
+    { "key": "asistenciaId", "value": "", "type": "default" },
+    { "key": "practicaId", "value": "", "type": "default" }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "javascript",
+        "exec": [
+          "// Generar valores únicos una sola vez al inicio",
+          "var now = new Date();",
+          "var tag = ('000' + now.getHours()).slice(-2) + ('000' + now.getMinutes()).slice(-2) + ('000' + now.getSeconds()).slice(-2) + ('000' + now.getMilliseconds()).slice(-3);",
+          "if (!pm.environment.get('uniqueRunTag')) {",
+          "  pm.environment.set('uniqueRunTag', tag);",
+          "  var rutNum = '1' + tag.slice(0,7);",
+          "  pm.environment.set('uniqueRut', rutNum + '-9');",
+          "}",
+          "",
+          "// Limpiar IDs al inicio de una nueva ejecución (Collection Runner)",
+          "if (!pm.environment.get('executionStarted')) {",
+          "  pm.environment.set('executionStarted', 'true');",
+          "}"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "FASE 1: Carreras",
+      "item": [
+        {
+          "name": "POST Crear carrera",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "javascript",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.id) {",
+                  "  pm.environment.set('carreraId', jsonData.id);",
+                  "  console.log('carreraId:', jsonData.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}:{{carreras}}/api/v1/carreras",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Ingenieria en Sistemas {{uniqueRunTag}}\",\n  \"descripcion\": \"Carrera de ingenieria\",\n  \"duracionSemestres\": 8,\n  \"sede\": \"Santiago\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET Listar carreras",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{carreras}}/api/v1/carreras" }
+        },
+        {
+          "name": "GET Get carrera",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{carreras}}/api/v1/carreras/{{carreraId}}" }
+        },
+        {
+          "name": "PUT Actualizar carrera",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}:{{carreras}}/api/v1/carreras/{{carreraId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Ingenieria Actualizada {{uniqueRunTag}}\",\n  \"descripcion\": \"Carrera actualizada\",\n  \"duracionSemestres\": 10,\n  \"sede\": \"Santiago\"\n}"
+            }
+          }
+        },
+        {
+          "name": "DELETE Eliminar carrera",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}:{{carreras}}/api/v1/carreras/{{carreraId}}" }
+        }
+      ]
+    },
+    {
+      "name": "FASE 2: Asignaturas + Prerrequisito",
+      "item": [
+        {
+          "name": "POST Crear asignatura 1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "javascript",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.id) {",
+                  "  pm.environment.set('asignatura1Id', jsonData.id);",
+                  "  console.log('asignatura1Id:', jsonData.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}:{{asignaturas}}/api/v1/asignaturas",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Programacion I - {{uniqueRunTag}}\",\n  \"creditos\": 6\n}"
+            }
+          }
+        },
+        {
+          "name": "POST Crear asignatura 2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "javascript",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.id) {",
+                  "  pm.environment.set('asignatura2Id', jsonData.id);",
+                  "  console.log('asignatura2Id:', jsonData.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}:{{asignaturas}}/api/v1/asignaturas",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Programacion II - {{uniqueRunTag}}\",\n  \"creditos\": 6\n}"
+            }
+          }
+        },
+        {
+          "name": "GET Listar asignaturas",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{asignaturas}}/api/v1/asignaturas" }
+        },
+        {
+          "name": "GET Get prerrequisitos (asignatura2)",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{asignaturas}}/api/v1/asignaturas/{{asignatura2Id}}/prerequisitos" }
+        },
+        {
+          "name": "POST Asignar prerrequisito (asig2 requiere asig1)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}:{{asignaturas}}/api/v1/prerequisitos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"asignaturaPrincipal\": {\"id\": \"{{asignatura2Id}}\"},\n  \"asignaturaRequisito\": {\"id\": \"{{asignatura1Id}}\"}\n}"
+            }
+          }
+        },
+        {
+          "name": "GET Listar creditos",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{asignaturas}}/api/v1/creditos" }
+        }
+      ]
+    },
+    {
+      "name": "FASE 3: Docente + Especialidad + Contrato",
+      "item": [
+        {
+          "name": "POST Crear especialidad",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "javascript",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.id) {",
+                  "  pm.environment.set('especialidadId', jsonData.id);",
+                  "  console.log('especialidadId:', jsonData.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}:{{docente}}/api/v1/especialidades",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Especialidad {{uniqueRunTag}}\",\n  \"descripcion\": \"Especialidad de prueba\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET Listar especialidades",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{docente}}/api/v1/especialidades" }
+        },
+        {
+          "name": "POST Crear docente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "javascript",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.id) {",
+                  "  pm.environment.set('docenteId', jsonData.id);",
+                  "  console.log('docenteId:', jsonData.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}:{{docente}}/api/v1/docentes",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Maria\",\n  \"apellido\": \"Gonzalez\",\n  \"email\": \"maria_{{uniqueRunTag}}@test.cl\",\n  \"especialidadId\": \"{{especialidadId}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET Listar docentes",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{docente}}/api/v1/docentes" }
+        },
+        {
+          "name": "GET Get docente",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{docente}}/api/v1/docentes/{{docenteId}}" }
+        },
+        {
+          "name": "POST Crear contrato",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}:{{docente}}/api/contratos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipoContrato\": \"Full Time\",\n  \"fechaInicio\": \"2024-01-01\",\n  \"fechaFin\": \"2024-12-31\",\n  \"sueldoBase\": 800000,\n  \"docente\": {\"id\": \"{{docenteId}}\"}\n}"
+            }
+          }
+        },
+        {
+          "name": "GET Listar contratos",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{docente}}/api/contratos" }
+        }
+      ]
+    },
+    {
+      "name": "FASE 4: Empresa (con convenio para R5)",
+      "item": [
+        {
+          "name": "POST Crear empresa (minimo)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "javascript",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.id) {",
+                  "  pm.environment.set('empresaId', jsonData.id);",
+                  "  pm.environment.set('empresaRut', jsonData.rut);",
+                  "  console.log('empresaId:', jsonData.id, 'RUT:', jsonData.rut);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}:{{empresas}}/api/v1/empresas",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"TechCorp {{uniqueRunTag}}\",\n  \"rut\": \"{{uniqueRut}}\",\n  \"rubro\": \"Tecnologia\"\n}"
+            }
+          }
+        },
+        {
+          "name": "PUT Agregar fechas de convenio (para R5)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}:{{empresas}}/api/v1/empresas/{{empresaId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"TechCorp {{uniqueRunTag}}\",\n  \"rut\": \"{{empresaRut}}\",\n  \"rubro\": \"Tecnologia\",\n  \"fechaInicioConvenio\": \"2024-01-01\",\n  \"fechaFinConvenio\": \"2028-12-31\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET Get empresa",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{empresas}}/api/v1/empresas/{{empresaId}}" }
+        },
+        {
+          "name": "GET Convenio vigente",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{empresas}}/api/v1/empresas/{{empresaId}}/tiene-convenio-vigente" }
+        },
+        {
+          "name": "GET Listar empresas",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{empresas}}/api/v1/empresas" }
+        }
+      ]
+    },
+    {
+      "name": "FASE 5: Estudiante",
+      "item": [
+        {
+          "name": "POST Crear estudiante",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "javascript",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.id) {",
+                  "  pm.environment.set('estudianteId', jsonData.id);",
+                  "  pm.environment.set('estudianteRut', jsonData.rut);",
+                  "  console.log('estudianteId:', jsonData.id, 'RUT:', jsonData.rut);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}:{{estudiante}}/api/v1/estudiantes",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Juan Perez\",\n  \"rut\": \"{{uniqueRut}}\",\n  \"email\": \"juan_{{uniqueRunTag}}@test.cl\",\n  \"telefono\": \"+56912345678\",\n  \"direccion\": \"Calle 123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET Get estudiante",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{estudiante}}/api/v1/estudiantes/{{estudianteId}}" }
+        },
+        {
+          "name": "GET Get by RUT",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{estudiante}}/api/v1/estudiantes/rut/{{estudianteRut}}" }
+        },
+        {
+          "name": "GET Get detalle",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{estudiante}}/api/v1/estudiantes/{{estudianteId}}/detalle" }
+        },
+        {
+          "name": "PUT Actualizar estudiante",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}:{{estudiante}}/api/v1/estudiantes/{{estudianteId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Juan Actualizado\",\n  \"rut\": \"{{estudianteRut}}\",\n  \"email\": \"juan_act_{{uniqueRunTag}}@test.cl\",\n  \"telefono\": \"+56987654321\",\n  \"direccion\": \"Nueva Calle 456\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "FASE 6: Matricula (prerequisito para notas/asistencia)",
+      "item": [
+        {
+          "name": "POST Crear matricula (ACTIVA)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "javascript",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.id) {",
+                  "  pm.environment.set('matriculaId', jsonData.id);",
+                  "  console.log('matriculaId:', jsonData.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}:{{matriculas}}/api/v1/matriculas",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estudianteId\": \"{{estudianteId}}\",\n  \"seccionId\": \"{{asignatura1Id}}\",\n  \"fechaMatricula\": \"2024-03-01\",\n  \"estado\": \"ACTIVA\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET Get matricula",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{matriculas}}/api/v1/matriculas/{{matriculaId}}" }
+        },
+        {
+          "name": "GET Listar matriculas",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{matriculas}}/api/v1/matriculas" }
+        }
+      ]
+    },
+    {
+      "name": "FASE 7: Arancel + Pago (prerequisito para practicas)",
+      "item": [
+        {
+          "name": "POST Crear arancel",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "javascript",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.id) {",
+                  "  pm.environment.set('arancelId', jsonData.id);",
+                  "  console.log('arancelId:', jsonData.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}:{{aranceles}}/api/v1/aranceles",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estudianteId\": \"{{estudianteId}}\",\n  \"concepto\": \"Matricula 2024-1\",\n  \"monto\": 150000,\n  \"fechaEmision\": \"2024-01-01\",\n  \"fechaVencimiento\": \"2024-03-15\"\n}"
+            }
+          }
+        },
+        {
+          "name": "POST Pagar arancel",
+          "request": { "method": "POST", "url": "{{baseUrl}}:{{aranceles}}/api/v1/aranceles/{{arancelId}}/pagar" }
+        },
+        {
+          "name": "GET Aranceles estudiante",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{aranceles}}/api/v1/aranceles/estudiante/{{estudianteId}}" }
+        },
+        {
+          "name": "GET Deuda vencida",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{aranceles}}/api/v1/aranceles/estudiante/{{estudianteId}}/tiene-deuda-vencida" }
+        },
+        {
+          "name": "GET Puede continuar (R5)",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{aranceles}}/api/v1/aranceles/estudiante/{{estudianteId}}/puede-continuar" }
+        },
+        {
+          "name": "GET Listar aranceles",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{aranceles}}/api/v1/aranceles" }
+        }
+      ]
+    },
+    {
+      "name": "FASE 8: Notas",
+      "item": [
+        {
+          "name": "POST Crear nota",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "javascript",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.id) {",
+                  "  pm.environment.set('notaId', jsonData.id);",
+                  "  console.log('notaId:', jsonData.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}:{{notas}}/api/v1/notas",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estudianteId\": \"{{estudianteId}}\",\n  \"seccionId\": \"{{asignatura1Id}}\",\n  \"nota\": 6.5,\n  \"tipo\": \"EXAMEN\",\n  \"ponderacion\": 0.30,\n  \"fecha\": \"2024-05-01\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET Get nota",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{notas}}/api/v1/notas/{{notaId}}" }
+        },
+        {
+          "name": "PUT Actualizar nota",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}:{{notas}}/api/v1/notas/{{notaId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estudianteId\": \"{{estudianteId}}\",\n  \"seccionId\": \"{{asignatura1Id}}\",\n  \"nota\": 7.0,\n  \"tipo\": \"EXAMEN\",\n  \"ponderacion\": 0.30,\n  \"fecha\": \"2024-05-15\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET Listar notas",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{notas}}/api/v1/notas" }
+        },
+        {
+          "name": "GET Promedio global (R3)",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{notas}}/api/v1/notas/estudiante/{{estudianteId}}/promedio" }
+        },
+        {
+          "name": "GET Promedio por seccion (R3)",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{notas}}/api/v1/notas/estudiante/{{estudianteId}}/promedio/seccion/{{asignatura1Id}}" }
+        },
+        {
+          "name": "GET Avance 80% (R5)",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{notas}}/api/v1/notas/estudiante/{{estudianteId}}/avance" }
+        }
+      ]
+    },
+    {
+      "name": "FASE 9: Asistencia",
+      "item": [
+        {
+          "name": "POST Registrar asistencia (PRESENTE)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "javascript",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "// La respuesta tiene estructura anidada: { asistencia: { id }, resumenR2: {...} }",
+                  "var id = jsonData.asistencia ? jsonData.asistencia.id : jsonData.id;",
+                  "if (id) {",
+                  "  pm.environment.set('asistenciaId', id);",
+                  "  console.log('asistenciaId:', id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}:{{asistencia}}/api/v1/asistencias",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estudianteId\": \"{{estudianteId}}\",\n  \"seccionId\": \"{{asignatura1Id}}\",\n  \"fecha\": \"2024-05-16\",\n  \"tipo\": \"PRESENTE\",\n  \"observacion\": \"Asistio normalmente\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET Get asistencia",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{asistencia}}/api/v1/asistencias/{{asistenciaId}}" }
+        },
+        {
+          "name": "PUT Actualizar asistencia (JUSTIFICADO)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}:{{asistencia}}/api/v1/asistencias/{{asistenciaId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estudianteId\": \"{{estudianteId}}\",\n  \"seccionId\": \"{{asignatura1Id}}\",\n  \"fecha\": \"2024-05-16\",\n  \"tipo\": \"JUSTIFICADO\",\n  \"observacion\": \"Justificado\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET Resumen R2",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{asistencia}}/api/v1/asistencias/estudiante/{{estudianteId}}/seccion/{{asignatura1Id}}/resumen" }
+        },
+        {
+          "name": "GET Asistencias seccion",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{asistencia}}/api/v1/asistencias/seccion/{{asignatura1Id}}" }
+        },
+        {
+          "name": "GET Asistencias estudiante",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{asistencia}}/api/v1/asistencias/estudiante/{{estudianteId}}" }
+        }
+      ]
+    },
+    {
+      "name": "FASE 10: Practica + Finalizar",
+      "item": [
+        {
+          "name": "GET Verificar requisitos R5",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}:{{practicas}}/api/v1/practicas/verificar?estudianteId={{estudianteId}}&empresaId={{empresaId}}",
+              "host": ["{{baseUrl}}"],
+              "port": "{{practicas}}",
+              "path": ["api", "v1", "practicas", "verificar"],
+              "query": [
+                { "key": "estudianteId", "value": "{{estudianteId}}" },
+                { "key": "empresaId", "value": "{{empresaId}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST Crear practica (valida R5)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "javascript",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.id) {",
+                  "  pm.environment.set('practicaId', jsonData.id);",
+                  "  console.log('practicaId:', jsonData.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}:{{practicas}}/api/v1/practicas",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estudianteId\": \"{{estudianteId}}\",\n  \"empresaId\": \"{{empresaId}}\",\n  \"supervisorNombre\": \"Carlos Lopez\",\n  \"fechaInicio\": \"2024-06-01\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET Get practica",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{practicas}}/api/v1/practicas/{{practicaId}}" }
+        },
+        {
+          "name": "PUT Finalizar practica (REPROBADA para permitir DELETE)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}:{{practicas}}/api/v1/practicas/{{practicaId}}/finalizar",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fechaFin\": \"2024-12-01\",\n  \"estado\": \"REPROBADA\",\n  \"observaciones\": \"No cumplio objetivos\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET Listar practicas",
+          "request": { "method": "GET", "url": "{{baseUrl}}:{{practicas}}/api/v1/practicas" }
+        }
+      ]
+    },
+    {
+      "name": "FASE 11: DELETE (orden correcto)",
+      "item": [
+        {
+          "name": "DELETE Eliminar arancel",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}:{{aranceles}}/api/v1/aranceles/{{arancelId}}" }
+        },
+        {
+          "name": "DELETE Eliminar nota",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}:{{notas}}/api/v1/notas/{{notaId}}" }
+        },
+        {
+          "name": "DELETE Eliminar asistencia",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}:{{asistencia}}/api/v1/asistencias/{{asistenciaId}}" }
+        },
+        {
+          "name": "DELETE Eliminar practica (REPROBADA puede eliminarse)",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}:{{practicas}}/api/v1/practicas/{{practicaId}}" }
+        },
+        {
+          "name": "DELETE Eliminar matricula",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}:{{matriculas}}/api/v1/matriculas/{{matriculaId}}" }
+        },
+        {
+          "name": "DELETE Eliminar estudiante",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}:{{estudiante}}/api/v1/estudiantes/{{estudianteId}}" }
+        },
+        {
+          "name": "DELETE Eliminar empresa",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}:{{empresas}}/api/v1/empresas/{{empresaId}}" }
+        },
+        {
+          "name": "DELETE Eliminar docente",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}:{{docente}}/api/v1/docentes/{{docenteId}}" }
+        },
+        {
+          "name": "DELETE Eliminar asignatura 2 (1ro, cascade borra prerequisito)",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}:{{asignaturas}}/api/v1/asignaturas/{{asignatura2Id}}" }
+        },
+        {
+          "name": "DELETE Eliminar asignatura 1 (2do, sin referencias)",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}:{{asignaturas}}/api/v1/asignaturas/{{asignatura1Id}}" }
+        },
+        {
+          "name": "DELETE Eliminar carrera",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}:{{carreras}}/api/v1/carreras/{{carreraId}}" }
+        }
+      ]
+    }
+  ]
+}
