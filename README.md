@@ -25,7 +25,7 @@ Sistema completo de **10 microservicios** Spring Boot que digitaliza la gestión
 | Estudiante 2 | MS de empresas, estudiantes, matrículas, aranceles |
 | Estudiante 3 | MS de notas, asistencia, prácticas y WebClient |
 
-> Vicente Herrera y Nicolaz Irrazabal.
+> Vicente Herrera y Nicolas Irarrazabal.
 
 ---
 
