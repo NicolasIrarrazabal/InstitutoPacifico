@@ -12,11 +12,17 @@ Sistema de gestión académica para el Instituto Pacífico (Puerto Montt), dise�
 ## Microservicios Implementados
 | # | Microservicio | Puerto | Descripción |
 |---|---------------|--------|-------------|
-| 1 | ms-asignaturas | 8080   | Asignaturas, prerrequisitos y créditos. |
-| 2 | ms-docentes   | 8082   | Docentes, especialidades y contratos. |
-| 3 | ms-matriculas | 8083   | Gestión de matrículas. |
-| 4 | ms-carreras   | 8084   | Carreras, mallas curriculares y sedes. |
-| 5 | ms-estudiantes| 8085   | Registro y perfil de estudiantes. |
+| 1 | ms-asignaturas | 8080 | Asignaturas, prerrequisitos y créditos. |
+| 2 | ms-aranceles | 8081 | Aranceles, pagos y validación de deuda. |
+| 3 | ms-docente | 8082 | Docentes, especialidades y contratos. |
+| 4 | ms-matriculas | 8083 | Gestión de matrículas. |
+| 5 | ms-carreras | 8084 | Carreras, mallas curriculares y sedes. |
+| 6 | ms-estudiante | 8085 | Registro y perfil de estudiantes. |
+| 7 | ms-notas | 8086 | Notas, promedios y verificación de avance. |
+| 8 | ms-practicas | 8087 | Prácticas profesionales y verificación de requisitos. |
+| 9 | ms-asistencia | 8088 | Asistencia y cálculo de porcentaje mínimo. |
+| 10 | ms-empresas | 8089 | Empresas con convenio y verificación de vigencia. |
+
 
 ## Tecnologías Utilizadas
 - Java 21 / Spring Boot 4.0.5
