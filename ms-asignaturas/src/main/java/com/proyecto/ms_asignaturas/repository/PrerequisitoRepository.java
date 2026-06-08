@@ -10,6 +10,5 @@ import java.util.UUID;
 @Repository
 public interface PrerequisitoRepository extends JpaRepository<Prerequisito, UUID> {
 
-    // Busca todos los prerrequisitos de una asignatura principal
     List<Prerequisito> findByAsignaturaPrincipalId(UUID asignaturaPrincipalId);
 }

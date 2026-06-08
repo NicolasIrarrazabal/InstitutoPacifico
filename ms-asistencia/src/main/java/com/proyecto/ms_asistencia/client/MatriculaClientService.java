@@ -12,8 +12,6 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 import java.util.UUID;
 
-// Servicio que se comunica con ms-matriculas
-// Se usa para verificar que el estudiante esté matriculado antes de registrar asistencia
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -24,7 +22,6 @@ public class MatriculaClientService {
     @Value("${ms-matriculas.url}")
     private String msMatriculasUrl;
 
-    // verifica que esté matriculado
     public boolean tieneMatriculaActiva(UUID estudianteId, UUID seccionId) {
         log.info("Consultando ms-matriculas: ¿estudiante {} matriculado en sección {}?",
                 estudianteId, seccionId);

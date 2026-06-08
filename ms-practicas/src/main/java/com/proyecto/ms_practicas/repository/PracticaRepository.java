@@ -10,9 +10,7 @@ import java.util.UUID;
 @Repository
 public interface PracticaRepository extends JpaRepository<Practica, UUID> {
 
-    // Todas las prácticas de un estudiante
     List<Practica> findByEstudianteId(UUID estudianteId);
 
-    // Para saber si el estudiante ya tiene una práctica activa (no puede tener dos a la vez)
     boolean existsByEstudianteIdAndEstadoIn(UUID estudianteId, List<String> estados);
 }

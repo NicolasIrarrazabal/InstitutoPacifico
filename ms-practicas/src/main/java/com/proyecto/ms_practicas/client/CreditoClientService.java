@@ -8,9 +8,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.UUID;
 
-// Llama a ms-notas para verificar el avance académico del estudiante.
-// Endpoint: GET /api/v1/notas/estudiante/{id}/avance
-// La R5 exige que el estudiante tenga al menos el 80% de créditos aprobados.
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -38,7 +35,6 @@ public class CreditoClientService {
         }
     }
 
-    // Mapea la respuesta de GET /api/v1/notas/estudiante/{id}/avance
     public record AvanceResponse(
             java.util.UUID estudianteId,
             int totalSecciones,

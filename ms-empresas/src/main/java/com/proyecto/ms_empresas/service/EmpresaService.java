@@ -59,7 +59,6 @@ public class EmpresaService {
             throw new IllegalStateException("No se puede modificar una empresa en estado INACTIVO");
         }
 
-        // si cambió el RUT lo verifico igual
         if (!empresa.getRut().equals(dto.rut()) && repository.existsByRut(dto.rut())) {
             throw new IllegalArgumentException("El RUT ya está en uso por otra empresa");
         }
@@ -91,7 +90,6 @@ public class EmpresaService {
         log.info("Empresa marcada como INACTIVO, ID {}", id);
     }
 
-    // R5: verifica si el convenio con la empresa sigue activo
     public boolean tieneConvenioVigente(UUID id) {
         Empresa empresa = findById(id);
 

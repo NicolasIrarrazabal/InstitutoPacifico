@@ -25,9 +25,8 @@ public class NotaService {
 
     private final NotaRepository repository;
     private final MatriculaClientService matriculaClient;
-    private final ArancelClientService arancelClient;   // ← R4
+    private final ArancelClientService arancelClient;
 
-    // notas de corte para la R3
     private static final BigDecimal NOTA_APROBACION         = new BigDecimal("4.0");
     private static final BigDecimal NOTA_LIMITE_RECUPERACION = new BigDecimal("3.5");
 
@@ -36,7 +35,6 @@ public class NotaService {
     private static final String ESTADO_REPROBADO             = "REPROBADO";
 
     private static final double PORCENTAJE_AVANCE_MINIMO = 80.0;
-
 
     public List<Nota> findAll() {
         log.info("Listando todas las notas activas");
@@ -52,26 +50,20 @@ public class NotaService {
                 .orElseThrow(() -> new EntityNotFoundException("Nota no encontrada con ID: " + id));
     }
 
-    // R4: si tiene deuda vencida no puede ver el historial
     public List<Nota> findByEstudiante(UUID estudianteId) {
         log.info("Buscando notas activas del estudiante: {}", estudianteId);
 
-        // R4: bloqueo si tiene deuda
         validarSinDeudaVencidaR4(estudianteId);
 
         return repository.findByEstudianteIdAndEstado(estudianteId, "ACTIVA");
     }
 
-    // crea la nota, aplica R1
-
     @Transactional
     public Nota create(NotaDTO dto) {
         log.info("Creando nota para estudiante {} en sección {}", dto.estudianteId(), dto.seccionId());
 
-        // verifico que tenga matrícula activa antes de guardar la nota
         validarMatriculaActiva(dto.estudianteId(), dto.seccionId());
 
-        // no dejo registrar dos notas del mismo tipo en la misma sección
         if (repository.existsByEstudianteIdAndSeccionIdAndTipoAndEstado(
                 dto.estudianteId(), dto.seccionId(), dto.tipo(), "ACTIVA")) {
             log.warn("Ya existe una nota de tipo {} para estudiante {} en sección {}",
@@ -96,8 +88,6 @@ public class NotaService {
         return guardada;
     }
 
-    // actualiza la nota
-
     @Transactional
     public Nota update(UUID id, NotaDTO dto) {
         log.info("Actualizando nota ID: {}", id);
@@ -117,8 +107,6 @@ public class NotaService {
         return actualizada;
     }
 
-    // elimina la nota lógicamente
-
     @Transactional
     public void delete(UUID id) {
         log.info("Anulando (eliminación lógica) nota ID: {}", id);
@@ -128,12 +116,9 @@ public class NotaService {
         log.info("Nota marcada como ANULADA, ID: {}", id);
     }
 
-    // R3: promedio global, también aplica R4
-
     public PromedioResponseDTO calcularPromedio(UUID estudianteId) {
         log.info("[R3] Calculando promedio global para estudiante: {}", estudianteId);
 
-        // R4: no puede ver notas si debe hace más de 45 días
         validarSinDeudaVencidaR4(estudianteId);
 
         List<Nota> notas = repository.findByEstudianteIdAndEstado(estudianteId, "ACTIVA");
@@ -155,7 +140,7 @@ public class NotaService {
 
         return new PromedioResponseDTO(
                 estudianteId,
-                null,             // seccionId = null porque es promedio global
+                null,
                 promedioPonderado,
                 promedioSimple,
                 notas.size(),
@@ -165,13 +150,10 @@ public class NotaService {
         );
     }
 
-    // R3: promedio por sección, también aplica R4
-
     public PromedioResponseDTO calcularPromedioSeccion(UUID estudianteId, UUID seccionId) {
         log.info("[R3] Calculando promedio por sección — estudiante: {} | sección: {}",
                 estudianteId, seccionId);
 
-        // R4: no puede ver notas si debe hace más de 45 días
         validarSinDeudaVencidaR4(estudianteId);
 
         List<Nota> notas = repository.findByEstudianteIdAndSeccionIdAndEstado(
@@ -206,12 +188,9 @@ public class NotaService {
         );
     }
 
-    // R5: calcula si llegó al 80% de avance
-
     public AvanceResponseDTO calcularAvance(UUID estudianteId) {
         log.info("Calculando avance académico del 80% para estudiante: {}", estudianteId);
 
-        // Obtenemos todos los IDs de secciones en las que el estudiante tiene notas
         List<UUID> secciones = repository.findSeccionesActivasByEstudianteId(estudianteId);
 
         if (secciones.isEmpty()) {
@@ -222,7 +201,6 @@ public class NotaService {
         int totalSecciones = secciones.size();
         int seccionesAprobadas = 0;
 
-        // reviso cada sección para ver si la aprobó
         for (UUID seccionId : secciones) {
             List<Nota> notasSeccion = repository.findByEstudianteIdAndSeccionIdAndEstado(
                     estudianteId, seccionId, "ACTIVA");
@@ -235,7 +213,6 @@ public class NotaService {
             }
         }
 
-        // calculo qué porcentaje de secciones aprobó
         double porcentaje = totalSecciones > 0
                 ? ((double) seccionesAprobadas / totalSecciones) * 100.0
                 : 0.0;
@@ -256,8 +233,6 @@ public class NotaService {
         );
     }
 
-
-    // determina si el estudiante aprobó, puede recuperar o está reprobado
     private String determinarEstadoAcademicoR3(BigDecimal promedio) {
         if (promedio.compareTo(NOTA_APROBACION) >= 0) {
             return ESTADO_APROBADO;
@@ -268,7 +243,6 @@ public class NotaService {
         }
     }
 
-    // arma el mensaje que se muestra según cómo quedó el promedio
     private String construirMensajeR3(String estadoAcademico, BigDecimal promedio) {
         return switch (estadoAcademico) {
             case ESTADO_APROBADO ->
@@ -296,7 +270,6 @@ public class NotaService {
         };
     }
 
-    // promedio ponderado: cada nota vale según su porcentaje
     private BigDecimal calcularPromedioPonderado(List<Nota> notas) {
         BigDecimal sumaPonderada    = BigDecimal.ZERO;
         BigDecimal sumaPonderaciones = BigDecimal.ZERO;
@@ -311,14 +284,12 @@ public class NotaService {
                 : BigDecimal.ZERO;
     }
 
-    // promedio simple por si acaso se necesita
     private BigDecimal calcularPromedioSimple(List<Nota> notas) {
         BigDecimal suma = notas.stream()
                 .map(Nota::getNota)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         return suma.divide(new BigDecimal(notas.size()), 1, RoundingMode.HALF_UP);
     }
-
 
     private void validarSinDeudaVencidaR4(UUID estudianteId) {
         log.info("[R4] Verificando deuda vencida del estudiante: {}", estudianteId);
@@ -332,8 +303,6 @@ public class NotaService {
         }
         log.info("[R4] OK — estudiante {} sin deuda vencida, acceso permitido", estudianteId);
     }
-
-
 
     private void validarMatriculaActiva(UUID estudianteId, UUID seccionId) {
         log.info("R1 validando matrícula - estudiante {} sección {}", estudianteId, seccionId);

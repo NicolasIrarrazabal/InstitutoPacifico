@@ -42,7 +42,6 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.BAD_REQUEST, "ARGUMENTO_INVALIDO", ex.getMessage());
     }
 
-    // IllegalStateException cubre los bloqueos de la R5 (deuda, créditos, convenio)
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<Map<String, Object>> handleIllegalState(IllegalStateException ex) {
         log.error("Conflicto de estado o requisito no cumplido: {}", ex.getMessage());

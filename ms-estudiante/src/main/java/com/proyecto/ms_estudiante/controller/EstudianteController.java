@@ -42,7 +42,6 @@ public class EstudianteController {
         return ResponseEntity.ok(Map.of("puedeMatricular", resultado));
     }
 
-    // endpoint que consolida datos de otros microservicios
     @GetMapping("/{id}/detalle")
     public ResponseEntity<DetalleEstudianteResponse> getDetalle(@PathVariable UUID id) {
         return ResponseEntity.ok(service.obtenerDetalle(id));

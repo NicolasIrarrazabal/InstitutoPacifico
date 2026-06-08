@@ -32,7 +32,6 @@ public record EmpresaDTO(
         @Size(max = 100, message = "El nombre del contacto no puede superar 100 caracteres")
         String nombreContacto,
 
-        // Fechas del convenio (pueden ser nulas al crear, se asignan luego)
         LocalDate fechaInicioConvenio,
 
         LocalDate fechaFinConvenio

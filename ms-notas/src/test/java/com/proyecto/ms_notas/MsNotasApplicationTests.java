@@ -8,6 +8,6 @@ class MsNotasApplicationTests {
 
     @Test
     void contextLoads() {
-        // Este test verifica que el contexto de Spring arranca sin errores
+
     }
 }

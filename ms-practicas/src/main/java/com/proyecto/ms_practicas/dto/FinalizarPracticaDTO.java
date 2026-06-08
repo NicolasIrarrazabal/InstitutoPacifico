@@ -10,7 +10,6 @@ public record FinalizarPracticaDTO(
         @NotNull(message = "La fecha de fin es obligatoria")
         LocalDate fechaFin,
 
-        // COMPLETADA o REPROBADA
         @NotBlank(message = "El estado final es obligatorio")
         String estado,
 

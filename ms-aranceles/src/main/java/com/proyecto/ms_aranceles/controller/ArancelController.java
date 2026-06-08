@@ -23,7 +23,6 @@ public class ArancelController {
 
     private final ArancelService service;
 
-
     @GetMapping
     public ResponseEntity<List<Arancel>> getAll() {
         log.info("GET /api/v1/aranceles");
@@ -36,7 +35,6 @@ public class ArancelController {
         return ResponseEntity.ok(service.findById(id));
     }
 
-    // Devuelve todos los aranceles de un estudiante específico
     @GetMapping("/estudiante/{estudianteId}")
     public ResponseEntity<List<Arancel>> getByEstudiante(@PathVariable UUID estudianteId) {
         log.info("GET /api/v1/aranceles/estudiante/{}", estudianteId);
@@ -62,20 +60,12 @@ public class ArancelController {
         return ResponseEntity.ok(Map.of("mensaje", "Arancel anulado correctamente"));
     }
 
-
-    // Registra el pago de un arancel puntual
     @PostMapping("/{id}/pagar")
     public ResponseEntity<Arancel> pagar(@PathVariable UUID id) {
         log.info("POST /api/v1/aranceles/{}/pagar", id);
         return ResponseEntity.ok(service.registrarPago(id));
     }
 
-
-    /*
-     * Endpoint usado por R4 (ej: ms-titulacion u otro servicio que bloquea
-     * si el estudiante tiene deuda de mas de 45 dias).
-     * devolvera : { "tieneDeudaVencida": true/false }
-     */
     @GetMapping("/estudiante/{estudianteId}/tiene-deuda-vencida")
     public ResponseEntity<Map<String, Boolean>> tieneDeudaVencida(@PathVariable UUID estudianteId) {
         log.info("GET /api/v1/aranceles/estudiante/{}/tiene-deuda-vencida", estudianteId);
@@ -83,10 +73,6 @@ public class ArancelController {
         return ResponseEntity.ok(Map.of("tieneDeudaVencida", resultado));
     }
 
-    /*
-     * Endpoint usado por R5 (ej: ms-certificados u otro servicio que requiera que el estudiante este al día en todos sus pagos).
-     * devolvera: { "puedeContinuar": true/false }
-     */
     @GetMapping("/estudiante/{estudianteId}/puede-continuar")
     public ResponseEntity<PuedeContinuarResponse> puedeContinuar(@PathVariable UUID estudianteId) {
         log.info("GET /api/v1/aranceles/estudiante/{}/puede-continuar", estudianteId);

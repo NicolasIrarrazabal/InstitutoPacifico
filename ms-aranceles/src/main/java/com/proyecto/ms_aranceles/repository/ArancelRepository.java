@@ -10,9 +10,7 @@ import java.util.UUID;
 @Repository
 public interface ArancelRepository extends JpaRepository<Arancel, UUID> {
 
-    // Busca todos los aranceles de un estudiante
     List<Arancel> findByEstudianteId(UUID estudianteId);
 
-    // Busca los aranceles no pagados de un estudiante
     List<Arancel> findByEstudianteIdAndEstadoNot(UUID estudianteId, String estado);
 }

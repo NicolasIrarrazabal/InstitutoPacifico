@@ -24,7 +24,6 @@ public class PracticaController {
 
     private final PracticaService service;
 
-
     @GetMapping
     public ResponseEntity<List<Practica>> getAll() {
         log.info("GET /api/v1/practicas");
@@ -37,30 +36,12 @@ public class PracticaController {
         return ResponseEntity.ok(service.findById(id));
     }
 
-    // Prácticas de un estudiante específico
     @GetMapping("/estudiante/{estudianteId}")
     public ResponseEntity<List<Practica>> getByEstudiante(@PathVariable UUID estudianteId) {
         log.info("GET /api/v1/practicas/estudiante/{}", estudianteId);
         return ResponseEntity.ok(service.findByEstudiante(estudianteId));
     }
 
-
-    /*
-     * Endpoint de consulta: verifica si el estudiante cumple los 3 requisitos de la R5
-     * SIN inscribir nada. Útil para mostrar en el frontend el estado de cada condición.
-     *
-     * Ejemplo de uso:
-     *   GET /api/v1/practicas/verificar?estudianteId=uuid&empresaId=uuid
-     *
-     * Devuelve algo como:
-     * {
-     *   "creditosAprobados": true,
-     *   "arancelAlDia": false,
-     *   "empresaConConvenio": true,
-     *   "puedeInscribir": false,
-     *   "mensaje": "No se puede inscribir... [El estudiante tiene deuda de arancel pendiente]"
-     * }
-     */
     @GetMapping("/verificar")
     public ResponseEntity<ValidacionR5Response> verificarRequisitosR5(
             @RequestParam UUID estudianteId,
@@ -69,19 +50,12 @@ public class PracticaController {
         return ResponseEntity.ok(service.verificarRequisitosR5(estudianteId, empresaId));
     }
 
-
-    /*
-     * Inscribe la práctica. Internamente valida los 3 requisitos de la R5.
-     * Si alguno falla, devuelve 409 CONFLICT con el detalle del bloqueo.
-     */
     @PostMapping
     public ResponseEntity<Practica> create(@Valid @RequestBody PracticaDTO dto) {
         log.info("POST /api/v1/practicas — estudiante: {} empresa: {}", dto.estudianteId(), dto.empresaId());
         return new ResponseEntity<>(service.create(dto), HttpStatus.CREATED);
     }
 
-
-    // Finaliza la práctica con estado COMPLETADA o REPROBADA
     @PutMapping("/{id}/finalizar")
     public ResponseEntity<Practica> finalizar(@PathVariable UUID id,
                                               @Valid @RequestBody FinalizarPracticaDTO dto) {

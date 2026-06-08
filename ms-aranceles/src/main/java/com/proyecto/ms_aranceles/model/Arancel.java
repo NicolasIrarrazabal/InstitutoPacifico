@@ -18,11 +18,9 @@ public class Arancel {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    // ID del estudiante que debe este arancel (viene de ms-estudiantes)
     @Column(name = "estudiante_id", nullable = false)
     private UUID estudianteId;
 
-    // Ej: "ARANCEL_MENSUAL", "MATRICULA_ANUAL", "DERECHO_EXAMEN"
     @Column(name = "concepto", nullable = false)
     private String concepto;
 
@@ -35,11 +33,9 @@ public class Arancel {
     @Column(name = "fecha_vencimiento", nullable = false)
     private LocalDate fechaVencimiento;
 
-    // Solo se llena cuando el estudiante paga
     @Column(name = "fecha_pago")
     private LocalDate fechaPago;
 
-    // PENDIENTE → PAGADO o VENCIDO
     @Column(name = "estado", nullable = false)
     private String estado;
 }

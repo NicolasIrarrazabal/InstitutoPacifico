@@ -28,7 +28,6 @@ public class PracticaService {
     private final CreditoClientService creditoClient;
     private final EmpresaClientService empresaClient;
 
-
     public List<Practica> findAll() {
         log.info("Listando todas las prácticas");
         return repository.findAll();
@@ -45,12 +44,9 @@ public class PracticaService {
         return repository.findByEstudianteId(estudianteId);
     }
 
-
-    // muestra si cumple los 3 requisitos sin inscribir todavía
     public ValidacionR5Response verificarRequisitosR5(UUID estudianteId, UUID empresaId) {
         log.info("Verificando requisitos R5 para estudiante {} en empresa {}", estudianteId, empresaId);
 
-        // Consultamos los 3 servicios externos en paralelo (uno por uno por ahora, con RestTemplate)
         boolean creditosOk = false;
         boolean arancelOk  = false;
         boolean empresaOk  = false;
@@ -76,15 +72,10 @@ public class PracticaService {
         return new ValidacionR5Response(creditosOk, arancelOk, empresaOk, puedeInscribir, mensaje);
     }
 
-    /*
-     * Inscribe la práctica. Internamente llama a verificarRequisitosR5 y
-     * si algún requisito falla, lanza una excepción con el detalle.
-     */
     @Transactional
     public Practica create(PracticaDTO dto) {
         log.info("Intentando inscribir práctica — estudiante: {} empresa: {}", dto.estudianteId(), dto.empresaId());
 
-        // 1. Verificar que el estudiante no tenga ya una práctica activa
         boolean yaInscrito = repository.existsByEstudianteIdAndEstadoIn(
                 dto.estudianteId(), List.of("PENDIENTE", "EN_CURSO")
         );
@@ -93,14 +84,12 @@ public class PracticaService {
             throw new IllegalStateException("El estudiante ya tiene una práctica activa o en curso");
         }
 
-        // 2. Validar los 3 requisitos de la R5
         ValidacionR5Response validacion = verificarRequisitosR5(dto.estudianteId(), dto.empresaId());
         if (!validacion.puedeInscribir()) {
             log.warn("Inscripción bloqueada para estudiante {}: {}", dto.estudianteId(), validacion.mensaje());
             throw new IllegalStateException(validacion.mensaje());
         }
 
-        // 3. Crear la práctica si todo está bien
         Practica p = new Practica();
         p.setEstudianteId(dto.estudianteId());
         p.setEmpresaId(dto.empresaId());
@@ -113,7 +102,6 @@ public class PracticaService {
         return guardada;
     }
 
-    // Finaliza la práctica con un estado (COMPLETADA o REPROBADA) y observaciones
     @Transactional
     public Practica finalizar(UUID id, FinalizarPracticaDTO dto) {
         log.info("Finalizando práctica ID: {}", id);
@@ -149,8 +137,6 @@ public class PracticaService {
         log.info("Práctica ID: {} marcada como ANULADA", id);
     }
 
-
-    // Arma el mensaje de error detallando qué requisito(s) están fallando
     private String construirMensajeBloqueo(boolean creditosOk, boolean arancelOk, boolean empresaOk) {
         StringBuilder sb = new StringBuilder("No se puede inscribir la práctica. Requisitos pendientes: ");
         if (!creditosOk) sb.append("[El estudiante no tiene el 80% de créditos aprobados] ");

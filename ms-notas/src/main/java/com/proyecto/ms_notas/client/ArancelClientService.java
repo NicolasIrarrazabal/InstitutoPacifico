@@ -10,7 +10,6 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Map;
 import java.util.UUID;
 
-// cliente para consultar si el estudiante tiene deuda (R4)
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -21,7 +20,6 @@ public class ArancelClientService {
     @Value("${ms-aranceles.url}")
     private String msArancelesUrl;
 
-    // R4: pregunta a ms-aranceles si tiene deuda vencida
     @SuppressWarnings("unchecked")
     public boolean tieneDeudaVencida(UUID estudianteId) {
         String url = msArancelesUrl + "/api/v1/aranceles/estudiante/" + estudianteId + "/tiene-deuda-vencida";
@@ -32,7 +30,7 @@ public class ArancelClientService {
 
             if (respuesta == null || !respuesta.containsKey("tieneDeudaVencida")) {
                 log.warn("[R4] ms-aranceles devolvió respuesta inesperada para estudiante {}", estudianteId);
-                return false; // ante la duda, no bloqueamos
+                return false;
             }
 
             boolean resultado = Boolean.TRUE.equals(respuesta.get("tieneDeudaVencida"));
@@ -40,12 +38,12 @@ public class ArancelClientService {
             return resultado;
 
         } catch (HttpClientErrorException.NotFound e) {
-            // El estudiante no tiene aranceles registrados → no tiene deuda
+
             log.info("[R4] Estudiante {} sin aranceles en ms-aranceles (404) → sin deuda", estudianteId);
             return false;
         } catch (Exception e) {
             log.error("[R4] Error al consultar ms-aranceles para estudiante {}: {}", estudianteId, e.getMessage());
-            // Si ms-aranceles no responde no bloqueamos (fail-open), solo logueamos
+
             return false;
         }
     }

@@ -8,6 +8,6 @@ class MsAsistenciaApplicationTests {
 
     @Test
     void contextLoads() {
-        // Verifica que el contexto de Spring arranca sin errores
+
     }
 }

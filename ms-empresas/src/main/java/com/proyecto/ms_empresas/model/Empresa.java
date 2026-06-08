@@ -37,14 +37,12 @@ public class Empresa {
     @Column
     private String nombreContacto;
 
-    // Datos del convenio con el instituto
     @Column
     private LocalDate fechaInicioConvenio;
 
     @Column
     private LocalDate fechaFinConvenio;
 
-    // ACTIVO o INACTIVO
     @Column(nullable = false)
     private String estado;
 }

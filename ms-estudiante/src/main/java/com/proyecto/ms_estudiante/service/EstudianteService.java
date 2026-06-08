@@ -104,7 +104,6 @@ public class EstudianteService {
         return EstadoEstudiante.ACTIVO.equals(est.getEstado());
     }
 
-    // trae datos de notas y matrículas para armar la respuesta completa
     public DetalleEstudianteResponse obtenerDetalle(UUID id) {
         log.info("Construyendo detalle enriquecido para estudiante {}", id);
 
@@ -136,7 +135,6 @@ public class EstudianteService {
         );
     }
 
-    // calcula el promedio con las notas que ya tenemos
     private PromedioResponse calcularPromedioDesdeNotas(List<NotaResponse> notas, UUID estudianteId) {
         if (notas.isEmpty()) {
             return new PromedioResponse(estudianteId, BigDecimal.ZERO, BigDecimal.ZERO, 0, false);

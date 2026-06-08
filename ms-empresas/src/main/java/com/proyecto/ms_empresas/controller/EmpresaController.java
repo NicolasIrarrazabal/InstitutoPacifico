@@ -48,7 +48,6 @@ public class EmpresaController {
         return ResponseEntity.ok(Map.of("mensaje", "Empresa desactivada correctamente"));
     }
 
-    // R5: ms-practicas llama a esta api para saber si el convenio esta vigente
     @GetMapping("/{id}/tiene-convenio-vigente")
     public ResponseEntity<Map<String, Boolean>> tieneConvenioVigente(@PathVariable UUID id) {
         boolean resultado = service.tieneConvenioVigente(id);

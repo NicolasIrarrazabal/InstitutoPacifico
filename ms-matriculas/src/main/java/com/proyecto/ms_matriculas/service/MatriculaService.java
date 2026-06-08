@@ -22,9 +22,8 @@ import java.util.UUID;
 public class MatriculaService {
 
     private final MatriculaRepository repository;
-    private final AsignaturaClientService asignaturaClient;  // llama a ms-asignaturas
-    private final NotaClientService notaClient;              // llama a ms-notas
-
+    private final AsignaturaClientService asignaturaClient;
+    private final NotaClientService notaClient;
 
     public List<Matricula> findAll() {
         log.info("Listando todas las matrículas");
@@ -42,18 +41,15 @@ public class MatriculaService {
         return repository.findByEstudianteIdAndEstado(estudianteId, "ACTIVA");
     }
 
-
     @Transactional
     public Matricula create(MatriculaDTO dto) {
         log.info("Intentando matricular estudiante {} en sección {}", dto.estudianteId(), dto.seccionId());
 
-        // no dejo matricularse dos veces en la misma sección
         if (repository.existsByEstudianteIdAndSeccionIdAndEstado(dto.estudianteId(), dto.seccionId(), "ACTIVA")) {
             log.warn("Estudiante {} ya está matriculado en la sección {}", dto.estudianteId(), dto.seccionId());
             throw new IllegalStateException("El estudiante ya está matriculado en esta sección");
         }
 
-        // R1: verifico prerrequisitos antes de matricular
         validarPrerrequisitosR1(dto.estudianteId(), dto.seccionId());
 
         Matricula m = new Matricula();
@@ -89,12 +85,9 @@ public class MatriculaService {
         log.info("Matrícula marcada como inactiva, ID: {}", id);
     }
 
-
-    // R1: consulta los prerrequisitos en ms-asignaturas y verifica en ms-notas si los aprobó
     private void validarPrerrequisitosR1(UUID estudianteId, UUID asignaturaId) {
         log.info("[R1] Validando prerrequisitos — estudiante: {} | asignatura: {}", estudianteId, asignaturaId);
 
-        // pido los prerrequisitos de la asignatura
         List<PrerequisitosResponse> prerequisitos;
         try {
             prerequisitos = asignaturaClient.obtenerPrerequisitos(asignaturaId);
@@ -108,7 +101,6 @@ public class MatriculaService {
             return;
         }
 
-        // por cada prerrequisito reviso si el estudiante lo aprobó en ms-notas
         List<String> faltantes = new ArrayList<>();
 
         for (PrerequisitosResponse prereq : prerequisitos) {

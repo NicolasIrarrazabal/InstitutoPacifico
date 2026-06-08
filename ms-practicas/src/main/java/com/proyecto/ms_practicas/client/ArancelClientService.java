@@ -8,9 +8,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.UUID;
 
-// Llama a ms-aranceles (puerto 8086)
-// Endpoint esperado: GET /api/v1/aranceles/estudiante/{id}/puede-continuar
-// Respuesta esperada: { "puedeContinuar": true/false }
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -37,6 +34,5 @@ public class ArancelClientService {
         }
     }
 
-    // Record interno para mapear la respuesta de ms-aranceles
     public record PuedeContinuarResponse(Boolean puedeContinuar) {}
 }

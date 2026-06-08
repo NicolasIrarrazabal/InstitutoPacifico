@@ -8,11 +8,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.UUID;
 
-// Llama a ms-empresas
-// Endpoint esperado: GET /api/v1/empresas/{id}/tiene-convenio-vigente
-// Respuesta esperada: { "tieneConvenioVigente": true/false }
-// La R5 exige que la empresa donde el estudiante hará su práctica
-// tenga un convenio activo firmado con el instituto.
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -39,6 +34,5 @@ public class EmpresaClientService {
         }
     }
 
-    // Record interno para mapear la respuesta de ms-empresas
     public record ConvenioVigenteResponse(Boolean tieneConvenioVigente) {}
 }

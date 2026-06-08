@@ -24,21 +24,15 @@ public class AsistenciaService {
     private final AsistenciaRepository repository;
     private final MatriculaClientService matriculaClient;
 
-    // si pasa el 25% de faltas queda reprobado (R2)
     private static final double LIMITE_INASISTENCIA = 25.0;
-
-    // REGISTRAR ASISTENCIA — el endpoint más importante
-    // Guarda el registro y al instante evalúa R2
 
     @Transactional
     public RegistroAsistenciaResponseDTO registrar(AsistenciaDTO dto) {
         log.info("Registrando asistencia — estudiante: {} | sección: {} | fecha: {} | tipo: {}",
                 dto.estudianteId(), dto.seccionId(), dto.fecha(), dto.tipo());
 
-        // primero verifico que esté matriculado
         validarMatricula(dto.estudianteId(), dto.seccionId());
 
-        // no dejo registrar dos veces el mismo día
         if (repository.existsByEstudianteIdAndSeccionIdAndFechaAndEstado(
                 dto.estudianteId(), dto.seccionId(), dto.fecha(), "ACTIVO")) {
             log.warn("Ya existe un registro de asistencia para estudiante {} en sección {} el {}",
@@ -59,12 +53,10 @@ public class AsistenciaService {
         Asistencia guardada = repository.save(asistencia);
         log.info("Asistencia guardada con ID: {}", guardada.getId());
 
-        // evalúo R2 justo después de guardar
-        // Esto es lo más importante: el docente recibe la alerta al instante
         ResumenAsistenciaDTO resumen = calcularResumenR2(dto.estudianteId(), dto.seccionId());
 
         if (resumen.reprobadoPorAsistencia()) {
-            // ¡R2 activada! Log de advertencia crítica
+
             log.warn("⚠️  R2 ACTIVADA — Estudiante {} REPROBADO POR ASISTENCIA en sección {} " +
                      "({}% de inasistencia, límite: {}%)",
                     dto.estudianteId(), dto.seccionId(),
@@ -73,9 +65,6 @@ public class AsistenciaService {
 
         return new RegistroAsistenciaResponseDTO(guardada, resumen);
     }
-
-    // CORREGIR ASISTENCIA (PUT)
-    // El docente puede corregir un error (ej: marcó AUSENTE y era JUSTIFICADO)
 
     @Transactional
     public RegistroAsistenciaResponseDTO actualizar(UUID id, AsistenciaDTO dto) {
@@ -93,14 +82,11 @@ public class AsistenciaService {
         Asistencia actualizada = repository.save(asistencia);
         log.info("Asistencia actualizada: {} → {} (ID: {})", tipoAnterior, dto.tipo(), id);
 
-        // Recalcular R2 después de la corrección
         ResumenAsistenciaDTO resumen = calcularResumenR2(
                 actualizada.getEstudianteId(), actualizada.getSeccionId());
 
         return new RegistroAsistenciaResponseDTO(actualizada, resumen);
     }
-
-    // ANULAR ASISTENCIA (DELETE lógico)
 
     @Transactional
     public void anular(UUID id) {
@@ -110,8 +96,6 @@ public class AsistenciaService {
         repository.save(asistencia);
         log.info("Asistencia anulada ID: {}", id);
     }
-
-    // CONSULTAS (GET)
 
     public Asistencia findById(UUID id) {
         return repository.findById(id)
@@ -134,19 +118,10 @@ public class AsistenciaService {
         return repository.findByEstudianteIdAndSeccionIdAndEstado(estudianteId, seccionId, "ACTIVO");
     }
 
-    // R2: calcula el resumen y si quedó reprobado por faltas
-    //
-    // Fórmula:
-    //   total_clases     = fechas distintas con registro en esa sección
-    //   ausencias        = registros AUSENTE del estudiante (JUSTIFICADO no cuenta)
-    //   % inasistencia   = (ausencias / total_clases) * 100
-    //   reprobado        = % inasistencia > 25%
-
     public ResumenAsistenciaDTO calcularResumenR2(UUID estudianteId, UUID seccionId) {
         log.info("R2: Calculando resumen de asistencia — estudiante: {} | sección: {}",
                 estudianteId, seccionId);
 
-        // Total de clases dictadas en la sección (fechas únicas con algún registro)
         long totalClases = repository.contarTotalClasesPorSeccion(seccionId);
 
         if (totalClases == 0) {
@@ -159,19 +134,14 @@ public class AsistenciaService {
             );
         }
 
-        // Contamos cada tipo para este estudiante en esta sección
         long presentes    = repository.contarPorTipo(estudianteId, seccionId, TipoAsistencia.PRESENTE);
         long ausentes     = repository.contarPorTipo(estudianteId, seccionId, TipoAsistencia.AUSENTE);
         long justificados = repository.contarPorTipo(estudianteId, seccionId, TipoAsistencia.JUSTIFICADO);
 
-        // Porcentaje de inasistencia: SOLO ausentes injustificados / total clases de la sección
-        // Redondeamos a 1 decimal (ej: 28.5%)
         double porcentaje = Math.round(((double) ausentes / totalClases) * 100.0 * 10.0) / 10.0;
 
-        // R2: reprobado si supera el 25% (estrictamente MAYOR, no igual)
         boolean reprobado = porcentaje > LIMITE_INASISTENCIA;
 
-        // Mensaje descriptivo para el docente
         String mensaje;
         if (reprobado) {
             mensaje = String.format(
@@ -206,8 +176,6 @@ public class AsistenciaService {
                 mensaje
         );
     }
-
-    // Validación privada: verificar matrícula con ms-matriculas
 
     private void validarMatricula(UUID estudianteId, UUID seccionId) {
         log.info("Verificando matrícula activa para estudiante {} en sección {}", estudianteId, seccionId);

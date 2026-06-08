@@ -20,7 +20,6 @@ public class ArancelService {
 
     private final ArancelRepository repository;
 
-
     public List<Arancel> findAll() {
         log.info("Listando todos los aranceles");
         return repository.findAll();
@@ -59,7 +58,6 @@ public class ArancelService {
         log.info("Actualizando arancel ID: {}", id);
         Arancel a = findById(id);
 
-        // no edito si ya está pagado
         if ("PAGADO".equals(a.getEstado())) {
             throw new IllegalStateException("No se puede modificar un arancel que ya fue pagado");
         }
@@ -78,7 +76,6 @@ public class ArancelService {
         repository.save(a);
         log.info("Arancel marcado como ANULADO, ID: {}", id);
     }
-
 
     @Transactional
     public Arancel registrarPago(UUID id) {
@@ -99,8 +96,6 @@ public class ArancelService {
         return pagado;
     }
 
-
-    // R4: tiene deuda si lleva más de 45 días sin pagar
     public boolean tieneDeudaVencida(UUID estudianteId) {
         log.info("Verificando deuda vencida (>45 días) del estudiante {}", estudianteId);
 
@@ -116,7 +111,6 @@ public class ArancelService {
         return tieneDeuda;
     }
 
-    // R5: puede hacer práctica solo si no tiene ningún arancel pendiente
     public boolean puedeContinuar(UUID estudianteId) {
         log.info("Verificando si estudiante {} puede continuar con R5", estudianteId);
 

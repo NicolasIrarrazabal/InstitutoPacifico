@@ -37,7 +37,6 @@ public class AsignaturasController {
         return ResponseEntity.ok(service.buscarPorId(id));
     }
 
-    // R1: ms-matriculas llama aquí para ver los prerrequisitos
     @GetMapping("/{id}/prerequisitos")
     public ResponseEntity<List<Prerequisito>> obtenerPrerequisitos(@PathVariable UUID id) {
         log.info("GET /api/v1/asignaturas/{}/prerequisitos", id);

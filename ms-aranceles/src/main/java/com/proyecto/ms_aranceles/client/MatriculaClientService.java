@@ -19,7 +19,6 @@ public class MatriculaClientService {
     @Value("${ms-matricula.url}")
     private String msMatriculaUrl;
 
-    // Consulta ms-matriculas para traer los datos de una matrícula específica
     public MatriculaResponseDTO obtenerMatricula(UUID matriculaId) {
         log.info("Llamando a ms-matriculas para obtener matrícula {}", matriculaId);
         String url = msMatriculaUrl + "/api/v1/matriculas/" + matriculaId;
