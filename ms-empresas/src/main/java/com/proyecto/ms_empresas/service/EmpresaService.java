@@ -3,6 +3,8 @@ package com.proyecto.ms_empresas.service;
 import com.proyecto.ms_empresas.dto.EmpresaDTO;
 import com.proyecto.ms_empresas.model.Empresa;
 import com.proyecto.ms_empresas.repository.EmpresaRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -13,6 +15,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+@Tag(name = "Empresa Service", description = "Lógica de negocio para gestión de empresas y convenios")
 @Service
 @RequiredArgsConstructor
 public class EmpresaService {
@@ -21,15 +24,18 @@ public class EmpresaService {
 
     private final EmpresaRepository repository;
 
+    @Operation(summary = "Listar todas las empresas", description = "Retorna todas las empresas registradas")
     public List<Empresa> findAll() {
         return repository.findAll();
     }
 
+    @Operation(summary = "Buscar empresa por ID", description = "Retorna una empresa por su ID")
     public Empresa findById(UUID id) {
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Empresa no encontrada con ID: " + id));
     }
 
+    @Operation(summary = "Guardar empresa", description = "Registra una nueva empresa con convenio validando RUT único")
     public Empresa save(EmpresaDTO dto) {
         if (repository.existsByRut(dto.rut())) {
             throw new IllegalArgumentException("Ya existe una empresa registrada con el RUT: " + dto.rut());
@@ -52,6 +58,7 @@ public class EmpresaService {
         return guardada;
     }
 
+    @Operation(summary = "Actualizar empresa", description = "Actualiza los datos de una empresa existente")
     public Empresa update(UUID id, EmpresaDTO dto) {
         Empresa empresa = findById(id);
 
@@ -78,6 +85,7 @@ public class EmpresaService {
         return actualizada;
     }
 
+    @Operation(summary = "Desactivar empresa", description = "Desactiva lógicamente una empresa")
     public void delete(UUID id) {
         Empresa empresa = findById(id);
 
@@ -90,6 +98,7 @@ public class EmpresaService {
         log.info("Empresa marcada como INACTIVO, ID {}", id);
     }
 
+    @Operation(summary = "Verificar convenio vigente", description = "Verifica si la empresa tiene un convenio vigente según las fechas registradas (R5)")
     public boolean tieneConvenioVigente(UUID id) {
         Empresa empresa = findById(id);
 

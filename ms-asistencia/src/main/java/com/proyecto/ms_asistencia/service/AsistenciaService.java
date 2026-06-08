@@ -7,6 +7,8 @@ import com.proyecto.ms_asistencia.dto.ResumenAsistenciaDTO;
 import com.proyecto.ms_asistencia.model.Asistencia;
 import com.proyecto.ms_asistencia.model.TipoAsistencia;
 import com.proyecto.ms_asistencia.repository.AsistenciaRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+@Tag(name = "Asistencia Service", description = "Lógica de negocio para asistencia y evaluación de regla R2")
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -26,6 +29,7 @@ public class AsistenciaService {
 
     private static final double LIMITE_INASISTENCIA = 25.0;
 
+    @Operation(summary = "Registrar asistencia", description = "Crea un registro de asistencia y evalúa la regla R2")
     @Transactional
     public RegistroAsistenciaResponseDTO registrar(AsistenciaDTO dto) {
         log.info("Registrando asistencia — estudiante: {} | sección: {} | fecha: {} | tipo: {}",
@@ -66,6 +70,7 @@ public class AsistenciaService {
         return new RegistroAsistenciaResponseDTO(guardada, resumen);
     }
 
+    @Operation(summary = "Actualizar asistencia", description = "Corrige un registro de asistencia y recalcula R2")
     @Transactional
     public RegistroAsistenciaResponseDTO actualizar(UUID id, AsistenciaDTO dto) {
         log.info("Actualizando asistencia ID: {}", id);
@@ -88,6 +93,7 @@ public class AsistenciaService {
         return new RegistroAsistenciaResponseDTO(actualizada, resumen);
     }
 
+    @Operation(summary = "Anular asistencia", description = "Anula lógicamente un registro de asistencia")
     @Transactional
     public void anular(UUID id) {
         log.info("Anulando registro de asistencia ID: {}", id);
@@ -97,27 +103,32 @@ public class AsistenciaService {
         log.info("Asistencia anulada ID: {}", id);
     }
 
+    @Operation(summary = "Buscar asistencia por ID", description = "Retorna un registro de asistencia por su ID")
     public Asistencia findById(UUID id) {
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Registro de asistencia no encontrado con ID: " + id));
     }
 
+    @Operation(summary = "Listar por sección", description = "Retorna todas las asistencias de una sección")
     public List<Asistencia> findBySeccion(UUID seccionId) {
         log.info("Listando asistencias de sección: {}", seccionId);
         return repository.findBySeccionIdAndEstado(seccionId, "ACTIVO");
     }
 
+    @Operation(summary = "Listar por estudiante", description = "Retorna todas las asistencias de un estudiante")
     public List<Asistencia> findByEstudiante(UUID estudianteId) {
         log.info("Listando asistencias del estudiante: {}", estudianteId);
         return repository.findByEstudianteIdAndEstado(estudianteId, "ACTIVO");
     }
 
+    @Operation(summary = "Listar por estudiante y sección", description = "Retorna las asistencias de un estudiante en una sección")
     public List<Asistencia> findByEstudianteYSeccion(UUID estudianteId, UUID seccionId) {
         log.info("Listando asistencias de estudiante {} en sección {}", estudianteId, seccionId);
         return repository.findByEstudianteIdAndSeccionIdAndEstado(estudianteId, seccionId, "ACTIVO");
     }
 
+    @Operation(summary = "Calcular resumen R2", description = "Calcula el porcentaje de inasistencia y determina si el estudiante reprobó por R2")
     public ResumenAsistenciaDTO calcularResumenR2(UUID estudianteId, UUID seccionId) {
         log.info("R2: Calculando resumen de asistencia — estudiante: {} | sección: {}",
                 estudianteId, seccionId);

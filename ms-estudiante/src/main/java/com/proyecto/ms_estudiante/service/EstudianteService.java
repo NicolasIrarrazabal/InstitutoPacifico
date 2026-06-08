@@ -10,6 +10,8 @@ import com.proyecto.ms_estudiante.dto.EstudianteDTO;
 import com.proyecto.ms_estudiante.model.Estudiante;
 import com.proyecto.ms_estudiante.model.enums.EstadoEstudiante;
 import com.proyecto.ms_estudiante.repository.EstudianteRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -20,6 +22,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
+@Tag(name = "Estudiante Service", description = "Lógica de negocio para gestión de estudiantes")
 @Service
 @RequiredArgsConstructor
 public class EstudianteService {
@@ -30,20 +33,24 @@ public class EstudianteService {
     private final NotaClientService notaClient;
     private final MatriculaClientService matriculaClient;
 
+    @Operation(summary = "Listar todos los estudiantes", description = "Retorna todos los estudiantes registrados")
     public List<Estudiante> findAll() {
         return repository.findAll();
     }
 
+    @Operation(summary = "Buscar estudiante por ID", description = "Retorna un estudiante por su ID")
     public Estudiante findById(UUID id) {
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Estudiante no encontrado con ID: " + id));
     }
 
+    @Operation(summary = "Buscar estudiante por RUT", description = "Retorna un estudiante por su RUT")
     public Estudiante findByRut(String rut) {
         return repository.findByRut(rut)
                 .orElseThrow(() -> new EntityNotFoundException("Estudiante no encontrado con RUT: " + rut));
     }
 
+    @Operation(summary = "Guardar estudiante", description = "Registra un nuevo estudiante validando RUT y email únicos")
     public Estudiante save(EstudianteDTO dto) {
         if (repository.existsByRut(dto.rut())) {
             throw new IllegalArgumentException("Ya existe un estudiante registrado con el RUT: " + dto.rut());
@@ -66,6 +73,7 @@ public class EstudianteService {
         return guardado;
     }
 
+    @Operation(summary = "Actualizar estudiante", description = "Actualiza los datos de un estudiante existente")
     public Estudiante update(UUID id, EstudianteDTO dto) {
         Estudiante est = findById(id);
 
@@ -87,6 +95,7 @@ public class EstudianteService {
         return actualizado;
     }
 
+    @Operation(summary = "Desactivar estudiante", description = "Desactiva lógicamente un estudiante")
     public void delete(UUID id) {
         Estudiante est = findById(id);
 
@@ -99,11 +108,13 @@ public class EstudianteService {
         log.info("Estudiante marcado como INACTIVO, ID {}", id);
     }
 
+    @Operation(summary = "Verificar si puede matricular", description = "Verifica si el estudiante puede matricularse según su estado")
     public boolean puedeMatricular(UUID estudianteId) {
         Estudiante est = findById(estudianteId);
         return EstadoEstudiante.ACTIVO.equals(est.getEstado());
     }
 
+    @Operation(summary = "Obtener detalle completo", description = "Retorna el detalle enriquecido del estudiante con notas y matrículas")
     public DetalleEstudianteResponse obtenerDetalle(UUID id) {
         log.info("Construyendo detalle enriquecido para estudiante {}", id);
 

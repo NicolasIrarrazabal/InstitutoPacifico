@@ -5,6 +5,8 @@ import com.proyecto.ms_docente.model.Docente;
 import com.proyecto.ms_docente.model.Especialidad;
 import com.proyecto.ms_docente.repository.DocenteRepository;
 import com.proyecto.ms_docente.repository.EspecialidadRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+@Tag(name = "Docente Service", description = "Lógica de negocio para gestión de docentes")
 @Service
 @Slf4j
 @AllArgsConstructor
@@ -22,17 +25,20 @@ public class DocenteService {
     private DocenteRepository repository;
     private EspecialidadRepository especialidadRepository;
 
+    @Operation(summary = "Listar todos los docentes", description = "Retorna todos los docentes registrados")
     public List<Docente> listarTodos() {
         log.info("Listando todos los docentes");
         return repository.findAll();
     }
 
+    @Operation(summary = "Buscar docente por ID", description = "Retorna un docente por su ID")
     public Docente buscarPorId(UUID id) {
         log.info("Buscando docente por ID: {}", id);
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Docente no encontrado con ID: " + id));
     }
 
+    @Operation(summary = "Guardar docente", description = "Registra un nuevo docente validando email único")
     @Transactional
     public Docente guardar(DocenteDTO dto) {
         log.info("Guardando nuevo docente con email: {}", dto.email());
@@ -56,6 +62,7 @@ public class DocenteService {
         return guardado;
     }
 
+    @Operation(summary = "Actualizar docente", description = "Actualiza los datos de un docente existente")
     @Transactional
     public Docente actualizar(UUID id, DocenteDTO dto) {
         log.info("Actualizando docente con ID: {}", id);
@@ -80,6 +87,7 @@ public class DocenteService {
         return repository.save(docente);
     }
 
+    @Operation(summary = "Eliminar docente", description = "Elimina un docente del sistema")
     @Transactional
     public void eliminar(UUID id) {
         log.info("Eliminando docente con ID: {}", id);

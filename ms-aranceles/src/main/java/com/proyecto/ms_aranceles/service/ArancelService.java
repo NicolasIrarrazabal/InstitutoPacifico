@@ -3,6 +3,8 @@ package com.proyecto.ms_aranceles.service;
 import com.proyecto.ms_aranceles.repository.ArancelRepository;
 import com.proyecto.ms_aranceles.dto.ArancelDTO;
 import com.proyecto.ms_aranceles.model.Arancel;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +15,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+@Tag(name = "Arancel Service", description = "Lógica de negocio para aranceles, pagos y deudas (R4)")
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -20,22 +23,26 @@ public class ArancelService {
 
     private final ArancelRepository repository;
 
+    @Operation(summary = "Listar todos los aranceles", description = "Retorna todos los aranceles registrados")
     public List<Arancel> findAll() {
         log.info("Listando todos los aranceles");
         return repository.findAll();
     }
 
+    @Operation(summary = "Buscar arancel por ID", description = "Retorna un arancel por su ID")
     public Arancel findById(UUID id) {
         log.info("Buscando arancel por ID: {}", id);
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Arancel no encontrado con ID: " + id));
     }
 
+    @Operation(summary = "Listar aranceles por estudiante", description = "Retorna todos los aranceles de un estudiante")
     public List<Arancel> findByEstudiante(UUID estudianteId) {
         log.info("Listando aranceles del estudiante {}", estudianteId);
         return repository.findByEstudianteId(estudianteId);
     }
 
+    @Operation(summary = "Crear arancel", description = "Registra un nuevo arancel para un estudiante")
     @Transactional
     public Arancel create(ArancelDTO dto) {
         log.info("Creando arancel para estudiante {} — concepto: {}", dto.estudianteId(), dto.concepto());
@@ -53,6 +60,7 @@ public class ArancelService {
         return guardado;
     }
 
+    @Operation(summary = "Actualizar arancel", description = "Actualiza los datos de un arancel existente")
     @Transactional
     public Arancel update(UUID id, ArancelDTO dto) {
         log.info("Actualizando arancel ID: {}", id);
@@ -68,6 +76,7 @@ public class ArancelService {
         return repository.save(a);
     }
 
+    @Operation(summary = "Anular arancel", description = "Anula lógicamente un arancel")
     @Transactional
     public void delete(UUID id) {
         log.info("Eliminando (lógica) arancel ID: {}", id);
@@ -77,6 +86,7 @@ public class ArancelService {
         log.info("Arancel marcado como ANULADO, ID: {}", id);
     }
 
+    @Operation(summary = "Registrar pago", description = "Registra el pago de un arancel")
     @Transactional
     public Arancel registrarPago(UUID id) {
         log.info("Registrando pago del arancel ID: {}", id);
@@ -96,6 +106,7 @@ public class ArancelService {
         return pagado;
     }
 
+    @Operation(summary = "Verificar deuda vencida (R4)", description = "Verifica si el estudiante tiene deuda vencida mayor a 45 días (R4)")
     public boolean tieneDeudaVencida(UUID estudianteId) {
         log.info("Verificando deuda vencida (>45 días) del estudiante {}", estudianteId);
 
@@ -111,6 +122,7 @@ public class ArancelService {
         return tieneDeuda;
     }
 
+    @Operation(summary = "Verificar si puede continuar (R4/R5)", description = "Verifica si el estudiante puede continuar según su situación de arancel (R4/R5)")
     public boolean puedeContinuar(UUID estudianteId) {
         log.info("Verificando si estudiante {} puede continuar con R5", estudianteId);
 

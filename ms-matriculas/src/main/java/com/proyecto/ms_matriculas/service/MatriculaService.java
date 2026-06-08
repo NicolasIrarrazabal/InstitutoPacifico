@@ -6,6 +6,8 @@ import com.proyecto.ms_matriculas.client.PrerequisitosResponse;
 import com.proyecto.ms_matriculas.dto.MatriculaDTO;
 import com.proyecto.ms_matriculas.model.Matricula;
 import com.proyecto.ms_matriculas.repository.MatriculaRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Tag(name = "Matricula Service", description = "Lógica de negocio para matrículas y validación de regla R1")
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -25,22 +28,26 @@ public class MatriculaService {
     private final AsignaturaClientService asignaturaClient;
     private final NotaClientService notaClient;
 
+    @Operation(summary = "Listar todas las matrículas", description = "Retorna todas las matrículas registradas")
     public List<Matricula> findAll() {
         log.info("Listando todas las matrículas");
         return repository.findAll();
     }
 
+    @Operation(summary = "Buscar matrícula por ID", description = "Retorna una matrícula por su ID")
     public Matricula findById(UUID id) {
         log.info("Buscando matrícula por ID: {}", id);
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Matrícula no encontrada con ID: " + id));
     }
 
+    @Operation(summary = "Listar matrículas por estudiante", description = "Retorna las matrículas activas de un estudiante")
     public List<Matricula> findByEstudiante(UUID estudianteId) {
         log.info("Listando matrículas activas del estudiante {}", estudianteId);
         return repository.findByEstudianteIdAndEstado(estudianteId, "ACTIVA");
     }
 
+    @Operation(summary = "Crear matrícula", description = "Registra una nueva matrícula validando la regla R1 (prerrequisitos)")
     @Transactional
     public Matricula create(MatriculaDTO dto) {
         log.info("Intentando matricular estudiante {} en sección {}", dto.estudianteId(), dto.seccionId());
@@ -63,6 +70,7 @@ public class MatriculaService {
         return guardada;
     }
 
+    @Operation(summary = "Actualizar matrícula", description = "Actualiza el estado de una matrícula existente")
     @Transactional
     public Matricula update(UUID id, MatriculaDTO dto) {
         log.info("Actualizando matrícula ID: {}", id);
@@ -76,6 +84,7 @@ public class MatriculaService {
         return repository.save(m);
     }
 
+    @Operation(summary = "Eliminar matrícula", description = "Elimina lógicamente una matrícula")
     @Transactional
     public void delete(UUID id) {
         log.info("Eliminando (lógica) matrícula ID: {}", id);

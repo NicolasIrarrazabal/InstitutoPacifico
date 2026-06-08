@@ -1,5 +1,7 @@
 package com.proyecto.ms_notas.client;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+@Tag(name = "Matricula Client Service", description = "Cliente HTTP para comunicación con ms-matriculas")
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -23,6 +26,7 @@ public class MatriculaClientService {
     @Value("${ms-matriculas.url}")
     private String msMatriculasUrl;
 
+    @Operation(summary = "Verificar matrícula activa (R1)", description = "Consulta a ms-matriculas si el estudiante tiene matrícula activa para validar R1")
     public boolean tieneMatriculaActiva(UUID estudianteId, UUID seccionId) {
         log.info("Consultando ms-matriculas: ¿estudiante {} tiene matrícula activa en sección {}?",
                 estudianteId, seccionId);

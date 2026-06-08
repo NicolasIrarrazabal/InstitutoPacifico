@@ -7,6 +7,8 @@ import com.proyecto.ms_notas.dto.NotaDTO;
 import com.proyecto.ms_notas.dto.PromedioResponseDTO;
 import com.proyecto.ms_notas.model.Nota;
 import com.proyecto.ms_notas.repository.NotaRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,7 @@ import java.math.RoundingMode;
 import java.util.List;
 import java.util.UUID;
 
+@Tag(name = "Nota Service", description = "Lógica de negocio para notas, promedios (R3) y avance académico (R5)")
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -36,6 +39,7 @@ public class NotaService {
 
     private static final double PORCENTAJE_AVANCE_MINIMO = 80.0;
 
+    @Operation(summary = "Listar todas las notas", description = "Retorna todas las notas activas registradas")
     public List<Nota> findAll() {
         log.info("Listando todas las notas activas");
         return repository.findAll()
@@ -44,12 +48,14 @@ public class NotaService {
                 .toList();
     }
 
+    @Operation(summary = "Buscar nota por ID", description = "Retorna una nota por su ID")
     public Nota findById(UUID id) {
         log.info("Buscando nota por ID: {}", id);
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Nota no encontrada con ID: " + id));
     }
 
+    @Operation(summary = "Listar notas por estudiante", description = "Retorna las notas activas de un estudiante (valida R4)")
     public List<Nota> findByEstudiante(UUID estudianteId) {
         log.info("Buscando notas activas del estudiante: {}", estudianteId);
 
@@ -58,6 +64,7 @@ public class NotaService {
         return repository.findByEstudianteIdAndEstado(estudianteId, "ACTIVA");
     }
 
+    @Operation(summary = "Crear nota", description = "Registra una nueva nota validando R1 (matrícula activa)")
     @Transactional
     public Nota create(NotaDTO dto) {
         log.info("Creando nota para estudiante {} en sección {}", dto.estudianteId(), dto.seccionId());
@@ -88,6 +95,7 @@ public class NotaService {
         return guardada;
     }
 
+    @Operation(summary = "Actualizar nota", description = "Actualiza una nota existente")
     @Transactional
     public Nota update(UUID id, NotaDTO dto) {
         log.info("Actualizando nota ID: {}", id);
@@ -107,6 +115,7 @@ public class NotaService {
         return actualizada;
     }
 
+    @Operation(summary = "Anular nota", description = "Anula lógicamente una nota")
     @Transactional
     public void delete(UUID id) {
         log.info("Anulando (eliminación lógica) nota ID: {}", id);
@@ -116,6 +125,7 @@ public class NotaService {
         log.info("Nota marcada como ANULADA, ID: {}", id);
     }
 
+    @Operation(summary = "Calcular promedio global (R3)", description = "Calcula el promedio ponderado global del estudiante y evalúa R3")
     public PromedioResponseDTO calcularPromedio(UUID estudianteId) {
         log.info("[R3] Calculando promedio global para estudiante: {}", estudianteId);
 
@@ -150,6 +160,7 @@ public class NotaService {
         );
     }
 
+    @Operation(summary = "Calcular promedio por sección (R3)", description = "Calcula el promedio ponderado del estudiante en una sección específica (R3)")
     public PromedioResponseDTO calcularPromedioSeccion(UUID estudianteId, UUID seccionId) {
         log.info("[R3] Calculando promedio por sección — estudiante: {} | sección: {}",
                 estudianteId, seccionId);
@@ -188,6 +199,7 @@ public class NotaService {
         );
     }
 
+    @Operation(summary = "Calcular avance académico (R5)", description = "Calcula el porcentaje de avance del estudiante y verifica si cumple el 80% mínimo (R5)")
     public AvanceResponseDTO calcularAvance(UUID estudianteId) {
         log.info("Calculando avance académico del 80% para estudiante: {}", estudianteId);
 

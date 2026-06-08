@@ -1,5 +1,7 @@
 package com.proyecto.ms_practicas.client;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,6 +10,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.UUID;
 
+@Tag(name = "Empresa Client Service", description = "Cliente HTTP para comunicación con ms-empresas (R5)")
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -18,6 +21,7 @@ public class EmpresaClientService {
     @Value("${ms-empresas.url}")
     private String msEmpresasUrl;
 
+    @Operation(summary = "Verificar convenio vigente", description = "Verifica si la empresa tiene convenio vigente para la regla R5")
     public boolean empresaTieneConvenioVigente(UUID empresaId) {
         log.info("Consultando ms-empresas si empresa {} tiene convenio vigente", empresaId);
         String url = msEmpresasUrl + "/api/v1/empresas/" + empresaId + "/tiene-convenio-vigente";

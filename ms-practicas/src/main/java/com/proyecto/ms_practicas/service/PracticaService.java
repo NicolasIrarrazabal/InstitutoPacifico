@@ -8,6 +8,8 @@ import com.proyecto.ms_practicas.dto.FinalizarPracticaDTO;
 import com.proyecto.ms_practicas.dto.PracticaDTO;
 import com.proyecto.ms_practicas.dto.ValidacionR5Response;
 import com.proyecto.ms_practicas.model.Practica;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+@Tag(name = "Practica Service", description = "Lógica de negocio para prácticas profesionales y validación de regla R5")
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -28,22 +31,26 @@ public class PracticaService {
     private final CreditoClientService creditoClient;
     private final EmpresaClientService empresaClient;
 
+    @Operation(summary = "Listar todas las prácticas", description = "Retorna todas las prácticas registradas")
     public List<Practica> findAll() {
         log.info("Listando todas las prácticas");
         return repository.findAll();
     }
 
+    @Operation(summary = "Buscar práctica por ID", description = "Retorna una práctica por su ID")
     public Practica findById(UUID id) {
         log.info("Buscando práctica por ID: {}", id);
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Práctica no encontrada con ID: " + id));
     }
 
+    @Operation(summary = "Listar prácticas por estudiante", description = "Retorna todas las prácticas de un estudiante")
     public List<Practica> findByEstudiante(UUID estudianteId) {
         log.info("Listando prácticas del estudiante {}", estudianteId);
         return repository.findByEstudianteId(estudianteId);
     }
 
+    @Operation(summary = "Verificar requisitos R5", description = "Verifica si el estudiante cumple los 3 requisitos para inscribir práctica: créditos, arancel y convenio")
     public ValidacionR5Response verificarRequisitosR5(UUID estudianteId, UUID empresaId) {
         log.info("Verificando requisitos R5 para estudiante {} en empresa {}", estudianteId, empresaId);
 
@@ -72,6 +79,7 @@ public class PracticaService {
         return new ValidacionR5Response(creditosOk, arancelOk, empresaOk, puedeInscribir, mensaje);
     }
 
+    @Operation(summary = "Inscribir práctica", description = "Inscribe una nueva práctica profesional validando la regla R5")
     @Transactional
     public Practica create(PracticaDTO dto) {
         log.info("Intentando inscribir práctica — estudiante: {} empresa: {}", dto.estudianteId(), dto.empresaId());
@@ -102,6 +110,7 @@ public class PracticaService {
         return guardada;
     }
 
+    @Operation(summary = "Finalizar práctica", description = "Finaliza una práctica con el estado y observaciones correspondientes")
     @Transactional
     public Practica finalizar(UUID id, FinalizarPracticaDTO dto) {
         log.info("Finalizando práctica ID: {}", id);
@@ -123,6 +132,7 @@ public class PracticaService {
         return finalizada;
     }
 
+    @Operation(summary = "Anular práctica", description = "Anula lógicamente una práctica")
     @Transactional
     public void delete(UUID id) {
         log.info("Anulando práctica ID: {}", id);

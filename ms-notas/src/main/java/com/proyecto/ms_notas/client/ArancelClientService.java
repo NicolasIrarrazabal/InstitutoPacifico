@@ -1,5 +1,7 @@
 package com.proyecto.ms_notas.client;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Map;
 import java.util.UUID;
 
+@Tag(name = "Arancel Client Service", description = "Cliente HTTP para comunicación con ms-aranceles")
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -20,6 +23,7 @@ public class ArancelClientService {
     @Value("${ms-aranceles.url}")
     private String msArancelesUrl;
 
+    @Operation(summary = "Verificar deuda vencida (R4)", description = "Consulta a ms-aranceles si el estudiante tiene deuda vencida mayor a 45 días (R4)")
     @SuppressWarnings("unchecked")
     public boolean tieneDeudaVencida(UUID estudianteId) {
         String url = msArancelesUrl + "/api/v1/aranceles/estudiante/" + estudianteId + "/tiene-deuda-vencida";

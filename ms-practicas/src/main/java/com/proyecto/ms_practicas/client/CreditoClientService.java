@@ -1,5 +1,7 @@
 package com.proyecto.ms_practicas.client;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,6 +10,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.UUID;
 
+@Tag(name = "Credito Client Service", description = "Cliente HTTP para comunicación con ms-notas (R5)")
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -18,6 +21,7 @@ public class CreditoClientService {
     @Value("${ms-notas.url}")
     private String msNotasUrl;
 
+    @Operation(summary = "Verificar créditos suficientes (R5)", description = "Verifica si el estudiante tiene al menos 80% de avance académico para la regla R5")
     public boolean estudianteTieneCreditosSuficientes(UUID estudianteId) {
         log.info("Consultando ms-notas si estudiante {} tiene >= 80% de avance académico", estudianteId);
         String url = msNotasUrl + "/api/v1/notas/estudiante/" + estudianteId + "/avance";
