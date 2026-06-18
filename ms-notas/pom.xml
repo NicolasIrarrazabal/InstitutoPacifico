@@ -133,6 +133,35 @@
                     </execution>
                 </executions>
             </plugin>
+        <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.13</version>
+                <configuration>
+                    <excludes>
+                        <exclude>com/proyecto/ms_notas/*Application.class</exclude>
+                        <exclude>com/proyecto/ms_notas/controller/**</exclude>
+                        <exclude>com/proyecto/ms_notas/dto/**</exclude>
+                        <exclude>com/proyecto/ms_notas/model/**</exclude>
+                        <exclude>com/proyecto/ms_notas/config/**</exclude>
+                        <exclude>com/proyecto/ms_notas/exception/**</exclude>
+                        <exclude>com/proyecto/ms_notas/client/**</exclude>
+                        <exclude>com/proyecto/ms_notas/repository/**</exclude>
+                        <exclude>com/proyecto/ms_notas/OpenApiConfig.class</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals><goal>prepare-agent</goal></goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals><goal>report</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 

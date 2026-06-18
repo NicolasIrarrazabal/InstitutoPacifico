@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EstudianteService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ms-estudiante</a> &gt; <a href="index.source.html" class="el_package">com.proyecto.ms_estudiante.service</a> &gt; <span class="el_source">EstudianteService.java</span></div><h1>EstudianteService.java</h1><pre class="source lang-java linenums">package com.proyecto.ms_estudiante.service;
+
+import com.proyecto.ms_estudiante.client.MatriculaClientService;
+import com.proyecto.ms_estudiante.client.MatriculaClientService.MatriculaResponse;
+import com.proyecto.ms_estudiante.client.NotaClientService;
+import com.proyecto.ms_estudiante.client.NotaClientService.NotaResponse;
+import com.proyecto.ms_estudiante.client.NotaClientService.PromedioResponse;
+import com.proyecto.ms_estudiante.dto.DetalleEstudianteResponse;
+import com.proyecto.ms_estudiante.dto.EstudianteDTO;
+import com.proyecto.ms_estudiante.model.Estudiante;
+import com.proyecto.ms_estudiante.model.enums.EstadoEstudiante;
+import com.proyecto.ms_estudiante.repository.EstudianteRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.UUID;
+
+@Tag(name = &quot;Estudiante Service&quot;, description = &quot;Lógica de negocio para gestión de estudiantes&quot;)
+@Service
+@RequiredArgsConstructor
+public class EstudianteService {
+
+<span class="fc" id="L30">    private static final Logger log = LoggerFactory.getLogger(EstudianteService.class);</span>
+
+    private final EstudianteRepository repository;
+    private final NotaClientService notaClient;
+    private final MatriculaClientService matriculaClient;
+
+    @Operation(summary = &quot;Listar todos los estudiantes&quot;, description = &quot;Retorna todos los estudiantes registrados&quot;)
+    public List&lt;Estudiante&gt; findAll() {
+<span class="fc" id="L38">        return repository.findAll();</span>
+    }
+
+    @Operation(summary = &quot;Buscar estudiante por ID&quot;, description = &quot;Retorna un estudiante por su ID&quot;)
+    public Estudiante findById(UUID id) {
+<span class="fc" id="L43">        return repository.findById(id)</span>
+<span class="fc" id="L44">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Estudiante no encontrado con ID: &quot; + id));</span>
+    }
+
+    @Operation(summary = &quot;Buscar estudiante por RUT&quot;, description = &quot;Retorna un estudiante por su RUT&quot;)
+    public Estudiante findByRut(String rut) {
+<span class="fc" id="L49">        return repository.findByRut(rut)</span>
+<span class="fc" id="L50">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Estudiante no encontrado con RUT: &quot; + rut));</span>
+    }
+
+    @Operation(summary = &quot;Guardar estudiante&quot;, description = &quot;Registra un nuevo estudiante validando RUT y email únicos&quot;)
+    public Estudiante save(EstudianteDTO dto) {
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        if (repository.existsByRut(dto.rut())) {</span>
+<span class="fc" id="L56">            throw new IllegalArgumentException(&quot;Ya existe un estudiante registrado con el RUT: &quot; + dto.rut());</span>
+        }
+
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        if (repository.existsByEmail(dto.email())) {</span>
+<span class="fc" id="L60">            throw new IllegalArgumentException(&quot;Ya existe un estudiante registrado con el email: &quot; + dto.email());</span>
+        }
+
+<span class="fc" id="L63">        Estudiante est = new Estudiante();</span>
+<span class="fc" id="L64">        est.setNombre(dto.nombre());</span>
+<span class="fc" id="L65">        est.setRut(dto.rut());</span>
+<span class="fc" id="L66">        est.setEmail(dto.email());</span>
+<span class="fc" id="L67">        est.setTelefono(dto.telefono());</span>
+<span class="fc" id="L68">        est.setDireccion(dto.direccion());</span>
+<span class="fc" id="L69">        est.setEstado(EstadoEstudiante.ACTIVO);</span>
+
+<span class="fc" id="L71">        Estudiante guardado = repository.save(est);</span>
+<span class="fc" id="L72">        log.info(&quot;Estudiante creado correctamente con ID {} y RUT {}&quot;, guardado.getId(), guardado.getRut());</span>
+<span class="fc" id="L73">        return guardado;</span>
+    }
+
+    @Operation(summary = &quot;Actualizar estudiante&quot;, description = &quot;Actualiza los datos de un estudiante existente&quot;)
+    public Estudiante update(UUID id, EstudianteDTO dto) {
+<span class="fc" id="L78">        Estudiante est = findById(id);</span>
+
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        if (EstadoEstudiante.INACTIVO.equals(est.getEstado())) {</span>
+<span class="fc" id="L81">            throw new IllegalStateException(&quot;No se puede modificar un estudiante en estado INACTIVO&quot;);</span>
+        }
+
+<span class="pc bpc" id="L84" title="1 of 4 branches missed.">        if (!est.getEmail().equals(dto.email()) &amp;&amp; repository.existsByEmail(dto.email())) {</span>
+<span class="fc" id="L85">            throw new IllegalArgumentException(&quot;El email ya esta en uso por otro estudiante&quot;);</span>
+        }
+
+<span class="fc" id="L88">        est.setNombre(dto.nombre());</span>
+<span class="fc" id="L89">        est.setEmail(dto.email());</span>
+<span class="fc" id="L90">        est.setTelefono(dto.telefono());</span>
+<span class="fc" id="L91">        est.setDireccion(dto.direccion());</span>
+
+<span class="fc" id="L93">        Estudiante actualizado = repository.save(est);</span>
+<span class="fc" id="L94">        log.info(&quot;Estudiante actualizado correctamente, ID {}&quot;, id);</span>
+<span class="fc" id="L95">        return actualizado;</span>
+    }
+
+    @Operation(summary = &quot;Desactivar estudiante&quot;, description = &quot;Desactiva lógicamente un estudiante&quot;)
+    public void delete(UUID id) {
+<span class="fc" id="L100">        Estudiante est = findById(id);</span>
+
+<span class="fc bfc" id="L102" title="All 2 branches covered.">        if (EstadoEstudiante.INACTIVO.equals(est.getEstado())) {</span>
+<span class="fc" id="L103">            throw new IllegalStateException(&quot;El estudiante ya se encuentra en estado INACTIVO&quot;);</span>
+        }
+
+<span class="fc" id="L106">        est.setEstado(EstadoEstudiante.INACTIVO);</span>
+<span class="fc" id="L107">        repository.save(est);</span>
+<span class="fc" id="L108">        log.info(&quot;Estudiante marcado como INACTIVO, ID {}&quot;, id);</span>
+<span class="fc" id="L109">    }</span>
+
+    @Operation(summary = &quot;Verificar si puede matricular&quot;, description = &quot;Verifica si el estudiante puede matricularse según su estado&quot;)
+    public boolean puedeMatricular(UUID estudianteId) {
+<span class="fc" id="L113">        Estudiante est = findById(estudianteId);</span>
+<span class="fc" id="L114">        return EstadoEstudiante.ACTIVO.equals(est.getEstado());</span>
+    }
+
+    @Operation(summary = &quot;Obtener detalle completo&quot;, description = &quot;Retorna el detalle enriquecido del estudiante con notas y matrículas&quot;)
+    public DetalleEstudianteResponse obtenerDetalle(UUID id) {
+<span class="fc" id="L119">        log.info(&quot;Construyendo detalle enriquecido para estudiante {}&quot;, id);</span>
+
+<span class="fc" id="L121">        Estudiante est = findById(id);</span>
+
+<span class="fc" id="L123">        List&lt;NotaResponse&gt; notas = notaClient.obtenerNotasEstudiante(id);</span>
+<span class="fc" id="L124">        log.info(&quot;ms-notas respondió con {} notas para estudiante {}&quot;, notas.size(), id);</span>
+
+<span class="fc" id="L126">        PromedioResponse promedio = calcularPromedioDesdeNotas(notas, id);</span>
+
+<span class="fc" id="L128">        List&lt;MatriculaResponse&gt; matriculas = matriculaClient.obtenerMatriculasActivas(id);</span>
+<span class="fc" id="L129">        log.info(&quot;ms-matriculas respondió con {} matrículas activas para estudiante {}&quot;, matriculas.size(), id);</span>
+
+<span class="fc" id="L131">        return new DetalleEstudianteResponse(</span>
+<span class="fc" id="L132">                est.getId(),</span>
+<span class="fc" id="L133">                est.getNombre(),</span>
+<span class="fc" id="L134">                est.getRut(),</span>
+<span class="fc" id="L135">                est.getEmail(),</span>
+<span class="fc" id="L136">                est.getTelefono(),</span>
+<span class="fc" id="L137">                est.getDireccion(),</span>
+<span class="pc bpc" id="L138" title="1 of 2 branches missed.">                est.getEstado() != null ? est.getEstado().name() : null,</span>
+<span class="fc" id="L139">                promedio.promedioPonderado(),</span>
+<span class="fc" id="L140">                promedio.promedioSimple(),</span>
+<span class="fc" id="L141">                promedio.totalNotas(),</span>
+<span class="fc" id="L142">                promedio.aprobado(),</span>
+                notas,
+<span class="fc" id="L144">                matriculas.size(),</span>
+                matriculas
+        );
+    }
+
+    private PromedioResponse calcularPromedioDesdeNotas(List&lt;NotaResponse&gt; notas, UUID estudianteId) {
+<span class="fc bfc" id="L150" title="All 2 branches covered.">        if (notas.isEmpty()) {</span>
+<span class="fc" id="L151">            return new PromedioResponse(estudianteId, BigDecimal.ZERO, BigDecimal.ZERO, 0, false);</span>
+        }
+
+<span class="fc" id="L154">        BigDecimal sumaPonderada = BigDecimal.ZERO;</span>
+<span class="fc" id="L155">        BigDecimal sumaSimple = BigDecimal.ZERO;</span>
+<span class="fc" id="L156">        BigDecimal sumaPonderaciones = BigDecimal.ZERO;</span>
+
+<span class="fc bfc" id="L158" title="All 2 branches covered.">        for (NotaResponse n : notas) {</span>
+<span class="pc bpc" id="L159" title="2 of 4 branches missed.">            if (n.ponderacion() != null &amp;&amp; n.nota() != null) {</span>
+<span class="fc" id="L160">                sumaPonderada = sumaPonderada.add(n.nota().multiply(n.ponderacion()));</span>
+<span class="fc" id="L161">                sumaPonderaciones = sumaPonderaciones.add(n.ponderacion());</span>
+            }
+<span class="pc bpc" id="L163" title="1 of 2 branches missed.">            if (n.nota() != null) {</span>
+<span class="fc" id="L164">                sumaSimple = sumaSimple.add(n.nota());</span>
+            }
+<span class="fc" id="L166">        }</span>
+
+<span class="pc bpc" id="L168" title="1 of 2 branches missed.">        BigDecimal promedioPonderado = sumaPonderaciones.compareTo(BigDecimal.ZERO) &gt; 0</span>
+<span class="fc" id="L169">                ? sumaPonderada.divide(sumaPonderaciones, 2, java.math.RoundingMode.HALF_UP)</span>
+<span class="pc" id="L170">                : BigDecimal.ZERO;</span>
+
+<span class="fc" id="L172">        BigDecimal promedioSimple = sumaSimple.divide(</span>
+<span class="fc" id="L173">                BigDecimal.valueOf(notas.size()), 2, java.math.RoundingMode.HALF_UP);</span>
+
+<span class="pc bpc" id="L175" title="1 of 2 branches missed.">        boolean aprobado = promedioPonderado.compareTo(new BigDecimal(&quot;4.0&quot;)) &gt;= 0;</span>
+
+<span class="fc" id="L177">        return new PromedioResponse(estudianteId, promedioPonderado, promedioSimple, notas.size(), aprobado);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

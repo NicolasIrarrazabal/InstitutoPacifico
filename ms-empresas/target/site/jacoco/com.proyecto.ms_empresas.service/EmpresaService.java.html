@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EmpresaService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ms-empresas</a> &gt; <a href="index.source.html" class="el_package">com.proyecto.ms_empresas.service</a> &gt; <span class="el_source">EmpresaService.java</span></div><h1>EmpresaService.java</h1><pre class="source lang-java linenums">package com.proyecto.ms_empresas.service;
+
+import com.proyecto.ms_empresas.dto.EmpresaDTO;
+import com.proyecto.ms_empresas.model.Empresa;
+import com.proyecto.ms_empresas.repository.EmpresaRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.UUID;
+
+@Tag(name = &quot;Empresa Service&quot;, description = &quot;Lógica de negocio para gestión de empresas y convenios&quot;)
+@Service
+@RequiredArgsConstructor
+public class EmpresaService {
+
+<span class="fc" id="L23">    private static final Logger log = LoggerFactory.getLogger(EmpresaService.class);</span>
+
+    private final EmpresaRepository repository;
+
+    @Operation(summary = &quot;Listar todas las empresas&quot;, description = &quot;Retorna todas las empresas registradas&quot;)
+    public List&lt;Empresa&gt; findAll() {
+<span class="fc" id="L29">        return repository.findAll();</span>
+    }
+
+    @Operation(summary = &quot;Buscar empresa por ID&quot;, description = &quot;Retorna una empresa por su ID&quot;)
+    public Empresa findById(UUID id) {
+<span class="fc" id="L34">        return repository.findById(id)</span>
+<span class="fc" id="L35">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Empresa no encontrada con ID: &quot; + id));</span>
+    }
+
+    @Operation(summary = &quot;Guardar empresa&quot;, description = &quot;Registra una nueva empresa con convenio validando RUT único&quot;)
+    public Empresa save(EmpresaDTO dto) {
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        if (repository.existsByRut(dto.rut())) {</span>
+<span class="fc" id="L41">            throw new IllegalArgumentException(&quot;Ya existe una empresa registrada con el RUT: &quot; + dto.rut());</span>
+        }
+
+<span class="fc" id="L44">        Empresa empresa = new Empresa();</span>
+<span class="fc" id="L45">        empresa.setNombre(dto.nombre());</span>
+<span class="fc" id="L46">        empresa.setRut(dto.rut());</span>
+<span class="fc" id="L47">        empresa.setRubro(dto.rubro());</span>
+<span class="fc" id="L48">        empresa.setDireccion(dto.direccion());</span>
+<span class="fc" id="L49">        empresa.setTelefono(dto.telefono());</span>
+<span class="fc" id="L50">        empresa.setEmailContacto(dto.emailContacto());</span>
+<span class="fc" id="L51">        empresa.setNombreContacto(dto.nombreContacto());</span>
+<span class="fc" id="L52">        empresa.setFechaInicioConvenio(dto.fechaInicioConvenio());</span>
+<span class="fc" id="L53">        empresa.setFechaFinConvenio(dto.fechaFinConvenio());</span>
+<span class="fc" id="L54">        empresa.setEstado(&quot;ACTIVO&quot;);</span>
+
+<span class="fc" id="L56">        Empresa guardada = repository.save(empresa);</span>
+<span class="fc" id="L57">        log.info(&quot;Empresa creada con ID {} y RUT {}&quot;, guardada.getId(), guardada.getRut());</span>
+<span class="fc" id="L58">        return guardada;</span>
+    }
+
+    @Operation(summary = &quot;Actualizar empresa&quot;, description = &quot;Actualiza los datos de una empresa existente&quot;)
+    public Empresa update(UUID id, EmpresaDTO dto) {
+<span class="fc" id="L63">        Empresa empresa = findById(id);</span>
+
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        if (&quot;INACTIVO&quot;.equals(empresa.getEstado())) {</span>
+<span class="fc" id="L66">            throw new IllegalStateException(&quot;No se puede modificar una empresa en estado INACTIVO&quot;);</span>
+        }
+
+<span class="pc bpc" id="L69" title="1 of 4 branches missed.">        if (!empresa.getRut().equals(dto.rut()) &amp;&amp; repository.existsByRut(dto.rut())) {</span>
+<span class="fc" id="L70">            throw new IllegalArgumentException(&quot;El RUT ya está en uso por otra empresa&quot;);</span>
+        }
+
+<span class="fc" id="L73">        empresa.setNombre(dto.nombre());</span>
+<span class="fc" id="L74">        empresa.setRut(dto.rut());</span>
+<span class="fc" id="L75">        empresa.setRubro(dto.rubro());</span>
+<span class="fc" id="L76">        empresa.setDireccion(dto.direccion());</span>
+<span class="fc" id="L77">        empresa.setTelefono(dto.telefono());</span>
+<span class="fc" id="L78">        empresa.setEmailContacto(dto.emailContacto());</span>
+<span class="fc" id="L79">        empresa.setNombreContacto(dto.nombreContacto());</span>
+<span class="fc" id="L80">        empresa.setFechaInicioConvenio(dto.fechaInicioConvenio());</span>
+<span class="fc" id="L81">        empresa.setFechaFinConvenio(dto.fechaFinConvenio());</span>
+
+<span class="fc" id="L83">        Empresa actualizada = repository.save(empresa);</span>
+<span class="fc" id="L84">        log.info(&quot;Empresa actualizada con ID {}&quot;, id);</span>
+<span class="fc" id="L85">        return actualizada;</span>
+    }
+
+    @Operation(summary = &quot;Desactivar empresa&quot;, description = &quot;Desactiva lógicamente una empresa&quot;)
+    public void delete(UUID id) {
+<span class="fc" id="L90">        Empresa empresa = findById(id);</span>
+
+<span class="fc bfc" id="L92" title="All 2 branches covered.">        if (&quot;INACTIVO&quot;.equals(empresa.getEstado())) {</span>
+<span class="fc" id="L93">            throw new IllegalStateException(&quot;La empresa ya se encuentra en estado INACTIVO&quot;);</span>
+        }
+
+<span class="fc" id="L96">        empresa.setEstado(&quot;INACTIVO&quot;);</span>
+<span class="fc" id="L97">        repository.save(empresa);</span>
+<span class="fc" id="L98">        log.info(&quot;Empresa marcada como INACTIVO, ID {}&quot;, id);</span>
+<span class="fc" id="L99">    }</span>
+
+    @Operation(summary = &quot;Verificar convenio vigente&quot;, description = &quot;Verifica si la empresa tiene un convenio vigente según las fechas registradas (R5)&quot;)
+    public boolean tieneConvenioVigente(UUID id) {
+<span class="fc" id="L103">        Empresa empresa = findById(id);</span>
+
+<span class="fc bfc" id="L105" title="All 2 branches covered.">        if (!&quot;ACTIVO&quot;.equals(empresa.getEstado())) {</span>
+<span class="fc" id="L106">            log.info(&quot;Empresa {} está INACTIVA, convenio no vigente&quot;, id);</span>
+<span class="fc" id="L107">            return false;</span>
+        }
+
+<span class="pc bpc" id="L110" title="1 of 4 branches missed.">        if (empresa.getFechaInicioConvenio() == null || empresa.getFechaFinConvenio() == null) {</span>
+<span class="fc" id="L111">            log.info(&quot;Empresa {} no tiene fechas de convenio registradas&quot;, id);</span>
+<span class="fc" id="L112">            return false;</span>
+        }
+
+<span class="fc" id="L115">        LocalDate hoy = LocalDate.now();</span>
+<span class="fc bfc" id="L116" title="All 2 branches covered.">        boolean vigente = !hoy.isBefore(empresa.getFechaInicioConvenio())</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">                &amp;&amp; !hoy.isAfter(empresa.getFechaFinConvenio());</span>
+
+<span class="fc" id="L119">        log.info(&quot;Convenio de empresa {} — inicio: {} fin: {} hoy: {} vigente: {}&quot;,</span>
+<span class="fc" id="L120">                id, empresa.getFechaInicioConvenio(), empresa.getFechaFinConvenio(), hoy, vigente);</span>
+
+<span class="fc" id="L122">        return vigente;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

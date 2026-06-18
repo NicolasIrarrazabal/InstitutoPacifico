@@ -1,0 +1,10 @@
+com\proyecto\ms_estudiante\client\MatriculaClientService$1.class
+com\proyecto\ms_estudiante\config\RestTemplateConfig.class
+com\proyecto\ms_estudiante\client\MatriculaClientService$MatriculaResponse.class
+com\proyecto\ms_estudiante\dto\DetalleEstudianteResponse.class
+com\proyecto\ms_estudiante\OpenApiConfig.class
+com\proyecto\ms_estudiante\client\NotaClientService.class
+com\proyecto\ms_estudiante\client\MatriculaClientService.class
+com\proyecto\ms_estudiante\client\NotaClientService$1.class
+com\proyecto\ms_estudiante\client\NotaClientService$NotaResponse.class
+com\proyecto\ms_estudiante\client\NotaClientService$PromedioResponse.class

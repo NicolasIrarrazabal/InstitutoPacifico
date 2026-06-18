@@ -101,6 +101,34 @@
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
+		<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.13</version>
+				<configuration>
+					<excludes>
+						<exclude>com/proyecto/ms_docente/*Application.class</exclude>
+						<exclude>com/proyecto/ms_docente/controller/**</exclude>
+						<exclude>com/proyecto/ms_docente/dto/**</exclude>
+						<exclude>com/proyecto/ms_docente/model/**</exclude>
+						<exclude>com/proyecto/ms_docente/config/**</exclude>
+						<exclude>com/proyecto/ms_docente/exception/**</exclude>
+						<exclude>com/proyecto/ms_docente/client/**</exclude>
+						<exclude>com/proyecto/ms_docente/repository/**</exclude>
+					</excludes>
+				</configuration>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<goals><goal>prepare-agent</goal></goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals><goal>report</goal></goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 </project>

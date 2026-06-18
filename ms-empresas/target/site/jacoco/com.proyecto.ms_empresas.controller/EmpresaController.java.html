@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EmpresaController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ms-empresas</a> &gt; <a href="index.source.html" class="el_package">com.proyecto.ms_empresas.controller</a> &gt; <span class="el_source">EmpresaController.java</span></div><h1>EmpresaController.java</h1><pre class="source lang-java linenums">package com.proyecto.ms_empresas.controller;
+
+import com.proyecto.ms_empresas.dto.EmpresaDTO;
+import com.proyecto.ms_empresas.model.Empresa;
+import com.proyecto.ms_empresas.service.EmpresaService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+@Tag(name = &quot;Empresas&quot;, description = &quot;Gestión de empresas con convenio para prácticas profesionales (R5)&quot;)
+@RestController
+@RequestMapping(&quot;/api/v1/empresas&quot;)
+@RequiredArgsConstructor
+public class EmpresaController {
+
+    private final EmpresaService service;
+
+    @Operation(summary = &quot;Listar todas las empresas&quot;, description = &quot;Retorna todas las empresas registradas con convenio&quot;)
+    @GetMapping
+    public ResponseEntity&lt;List&lt;Empresa&gt;&gt; getAll() {
+<span class="nc" id="L32">        return ResponseEntity.ok(service.findAll());</span>
+    }
+
+    @Operation(summary = &quot;Obtener empresa por ID&quot;, description = &quot;Retorna una empresa por su ID&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Empresa encontrada&quot;),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Empresa no encontrada&quot;)
+    })
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Empresa&gt; getById(@PathVariable @Schema(description = &quot;ID de la empresa&quot;) UUID id) {
+<span class="nc" id="L42">        return ResponseEntity.ok(service.findById(id));</span>
+    }
+
+    @Operation(summary = &quot;Crear empresa&quot;, description = &quot;Registra una nueva empresa con convenio&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Empresa creada exitosamente&quot;),
+        @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Datos inválidos&quot;)
+    })
+    @PostMapping
+    public ResponseEntity&lt;Empresa&gt; create(@Valid @RequestBody @Schema(description = &quot;Datos de la empresa a crear&quot;) EmpresaDTO dto) {
+<span class="nc" id="L52">        Empresa creada = service.save(dto);</span>
+<span class="nc" id="L53">        return ResponseEntity.status(HttpStatus.CREATED).body(creada);</span>
+    }
+
+    @Operation(summary = &quot;Actualizar empresa&quot;, description = &quot;Actualiza los datos de una empresa existente&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Empresa actualizada&quot;),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Empresa no encontrada&quot;)
+    })
+    @PutMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Empresa&gt; update(@PathVariable @Schema(description = &quot;ID de la empresa&quot;) UUID id,
+                                          @Valid @RequestBody @Schema(description = &quot;Datos actualizados de la empresa&quot;) EmpresaDTO dto) {
+<span class="nc" id="L64">        return ResponseEntity.ok(service.update(id, dto));</span>
+    }
+
+    @Operation(summary = &quot;Desactivar empresa&quot;, description = &quot;Desactiva lógicamente una empresa&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Empresa desactivada&quot;),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Empresa no encontrada&quot;)
+    })
+    @DeleteMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Map&lt;String, String&gt;&gt; delete(@PathVariable @Schema(description = &quot;ID de la empresa&quot;) UUID id) {
+<span class="nc" id="L74">        service.delete(id);</span>
+<span class="nc" id="L75">        return ResponseEntity.ok(Map.of(&quot;mensaje&quot;, &quot;Empresa desactivada correctamente&quot;));</span>
+    }
+
+    @Operation(summary = &quot;Verificar convenio vigente&quot;, description = &quot;Verifica si la empresa tiene un convenio vigente (R5)&quot;)
+    @GetMapping(&quot;/{id}/tiene-convenio-vigente&quot;)
+    public ResponseEntity&lt;Map&lt;String, Boolean&gt;&gt; tieneConvenioVigente(@PathVariable @Schema(description = &quot;ID de la empresa&quot;) UUID id) {
+<span class="nc" id="L81">        boolean resultado = service.tieneConvenioVigente(id);</span>
+<span class="nc" id="L82">        return ResponseEntity.ok(Map.of(&quot;tieneConvenioVigente&quot;, resultado));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
