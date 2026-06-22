@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: ms-docente
+  profiles:
+    active: dev
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  flyway:
+    enabled: true
+    table: flyway_schema_history_docente
+    baseline-on-migrate: true
+    baseline-version: 1
+    locations: classpath:db/migration
+    repair-on-migrate: true
+
+server:
+  port: 8082
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.proyecto.ms_docente: DEBUG
+    org.springframework.web: INFO

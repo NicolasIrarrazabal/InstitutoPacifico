@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:db_matriculas}?sslmode=require
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+
+ms-estudiante:
+  url: http://localhost:8085
+ms-asignaturas:
+  url: http://localhost:8080
+ms-notas:
+  url: http://localhost:8086
+
+logging:
+  level:
+    com.proyecto.ms_matriculas: DEBUG

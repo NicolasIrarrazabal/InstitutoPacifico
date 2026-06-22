@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: ms-notas
+  profiles:
+    active: dev
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    enabled: true
+    table: flyway_schema_history_notas
+    baseline-on-migrate: true
+    baseline-version: 0
+    locations: classpath:db/migration
+    repair-on-migrate: true
+
+server:
+  port: 8086
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.proyecto.ms_notas: DEBUG
+    org.springframework.web: INFO
+
+ms-matriculas:
+  url: ${MS_MATRICULAS_URL:http://localhost:8083}
+ms-aranceles:
+  url: ${MS_ARANCELES_URL:http://localhost:8081}

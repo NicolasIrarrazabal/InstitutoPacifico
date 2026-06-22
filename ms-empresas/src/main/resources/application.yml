@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: ms-empresas
+  profiles:
+    active: dev
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    enabled: true
+    table: flyway_schema_history_empresas
+    baseline-on-migrate: true
+    baseline-version: 0
+    locations: classpath:db/migration
+    repair-on-migrate: true
+
+server:
+  port: 8089
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.proyecto.ms_empresas: DEBUG
+    org.springframework.web: INFO

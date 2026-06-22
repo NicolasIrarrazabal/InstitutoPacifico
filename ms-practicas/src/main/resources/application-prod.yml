@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=require
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+ms-aranceles:
+  url: ${MS_ARANCELES_URL}
+ms-notas:
+  url: ${MS_NOTAS_URL}
+ms-empresas:
+  url: ${MS_EMPRESAS_URL}
+
+logging:
+  level:
+    com.proyecto.ms_practicas: INFO

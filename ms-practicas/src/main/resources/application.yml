@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: ms-practicas
+  profiles:
+    active: dev
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    enabled: true
+    table: flyway_schema_history_practicas
+    baseline-on-migrate: true
+    baseline-version: 0
+    locations: classpath:db/migration
+    repair-on-migrate: true
+
+server:
+  port: 8087
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.proyecto.ms_practicas: DEBUG
+    org.springframework.web: INFO
+
+ms-aranceles:
+  url: ${MS_ARANCELES_URL:http://localhost:8081}
+ms-notas:
+  url: ${MS_NOTAS_URL:http://localhost:8086}
+ms-empresas:
+  url: ${MS_EMPRESAS_URL:http://localhost:8089}
