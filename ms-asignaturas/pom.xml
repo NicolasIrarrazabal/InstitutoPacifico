@@ -114,21 +114,41 @@
 						<exclude>com/proyecto/ms_asignaturas/config/**</exclude>
 						<exclude>com/proyecto/ms_asignaturas/exception/**</exclude>
 						<exclude>com/proyecto/ms_asignaturas/client/**</exclude>
-						<exclude>com/proyecto/ms_asignaturas/repository/**</exclude>
-					</excludes>
-				</configuration>
-				<executions>
-					<execution>
-						<id>prepare-agent</id>
-						<goals><goal>prepare-agent</goal></goals>
-					</execution>
-					<execution>
-						<id>report</id>
-						<phase>test</phase>
-						<goals><goal>report</goal></goals>
-					</execution>
-				</executions>
-			</plugin>
+<exclude>com/proyecto/ms_asignaturas/repository/**</exclude>
+					<exclude>com/proyecto/ms_asignaturas/OpenApiConfig.class</exclude>
+				</excludes>
+			</configuration>
+			<executions>
+				<execution>
+					<id>prepare-agent</id>
+					<goals><goal>prepare-agent</goal></goals>
+				</execution>
+				<execution>
+					<id>report</id>
+					<phase>test</phase>
+					<goals><goal>report</goal></goals>
+				</execution>
+				<execution>
+					<id>check</id>
+					<phase>verify</phase>
+					<goals><goal>check</goal></goals>
+					<configuration>
+						<rules>
+							<rule>
+								<element>BUNDLE</element>
+<limits>
+								<limit>
+									<counter>LINE</counter>
+									<value>COVEREDRATIO</value>
+									<minimum>0.80</minimum>
+								</limit>
+							</limits>
+							</rule>
+						</rules>
+					</configuration>
+				</execution>
+			</executions>
+		</plugin>
 		</plugins>
 	</build>
 </project>
