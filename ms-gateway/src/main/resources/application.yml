@@ -1,0 +1,74 @@
+spring:
+  application:
+    name: ms-gateway
+  profiles:
+    active: dev
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: false
+      routes:
+        - id: ms-asignaturas
+          uri: ${MS_ASIGNATURAS_URL:http://localhost:8080}
+          predicates:
+            - Path=/api/v1/asignaturas/**,/api/v1/creditos/**,/api/v1/prerequisitos/**
+        - id: ms-aranceles
+          uri: ${MS_ARANCELES_URL:http://localhost:8081}
+          predicates:
+            - Path=/api/v1/aranceles/**
+        - id: ms-docente
+          uri: ${MS_DOCENTE_URL:http://localhost:8082}
+          predicates:
+            - Path=/api/v1/docentes/**,/api/v1/especialidades/**,/api/contratos/**
+        - id: ms-matriculas
+          uri: ${MS_MATRICULAS_URL:http://localhost:8083}
+          predicates:
+            - Path=/api/v1/matriculas/**
+        - id: ms-carreras
+          uri: ${MS_CARRERAS_URL:http://localhost:8084}
+          predicates:
+            - Path=/api/v1/carreras/**
+        - id: ms-estudiante
+          uri: ${MS_ESTUDIANTE_URL:http://localhost:8085}
+          predicates:
+            - Path=/api/v1/estudiantes/**
+        - id: ms-notas
+          uri: ${MS_NOTAS_URL:http://localhost:8086}
+          predicates:
+            - Path=/api/v1/notas/**
+        - id: ms-practicas
+          uri: ${MS_PRACTICAS_URL:http://localhost:8087}
+          predicates:
+            - Path=/api/v1/practicas/**
+        - id: ms-asistencia
+          uri: ${MS_ASISTENCIA_URL:http://localhost:8088}
+          predicates:
+            - Path=/api/v1/asistencias/**
+        - id: ms-empresas
+          uri: ${MS_EMPRESAS_URL:http://localhost:8089}
+          predicates:
+            - Path=/api/v1/empresas/**
+        - id: swagger-asignaturas
+          uri: ${MS_ASIGNATURAS_URL:http://localhost:8080}
+          predicates:
+            - Path=/swagger-ui/**,/v3/api-docs/**,/swagger-ui.html
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin
+
+server:
+  port: 9000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO
+    reactor.netty: INFO

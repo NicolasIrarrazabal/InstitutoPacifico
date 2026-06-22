@@ -1,0 +1,28 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: ms-asignaturas
+          uri: http://ms-asignaturas:8080
+        - id: ms-aranceles
+          uri: http://ms-aranceles:8081
+        - id: ms-docente
+          uri: http://ms-docente:8082
+        - id: ms-matriculas
+          uri: http://ms-matriculas:8083
+        - id: ms-carreras
+          uri: http://ms-carreras:8084
+        - id: ms-estudiante
+          uri: http://ms-estudiante:8085
+        - id: ms-notas
+          uri: http://ms-notas:8086
+        - id: ms-practicas
+          uri: http://ms-practicas:8087
+        - id: ms-asistencia
+          uri: http://ms-asistencia:8088
+        - id: ms-empresas
+          uri: http://ms-empresas:8089
+
+logging:
+  level:
+    com.proyecto: INFO

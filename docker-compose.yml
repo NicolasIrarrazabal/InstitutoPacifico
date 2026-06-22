@@ -1,0 +1,250 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: instituto-postgres
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - instituto-net
+
+  ms-asignaturas:
+    build: ./ms-asignaturas
+    container_name: ms-asignaturas
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: db_asignaturas
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      SPRING_PROFILES_ACTIVE: prod
+    ports:
+      - "8080:8080"
+    networks:
+      - instituto-net
+
+  ms-aranceles:
+    build: ./ms-aranceles
+    container_name: ms-aranceles
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: db_aranceles
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      MS_MATRICULA_URL: http://ms-matriculas:8083
+      SPRING_PROFILES_ACTIVE: prod
+    ports:
+      - "8081:8081"
+    networks:
+      - instituto-net
+
+  ms-docente:
+    build: ./ms-docente
+    container_name: ms-docente
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: db_docente
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      SPRING_PROFILES_ACTIVE: prod
+    ports:
+      - "8082:8082"
+    networks:
+      - instituto-net
+
+  ms-matriculas:
+    build: ./ms-matriculas
+    container_name: ms-matriculas
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: db_matriculas
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      MS_ESTUDIANTE_URL: http://ms-estudiante:8085
+      MS_ASIGNATURAS_URL: http://ms-asignaturas:8080
+      MS_NOTAS_URL: http://ms-notas:8086
+      SPRING_PROFILES_ACTIVE: prod
+    ports:
+      - "8083:8083"
+    networks:
+      - instituto-net
+
+  ms-carreras:
+    build: ./ms-carreras
+    container_name: ms-carreras
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: db_carreras
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      SPRING_PROFILES_ACTIVE: prod
+    ports:
+      - "8084:8084"
+    networks:
+      - instituto-net
+
+  ms-estudiante:
+    build: ./ms-estudiante
+    container_name: ms-estudiante
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: db_estudiante
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      MS_NOTAS_URL: http://ms-notas:8086
+      MS_MATRICULAS_URL: http://ms-matriculas:8083
+      SPRING_PROFILES_ACTIVE: prod
+    ports:
+      - "8085:8085"
+    networks:
+      - instituto-net
+
+  ms-notas:
+    build: ./ms-notas
+    container_name: ms-notas
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: db_notas
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      MS_MATRICULAS_URL: http://ms-matriculas:8083
+      MS_ARANCELES_URL: http://ms-aranceles:8081
+      SPRING_PROFILES_ACTIVE: prod
+    ports:
+      - "8086:8086"
+    networks:
+      - instituto-net
+
+  ms-practicas:
+    build: ./ms-practicas
+    container_name: ms-practicas
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: db_practicas
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      MS_ARANCELES_URL: http://ms-aranceles:8081
+      MS_NOTAS_URL: http://ms-notas:8086
+      MS_EMPRESAS_URL: http://ms-empresas:8089
+      SPRING_PROFILES_ACTIVE: prod
+    ports:
+      - "8087:8087"
+    networks:
+      - instituto-net
+
+  ms-asistencia:
+    build: ./ms-asistencia
+    container_name: ms-asistencia
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: db_asistencia
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      MS_MATRICULAS_URL: http://ms-matriculas:8083
+      SPRING_PROFILES_ACTIVE: prod
+    ports:
+      - "8088:8088"
+    networks:
+      - instituto-net
+
+  ms-empresas:
+    build: ./ms-empresas
+    container_name: ms-empresas
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: db_empresas
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      SPRING_PROFILES_ACTIVE: prod
+    ports:
+      - "8089:8089"
+    networks:
+      - instituto-net
+
+  ms-gateway:
+    build: ./ms-gateway
+    container_name: ms-gateway
+    depends_on:
+      - ms-asignaturas
+      - ms-aranceles
+      - ms-docente
+      - ms-matriculas
+      - ms-carreras
+      - ms-estudiante
+      - ms-notas
+      - ms-practicas
+      - ms-asistencia
+      - ms-empresas
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      MS_ASIGNATURAS_URL: http://ms-asignaturas:8080
+      MS_ARANCELES_URL: http://ms-aranceles:8081
+      MS_DOCENTE_URL: http://ms-docente:8082
+      MS_MATRICULAS_URL: http://ms-matriculas:8083
+      MS_CARRERAS_URL: http://ms-carreras:8084
+      MS_ESTUDIANTE_URL: http://ms-estudiante:8085
+      MS_NOTAS_URL: http://ms-notas:8086
+      MS_PRACTICAS_URL: http://ms-practicas:8087
+      MS_ASISTENCIA_URL: http://ms-asistencia:8088
+      MS_EMPRESAS_URL: http://ms-empresas:8089
+    ports:
+      - "9000:9000"
+    networks:
+      - instituto-net
+
+volumes:
+  postgres-data:
+
+networks:
+  instituto-net:
+    driver: bridge
