@@ -4,3 +4,7 @@ ms-docente/.env
 ms-matriculas/.env
 ms-carreras/.env
 ms-estudiante/.env
+.idea/
+INFORME/
+RESPUESTAS.md
+INFO.md
