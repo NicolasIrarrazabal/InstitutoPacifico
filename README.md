@@ -103,18 +103,33 @@ flowchart LR
 
 ## Microservicios y puertos
 
-| # | Microservicio | Puerto | Path base | Responsabilidad |
-|---|---|---|---|---|
-| 1 | `ms-carreras` | 8084 | `/api/v1/carreras` | CRUD carreras universitarias |
-| 2 | `ms-asignaturas` | 8080 | `/api/v1/asignaturas` | CRUD asignaturas y prerrequisitos |
-| 3 | `ms-docente` | 8082 | `/api/v1/docentes` | CRUD docentes, especialidades y contratos |
-| 4 | `ms-empresas` | 8089 | `/api/v1/empresas` | CRUD empresas y convenios |
-| 5 | `ms-estudiante` | 8085 | `/api/v1/estudiantes` | CRUD estudiantes y detalle académico |
-| 6 | `ms-matriculas` | 8083 | `/api/v1/matriculas` | CRUD matrículas |
-| 7 | `ms-aranceles` | 8081 | `/api/v1/aranceles` | CRUD aranceles, pagos y validación R5 |
-| 8 | `ms-notas` | 8086 | `/api/v1/notas` | CRUD notas, promedios y avance 80% |
-| 9 | `ms-asistencia` | 8088 | `/api/v1/asistencias` | CRUD asistencia y resumen R2 |
-| 10 | `ms-practicas` | 8087 | `/api/v1/practicas` | CRUD prácticas, verificación R5 |
+| # | Microservicio | Puerto | Path base | Render URL | Responsabilidad |
+|---|---|---|---|---|---|---|
+| 1 | `ms-carreras` | 8084 | `/api/v1/carreras` | [institutopacifico-ms-carreras.onrender.com](https://institutopacifico-ms-carreras.onrender.com) | CRUD carreras universitarias |
+| 2 | `ms-asignaturas` | 8080 | `/api/v1/asignaturas` | — | CRUD asignaturas y prerrequisitos |
+| 3 | `ms-docente` | 8082 | `/api/v1/docentes` | — | CRUD docentes, especialidades y contratos |
+| 4 | `ms-empresas` | 8089 | `/api/v1/empresas` | — | CRUD empresas y convenios |
+| 5 | `ms-estudiante` | 8085 | `/api/v1/estudiantes` | — | CRUD estudiantes y detalle académico |
+| 6 | `ms-matriculas` | 8083 | `/api/v1/matriculas` | — | CRUD matrículas |
+| 7 | `ms-aranceles` | 8081 | `/api/v1/aranceles` | — | CRUD aranceles, pagos y validación R5 |
+| 8 | `ms-notas` | 8086 | `/api/v1/notas` | — | CRUD notas, promedios y avance 80% |
+| 9 | `ms-asistencia` | 8088 | `/api/v1/asistencias` | — | CRUD asistencia y resumen R2 |
+| 10 | `ms-practicas` | 8087 | `/api/v1/practicas` | — | CRUD prácticas, verificación R5 |
+
+---
+
+## Despliegue
+
+### Local (Docker)
+```bash
+docker-compose up --build
+```
+El Gateway queda en `http://localhost:9000`.
+
+### Remoto (Render)
+- **ms-carreras:** [https://institutopacifico-ms-carreras.onrender.com](https://institutopacifico-ms-carreras.onrender.com)
+- Swagger: [https://institutopacifico-ms-carreras.onrender.com/swagger-ui.html](https://institutopacifico-ms-carreras.onrender.com/swagger-ui.html)
+- Health: [https://institutopacifico-ms-carreras.onrender.com/actuator/health](https://institutopacifico-ms-carreras.onrender.com/actuator/health)
 
 ---
 
