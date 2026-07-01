@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: ms-estudiante
+  profiles:
+    active: dev
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    enabled: true
+    table: flyway_schema_history_estudiante
+    baseline-on-migrate: true
+    baseline-version: 0
+    locations: classpath:db/migration
+    repair-on-migrate: true
+
+server:
+  port: 8085
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.proyecto.ms_estudiante: DEBUG
+    org.springframework.web: INFO
+
+ms-notas:
+  url: ${MS_NOTAS_URL:http://localhost:8086}
+ms-matriculas:
+  url: ${MS_MATRICULAS_URL:http://localhost:8083}

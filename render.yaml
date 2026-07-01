@@ -1,0 +1,39 @@
+databases:
+  - name: institutopacifico-carreras-db
+    databaseName: db_carreras
+    user: carreras_user
+    plan: free
+    region: oregon
+
+services:
+  - type: web
+    name: institutopacifico-ms-carreras
+    runtime: docker
+    plan: free
+    region: oregon
+    rootDir: ms-carreras
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: DB_HOST
+        fromDatabase:
+          name: institutopacifico-carreras-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: institutopacifico-carreras-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: institutopacifico-carreras-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: institutopacifico-carreras-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: institutopacifico-carreras-db
+          property: password

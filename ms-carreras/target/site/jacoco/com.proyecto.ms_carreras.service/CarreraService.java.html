@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CarreraService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ms-carreras</a> &gt; <a href="index.source.html" class="el_package">com.proyecto.ms_carreras.service</a> &gt; <span class="el_source">CarreraService.java</span></div><h1>CarreraService.java</h1><pre class="source lang-java linenums">package com.proyecto.ms_carreras.service;
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CarreraService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ms-carreras</a> &gt; <a href="index.source.html" class="el_package">com.proyecto.ms_carreras.service</a> &gt; <span class="el_source">CarreraService.java</span></div><h1>CarreraService.java</h1><pre class="source lang-java linenums">package com.proyecto.ms_carreras.service;
 
 import com.proyecto.ms_carreras.dto.CarreraDTO;
 import com.proyecto.ms_carreras.model.Carrera;
@@ -13,65 +13,65 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
-<span class="fc" id="L16"></span>
+
 @Tag(name = &quot;Carrera Service&quot;, description = &quot;Lógica de negocio para gestión de carreras&quot;)
 @Service
-@Slf4j
+<span class="fc" id="L19">@Slf4j</span>
 @RequiredArgsConstructor
 public class CarreraService {
 
-<span class="fc" id="L23">    private final CarreraRepository repository;</span>
-<span class="fc" id="L24"></span>
+    private final CarreraRepository repository;
+
     @Operation(summary = &quot;Listar todas las carreras&quot;, description = &quot;Retorna todas las carreras disponibles&quot;)
     public List&lt;Carrera&gt; findAll() {
-        log.info(&quot;Listando todas las carreras&quot;);
+<span class="fc" id="L27">        log.info(&quot;Listando todas las carreras&quot;);</span>
 <span class="fc" id="L28">        return repository.findAll();</span>
-<span class="fc" id="L29">    }</span>
-<span class="fc" id="L30"></span>
+    }
+
     @Operation(summary = &quot;Buscar carrera por ID&quot;, description = &quot;Retorna una carrera por su ID&quot;)
     public Carrera findById(UUID id) {
-        log.info(&quot;Buscando carrera por ID: {}&quot;, id);
-        return repository.findById(id)
+<span class="fc" id="L33">        log.info(&quot;Buscando carrera por ID: {}&quot;, id);</span>
+<span class="fc" id="L34">        return repository.findById(id)</span>
 <span class="fc" id="L35">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Carrera no encontrada con ID: &quot; + id));</span>
     }
-<span class="fc" id="L37"></span>
-<span class="fc" id="L38">    @Operation(summary = &quot;Crear carrera&quot;, description = &quot;Registra una nueva carrera en el catálogo&quot;)</span>
-<span class="fc" id="L39">    @Transactional</span>
-<span class="fc" id="L40">    public Carrera create(CarreraDTO dto) {</span>
+
+    @Operation(summary = &quot;Crear carrera&quot;, description = &quot;Registra una nueva carrera en el catálogo&quot;)
+    @Transactional
+    public Carrera create(CarreraDTO dto) {
 <span class="fc" id="L41">        log.info(&quot;Creando carrera: {}&quot;, dto.nombre());</span>
 
 <span class="fc" id="L43">        Carrera carrera = new Carrera();</span>
 <span class="fc" id="L44">        carrera.setNombre(dto.nombre());</span>
 <span class="fc" id="L45">        carrera.setDescripcion(dto.descripcion());</span>
-        carrera.setDuracionSemestres(dto.duracionSemestres());
-        carrera.setSede(dto.sede());
+<span class="fc" id="L46">        carrera.setDuracionSemestres(dto.duracionSemestres());</span>
+<span class="fc" id="L47">        carrera.setSede(dto.sede());</span>
 
-        Carrera guardada = repository.save(carrera);
+<span class="fc" id="L49">        Carrera guardada = repository.save(carrera);</span>
 <span class="fc" id="L50">        log.info(&quot;Carrera creada con ID: {}&quot;, guardada.getId());</span>
 <span class="fc" id="L51">        return guardada;</span>
     }
-<span class="fc" id="L53"></span>
-<span class="fc" id="L54">    @Operation(summary = &quot;Actualizar carrera&quot;, description = &quot;Actualiza los datos de una carrera existente&quot;)</span>
-<span class="fc" id="L55">    @Transactional</span>
-<span class="fc" id="L56">    public Carrera update(UUID id, CarreraDTO dto) {</span>
-        log.info(&quot;Actualizando carrera ID: {}&quot;, id);
+
+    @Operation(summary = &quot;Actualizar carrera&quot;, description = &quot;Actualiza los datos de una carrera existente&quot;)
+    @Transactional
+    public Carrera update(UUID id, CarreraDTO dto) {
+<span class="fc" id="L57">        log.info(&quot;Actualizando carrera ID: {}&quot;, id);</span>
 <span class="fc" id="L58">        Carrera carrera = findById(id);</span>
 
-        carrera.setNombre(dto.nombre());
-        carrera.setDescripcion(dto.descripcion());
-        carrera.setDuracionSemestres(dto.duracionSemestres());
+<span class="fc" id="L60">        carrera.setNombre(dto.nombre());</span>
+<span class="fc" id="L61">        carrera.setDescripcion(dto.descripcion());</span>
+<span class="fc" id="L62">        carrera.setDuracionSemestres(dto.duracionSemestres());</span>
 <span class="fc" id="L63">        carrera.setSede(dto.sede());</span>
-<span class="fc" id="L64"></span>
+
 <span class="fc" id="L65">        return repository.save(carrera);</span>
-<span class="fc" id="L66">    }</span>
-<span class="fc" id="L67"></span>
+    }
+
     @Operation(summary = &quot;Eliminar carrera&quot;, description = &quot;Elimina una carrera del catálogo&quot;)
     @Transactional
     public void delete(UUID id) {
-        log.info(&quot;Eliminando carrera ID: {}&quot;, id);
-        Carrera carrera = findById(id);
-        repository.delete(carrera);
-        log.info(&quot;Carrera eliminada, ID: {}&quot;, id);
-    }
+<span class="fc" id="L71">        log.info(&quot;Eliminando carrera ID: {}&quot;, id);</span>
+<span class="fc" id="L72">        Carrera carrera = findById(id);</span>
+<span class="fc" id="L73">        repository.delete(carrera);</span>
+<span class="fc" id="L74">        log.info(&quot;Carrera eliminada, ID: {}&quot;, id);</span>
+<span class="fc" id="L75">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

@@ -1,13 +1,13 @@
-C:\Users\user\Desktop\eltlin\InstitutoPacifico\ms-estudiante\src\main\java\com\proyecto\ms_estudiante\client\MatriculaClientService.java
-C:\Users\user\Desktop\eltlin\InstitutoPacifico\ms-estudiante\src\main\java\com\proyecto\ms_estudiante\client\NotaClientService.java
-C:\Users\user\Desktop\eltlin\InstitutoPacifico\ms-estudiante\src\main\java\com\proyecto\ms_estudiante\config\RestTemplateConfig.java
-C:\Users\user\Desktop\eltlin\InstitutoPacifico\ms-estudiante\src\main\java\com\proyecto\ms_estudiante\controller\EstudianteController.java
-C:\Users\user\Desktop\eltlin\InstitutoPacifico\ms-estudiante\src\main\java\com\proyecto\ms_estudiante\dto\DetalleEstudianteResponse.java
-C:\Users\user\Desktop\eltlin\InstitutoPacifico\ms-estudiante\src\main\java\com\proyecto\ms_estudiante\dto\EstudianteDTO.java
-C:\Users\user\Desktop\eltlin\InstitutoPacifico\ms-estudiante\src\main\java\com\proyecto\ms_estudiante\exception\GlobalExceptionHandler.java
-C:\Users\user\Desktop\eltlin\InstitutoPacifico\ms-estudiante\src\main\java\com\proyecto\ms_estudiante\model\enums\EstadoEstudiante.java
-C:\Users\user\Desktop\eltlin\InstitutoPacifico\ms-estudiante\src\main\java\com\proyecto\ms_estudiante\model\Estudiante.java
-C:\Users\user\Desktop\eltlin\InstitutoPacifico\ms-estudiante\src\main\java\com\proyecto\ms_estudiante\MsEstudianteApplication.java
-C:\Users\user\Desktop\eltlin\InstitutoPacifico\ms-estudiante\src\main\java\com\proyecto\ms_estudiante\OpenApiConfig.java
-C:\Users\user\Desktop\eltlin\InstitutoPacifico\ms-estudiante\src\main\java\com\proyecto\ms_estudiante\repository\EstudianteRepository.java
-C:\Users\user\Desktop\eltlin\InstitutoPacifico\ms-estudiante\src\main\java\com\proyecto\ms_estudiante\service\EstudianteService.java
+C:\Users\NiiKo\Desktop\Git Clones\Universidad\InstitutoPacifico\ms-estudiante\src\main\java\com\proyecto\ms_estudiante\client\MatriculaClientService.java
+C:\Users\NiiKo\Desktop\Git Clones\Universidad\InstitutoPacifico\ms-estudiante\src\main\java\com\proyecto\ms_estudiante\client\NotaClientService.java
+C:\Users\NiiKo\Desktop\Git Clones\Universidad\InstitutoPacifico\ms-estudiante\src\main\java\com\proyecto\ms_estudiante\config\RestTemplateConfig.java
+C:\Users\NiiKo\Desktop\Git Clones\Universidad\InstitutoPacifico\ms-estudiante\src\main\java\com\proyecto\ms_estudiante\controller\EstudianteController.java
+C:\Users\NiiKo\Desktop\Git Clones\Universidad\InstitutoPacifico\ms-estudiante\src\main\java\com\proyecto\ms_estudiante\dto\DetalleEstudianteResponse.java
+C:\Users\NiiKo\Desktop\Git Clones\Universidad\InstitutoPacifico\ms-estudiante\src\main\java\com\proyecto\ms_estudiante\dto\EstudianteDTO.java
+C:\Users\NiiKo\Desktop\Git Clones\Universidad\InstitutoPacifico\ms-estudiante\src\main\java\com\proyecto\ms_estudiante\exception\GlobalExceptionHandler.java
+C:\Users\NiiKo\Desktop\Git Clones\Universidad\InstitutoPacifico\ms-estudiante\src\main\java\com\proyecto\ms_estudiante\model\enums\EstadoEstudiante.java
+C:\Users\NiiKo\Desktop\Git Clones\Universidad\InstitutoPacifico\ms-estudiante\src\main\java\com\proyecto\ms_estudiante\model\Estudiante.java
+C:\Users\NiiKo\Desktop\Git Clones\Universidad\InstitutoPacifico\ms-estudiante\src\main\java\com\proyecto\ms_estudiante\MsEstudianteApplication.java
+C:\Users\NiiKo\Desktop\Git Clones\Universidad\InstitutoPacifico\ms-estudiante\src\main\java\com\proyecto\ms_estudiante\OpenApiConfig.java
+C:\Users\NiiKo\Desktop\Git Clones\Universidad\InstitutoPacifico\ms-estudiante\src\main\java\com\proyecto\ms_estudiante\repository\EstudianteRepository.java
+C:\Users\NiiKo\Desktop\Git Clones\Universidad\InstitutoPacifico\ms-estudiante\src\main\java\com\proyecto\ms_estudiante\service\EstudianteService.java

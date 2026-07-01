@@ -1,1 +1,8 @@
 com\proyecto\ms_empresas\OpenApiConfig.class
+com\proyecto\ms_empresas\repository\EmpresaRepository.class
+com\proyecto\ms_empresas\service\EmpresaService.class
+com\proyecto\ms_empresas\controller\EmpresaController.class
+com\proyecto\ms_empresas\MsEmpresasApplication.class
+com\proyecto\ms_empresas\model\Empresa.class
+com\proyecto\ms_empresas\dto\EmpresaDTO.class
+com\proyecto\ms_empresas\exception\GlobalExceptionHandler.class

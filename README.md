@@ -23,9 +23,13 @@ Sistema completo de **10 microservicios** Spring Boot que digitaliza la gestión
 |---|---|
 | Estudiante 1 | Modelado y MS de carreras, asignaturas, docentes |
 | Estudiante 2 | MS de empresas, estudiantes, matrículas, aranceles |
-| Estudiante 3 | MS de notas, asistencia, prácticas y WebClient |
+| Estudiante 3 | MS de notas, asistencia, prácticas y comunicación entre servicios |
 
 > Vicente Herrera y Nicolas Irarrazabal.
+
+**Gestión del proyecto:**
+- Repositorio: este mismo repo de GitHub (commits distribuidos por integrante).
+- Tablero Trello: [https://trello.com/b/4pw95vk1/fullstack](https://trello.com/b/4pw95vk1/fullstack)
 
 ---
 
@@ -37,17 +41,17 @@ Sistema completo de **10 microservicios** Spring Boot que digitaliza la gestión
 | Build | Apache Maven 3.9+ (multi-módulo) |
 | Framework | Spring Boot 3.x |
 | Web | Spring Web (REST) 6.x |
-| Comunicación | Spring WebFlux + WebClient |
+| Comunicación | Spring RestTemplate (síncrono) |
 | Validaciones | Bean Validation (JSR-380) + Hibernate Validator |
 | Logs | SLF4J + Logback |
-| Persistencia | JPA + Hibernate con H2 (in-memory) |
+| Persistencia | JPA + Hibernate con PostgreSQL (Flyway para migraciones) |
 | Pruebas | Postman 10+ |
 
 ---
 
 ## Arquitectura
 
-El sistema sigue el patrón **CSR (Controller → Service → Repository)** y utiliza comunicación **WebClient** entre microservicios para validar reglas de negocio.
+El sistema sigue el patrón **CSR (Controller → Service → Repository)** y utiliza comunicación **RestTemplate** entre microservicios para validar reglas de negocio.
 
 ```mermaid
 flowchart LR
@@ -127,9 +131,21 @@ docker-compose up --build
 El Gateway queda en `http://localhost:9000`.
 
 ### Remoto (Render)
+
+Solo `ms-carreras` está desplegado en Render (los otros 9 microservicios se ejecutan localmente vía Docker Compose para la defensa).
+
 - **ms-carreras:** [https://institutopacifico-ms-carreras.onrender.com](https://institutopacifico-ms-carreras.onrender.com)
 - Swagger: [https://institutopacifico-ms-carreras.onrender.com/swagger-ui.html](https://institutopacifico-ms-carreras.onrender.com/swagger-ui.html)
 - Health: [https://institutopacifico-ms-carreras.onrender.com/actuator/health](https://institutopacifico-ms-carreras.onrender.com/actuator/health)
+
+**Cómo se desplegó (Blueprint):** el repo incluye un `render.yaml` en la raíz que define el web service (`rootDir: ms-carreras`, build con el `Dockerfile` del propio microservicio) más una base de datos PostgreSQL free administrada por Render. Para reproducirlo:
+
+1. En el dashboard de Render: **New > Blueprint**, conectar el repo de GitHub.
+2. Render detecta `render.yaml` y crea automáticamente `institutopacifico-carreras-db` (Postgres free) y el web service `institutopacifico-ms-carreras`, inyectando `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` desde la base de datos hacia el servicio.
+3. El servicio corre con `SPRING_PROFILES_ACTIVE=prod`, que apunta a Postgres vía `application-prod.yml` (Flyway corre las migraciones de `db/migration` automáticamente al primer arranque).
+4. El puerto ya no está fijo en `8084`: `application.yml` usa `server.port: ${PORT:8084}`, así Render puede inyectar su propio puerto sin romper el arranque local.
+
+**Importante para la defensa:** la base de datos Postgres free de Render expira 30 días después de creada, y el web service free se duerme tras 15 min sin tráfico (el primer request después de dormir tarda ~30-60s en responder — no es que esté caído). Si la defensa es varias semanas después del deploy, revisar la fecha de creación de la DB en el dashboard antes del día de la defensa y volver a desplegar si ya expiró.
 
 ---
 
@@ -173,21 +189,21 @@ sequenceDiagram
     Cliente->>+MP: POST /api/v1/practicas<br/>{estudianteId, empresaId}
 
     Note over MP,ME: R4 — verificar convenio vigente
-    MP->>+ME: WebClient GET /empresas/{id}/tiene-convenio-vigente
+    MP->>+ME: RestTemplate GET /empresas/{id}/tiene-convenio-vigente
     alt empresa sin convenio
         ME-->>MP: {tieneConvenio: false}
         MP-->>Cliente: 422 R4 violada
     end
 
     Note over MP,MA: R5 — verificar deuda
-    MP->>+MA: WebClient GET /aranceles/estudiante/{id}/tiene-deuda-vencida
+    MP->>+MA: RestTemplate GET /aranceles/estudiante/{id}/tiene-deuda-vencida
     alt tiene deuda
         MA-->>MP: {tieneDeuda: true}
         MP-->>Cliente: 422 R5 violada
     end
 
     Note over MP,MN: R5 — verificar avance
-    MP->>+MN: WebClient GET /notas/estudiante/{id}/avance
+    MP->>+MN: RestTemplate GET /notas/estudiante/{id}/avance
     alt avance < 80%
         MN-->>MP: {avance: 0.6}
         MP-->>Cliente: 422 R5 violada
@@ -200,7 +216,7 @@ sequenceDiagram
 
 ## Fases de ejecución
 
-### Comunicación inter-microservicios (WebClient)
+### Comunicación inter-microservicios (RestTemplate)
 
 | MS Origen | MS Destino | Endpoint consumido | Propósito |
 |---|---|---|---|
