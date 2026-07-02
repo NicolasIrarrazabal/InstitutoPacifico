@@ -9,7 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
-@Tag(name = "Contrato Service", description = "Lógica de negocio para contratos de docentes")
+/**
+ * Servicio que gestiona los contratos de docentes.
+ * Proporciona operaciones para listar y registrar contratos.
+ */
 @AllArgsConstructor
 @Service
 @Slf4j
@@ -17,12 +20,21 @@ public class ContratoService {
 
     private ContratoRepository repository;
 
-    @Operation(summary = "Listar todos los contratos", description = "Retorna todos los contratos registrados")
+    /**
+     * Obtiene todos los contratos registrados.
+     *
+     * @return lista de contratos, vacía si no hay registros
+     */
     public List<Contrato> listarTodos() {
         return repository.findAll();
     }
 
-    @Operation(summary = "Guardar contrato", description = "Registra un nuevo contrato para un docente")
+    /**
+     * Registra un nuevo contrato para un docente.
+     *
+     * @param contrato datos del contrato a registrar
+     * @return el contrato creado con su ID asignado
+     */
     public Contrato guardar(Contrato contrato) {
         log.info("Guardando contrato para docente ID {}", contrato.getDocente().getId());
         Contrato guardado = repository.save(contrato);

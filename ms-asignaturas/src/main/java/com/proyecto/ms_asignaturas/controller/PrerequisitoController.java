@@ -23,6 +23,10 @@ public class PrerequisitoController {
     private final PrerequisitoService prerequisitoService;
 
     @Operation(summary = "Listar prerrequisitos por asignatura", description = "Retorna todos los prerrequisitos de una asignatura")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Lista de prerrequisitos encontrada"),
+        @ApiResponse(responseCode = "404", description = "Asignatura no encontrada")
+    })
     @GetMapping("/asignatura/{id}")
     public ResponseEntity<List<Prerequisito>> listarPorAsignatura(@PathVariable @Schema(description = "ID de la asignatura") UUID id) {
         return ResponseEntity.ok(prerequisitoService.listarPorAsignatura(id));

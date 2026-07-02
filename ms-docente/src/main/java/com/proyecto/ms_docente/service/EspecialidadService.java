@@ -9,7 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
-@Tag(name = "Especialidad Service", description = "Lógica de negocio para especialidades de docentes")
+/**
+ * Servicio que gestiona las especialidades de los docentes.
+ * Proporciona operaciones para listar y registrar especialidades.
+ */
 @Service
 @Slf4j
 @AllArgsConstructor
@@ -17,12 +20,21 @@ public class EspecialidadService {
 
     private EspecialidadRepository repository;
 
-    @Operation(summary = "Listar todas las especialidades", description = "Retorna todas las especialidades registradas")
+    /**
+     * Obtiene todas las especialidades registradas.
+     *
+     * @return lista de especialidades, vacía si no hay registros
+     */
     public List<Especialidad> listarTodas() {
         return repository.findAll();
     }
 
-    @Operation(summary = "Guardar especialidad", description = "Registra una nueva especialidad")
+    /**
+     * Registra una nueva especialidad.
+     *
+     * @param especialidad datos de la especialidad a registrar
+     * @return la especialidad creada con su ID asignado
+     */
     public Especialidad guardar(Especialidad especialidad) {
         log.info("Guardando especialidad: {}", especialidad.getNombre());
         Especialidad guardada = repository.save(especialidad);

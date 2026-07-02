@@ -15,7 +15,11 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-@Tag(name = "Arancel Service", description = "Lógica de negocio para aranceles, pagos y deudas (R4)")
+/**
+ * Servicio que gestiona la lógica de negocio para aranceles, pagos y deudas.
+ * Implementa la validación de la regla R4 (deuda vencida > 45 días)
+ * y controla el ciclo de vida de los aranceles (pendiente, pagado, anulado).
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -23,26 +27,46 @@ public class ArancelService {
 
     private final ArancelRepository repository;
 
-    @Operation(summary = "Listar todos los aranceles", description = "Retorna todos los aranceles registrados")
+    /**
+     * Obtiene todos los aranceles registrados en el sistema.
+     *
+     * @return lista de aranceles, vacía si no hay registros
+     */
     public List<Arancel> findAll() {
         log.info("Listando todos los aranceles");
         return repository.findAll();
     }
 
-    @Operation(summary = "Buscar arancel por ID", description = "Retorna un arancel por su ID")
+    /**
+     * Busca un arancel por su ID.
+     *
+     * @param id identificador único del arancel
+     * @return el arancel encontrado
+     * @throws jakarta.persistence.EntityNotFoundException si no existe un arancel con ese ID
+     */
     public Arancel findById(UUID id) {
         log.info("Buscando arancel por ID: {}", id);
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Arancel no encontrado con ID: " + id));
     }
 
-    @Operation(summary = "Listar aranceles por estudiante", description = "Retorna todos los aranceles de un estudiante")
+    /**
+     * Obtiene todos los aranceles asociados a un estudiante.
+     *
+     * @param estudianteId identificador del estudiante
+     * @return lista de aranceles del estudiante, vacía si no tiene
+     */
     public List<Arancel> findByEstudiante(UUID estudianteId) {
         log.info("Listando aranceles del estudiante {}", estudianteId);
         return repository.findByEstudianteId(estudianteId);
     }
 
-    @Operation(summary = "Crear arancel", description = "Registra un nuevo arancel para un estudiante")
+    /**
+     * Crea un nuevo arancel para un estudiante con estado PENDIENTE.
+     *
+     * @param dto datos del arancel a crear (estudiante, concepto, monto, fechas)
+     * @return el arancel creado con su ID asignado
+     */
     @Transactional
     public Arancel create(ArancelDTO dto) {
         log.info("Creando arancel para estudiante {} — concepto: {}", dto.estudianteId(), dto.concepto());
@@ -60,7 +84,15 @@ public class ArancelService {
         return guardado;
     }
 
-    @Operation(summary = "Actualizar arancel", description = "Actualiza los datos de un arancel existente")
+    /**
+     * Actualiza los datos de un arancel existente.
+     * No permite modificar aranceles que ya fueron pagados.
+     *
+     * @param id  identificador del arancel a actualizar
+     * @param dto datos actualizados del arancel
+     * @return el arancel actualizado
+     * @throws IllegalStateException si el arancel ya está pagado
+     */
     @Transactional
     public Arancel update(UUID id, ArancelDTO dto) {
         log.info("Actualizando arancel ID: {}", id);
@@ -76,7 +108,11 @@ public class ArancelService {
         return repository.save(a);
     }
 
-    @Operation(summary = "Anular arancel", description = "Anula lógicamente un arancel")
+    /**
+     * Anula lógicamente un arancel cambiando su estado a ANULADO.
+     *
+     * @param id identificador del arancel a anular
+     */
     @Transactional
     public void delete(UUID id) {
         log.info("Eliminando (lógica) arancel ID: {}", id);
@@ -86,7 +122,14 @@ public class ArancelService {
         log.info("Arancel marcado como ANULADO, ID: {}", id);
     }
 
-    @Operation(summary = "Registrar pago", description = "Registra el pago de un arancel")
+    /**
+     * Registra el pago de un arancel cambiando su estado a PAGADO.
+     * Valida que el arancel no esté ya pagado o anulado.
+     *
+     * @param id identificador del arancel a pagar
+     * @return el arancel con estado PAGADO y fecha de pago asignada
+     * @throws IllegalStateException si el arancel ya fue pagado o está anulado
+     */
     @Transactional
     public Arancel registrarPago(UUID id) {
         log.info("Registrando pago del arancel ID: {}", id);
@@ -106,7 +149,14 @@ public class ArancelService {
         return pagado;
     }
 
-    @Operation(summary = "Verificar deuda vencida (R4)", description = "Verifica si el estudiante tiene deuda vencida mayor a 45 días (R4)")
+    /**
+     * Verifica si el estudiante tiene deuda vencida por más de 45 días (regla R4).
+     * Revisa todos los aranceles no pagados cuya fecha de vencimiento
+     * supere los 45 días desde la fecha actual.
+     *
+     * @param estudianteId identificador del estudiante a verificar
+     * @return true si el estudiante tiene al menos una deuda vencida > 45 días
+     */
     public boolean tieneDeudaVencida(UUID estudianteId) {
         log.info("Verificando deuda vencida (>45 días) del estudiante {}", estudianteId);
 
@@ -122,7 +172,14 @@ public class ArancelService {
         return tieneDeuda;
     }
 
-    @Operation(summary = "Verificar si puede continuar (R4/R5)", description = "Verifica si el estudiante puede continuar según su situación de arancel (R4/R5)")
+    /**
+     * Verifica si el estudiante puede continuar según su situación de arancel.
+     * No debe tener aranceles pendientes (no pagados ni anulados).
+     * Utilizado por la regla R5 para permitir prácticas profesionales.
+     *
+     * @param estudianteId identificador del estudiante a verificar
+     * @return true si el estudiante no tiene aranceles pendientes
+     */
     public boolean puedeContinuar(UUID estudianteId) {
         log.info("Verificando si estudiante {} puede continuar con R5", estudianteId);
 

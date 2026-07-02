@@ -16,7 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
-@Tag(name = "Asignatura Service", description = "Lógica de negocio para asignaturas del catálogo")
+/**
+ * Servicio que gestiona la lógica de negocio para el catálogo de asignaturas.
+ * Administra la creación, actualización y eliminación de asignaturas,
+ * así como la asociación con créditos académicos.
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -25,13 +29,23 @@ public class AsignaturasService {
     private final AsignaturasRepository asignaturasRepository;
     private final CreditoRepository creditoRepository;
 
-    @Operation(summary = "Listar todas las asignaturas", description = "Retorna todas las asignaturas del catálogo")
+    /**
+     * Obtiene todas las asignaturas del catálogo.
+     *
+     * @return lista de asignaturas, vacía si no hay registros
+     */
     public List<Asignatura> listarTodas(){
         log.info("Listando todas las asignaturas");
         return asignaturasRepository.findAll();
     }
 
-    @Operation(summary = "Buscar asignatura por ID", description = "Retorna una asignatura por su ID")
+    /**
+     * Busca una asignatura por su ID.
+     *
+     * @param id identificador único de la asignatura
+     * @return la asignatura encontrada
+     * @throws jakarta.persistence.EntityNotFoundException si no existe con ese ID
+     */
     public Asignatura buscarPorId(UUID id){
         log.info("Buscando asignatura por ID: {}", id);
         return asignaturasRepository.findById(id)
@@ -49,7 +63,13 @@ public class AsignaturasService {
                 });
     }
 
-    @Operation(summary = "Crear asignatura", description = "Registra una nueva asignatura en el catálogo")
+    /**
+     * Crea una nueva asignatura con su crédito asociado.
+     * Si el crédito no existe, lo crea automáticamente.
+     *
+     * @param dto datos de la asignatura (nombre, créditos)
+     * @return la asignatura creada con su ID asignado
+     */
     @Transactional
     public Asignatura crear(AsignaturaDTO dto){
         log.info("Creando asignatura: {}", dto.nombre());
@@ -63,7 +83,13 @@ public class AsignaturasService {
         return guardada;
     }
 
-    @Operation(summary = "Actualizar asignatura", description = "Actualiza los datos de una asignatura existente")
+    /**
+     * Actualiza los datos de una asignatura existente.
+     *
+     * @param id  identificador de la asignatura a actualizar
+     * @param dto datos actualizados de la asignatura
+     * @return la asignatura actualizada
+     */
     @Transactional
     public Asignatura actualizar(UUID id, AsignaturaDTO dto){
         log.info("Actualizando asignatura ID: {}", id);
@@ -75,7 +101,11 @@ public class AsignaturasService {
         return asignaturasRepository.save(asignatura);
     }
 
-    @Operation(summary = "Eliminar asignatura", description = "Elimina una asignatura del catálogo")
+    /**
+     * Elimina una asignatura del catálogo.
+     *
+     * @param id identificador de la asignatura a eliminar
+     */
     @Transactional
     public void eliminar(UUID id){
         log.info("Eliminando asignatura ID: {}", id);

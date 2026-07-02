@@ -14,7 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
-@Tag(name = "Carrera Service", description = "Lógica de negocio para gestión de carreras")
+/**
+ * Servicio que gestiona la lógica de negocio para el catálogo de carreras.
+ * Administra el CRUD de carreras y la verificación de disponibilidad
+ * para el proceso de matrícula (regla R1).
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -22,20 +26,35 @@ public class CarreraService {
 
     private final CarreraRepository repository;
 
-    @Operation(summary = "Listar todas las carreras", description = "Retorna todas las carreras disponibles")
+    /**
+     * Obtiene todas las carreras disponibles en el catálogo.
+     *
+     * @return lista de carreras, vacía si no hay registros
+     */
     public List<Carrera> findAll() {
         log.info("Listando todas las carreras");
         return repository.findAll();
     }
 
-    @Operation(summary = "Buscar carrera por ID", description = "Retorna una carrera por su ID")
+    /**
+     * Busca una carrera por su ID.
+     *
+     * @param id identificador único de la carrera
+     * @return la carrera encontrada
+     * @throws jakarta.persistence.EntityNotFoundException si no existe con ese ID
+     */
     public Carrera findById(UUID id) {
         log.info("Buscando carrera por ID: {}", id);
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Carrera no encontrada con ID: " + id));
     }
 
-    @Operation(summary = "Crear carrera", description = "Registra una nueva carrera en el catálogo")
+    /**
+     * Crea una nueva carrera con estado disponible por defecto.
+     *
+     * @param dto datos de la carrera (nombre, descripción, duración, sede)
+     * @return la carrera creada con su ID asignado
+     */
     @Transactional
     public Carrera create(CarreraDTO dto) {
         log.info("Creando carrera: {}", dto.nombre());
@@ -52,7 +71,12 @@ public class CarreraService {
         return guardada;
     }
 
-    @Operation(summary = "Verificar disponibilidad de carrera (R1)", description = "Valida que la carrera exista y esté marcada como disponible")
+    /**
+     * Verifica si una carrera está disponible para matrícula (regla R1).
+     *
+     * @param id identificador de la carrera
+     * @return true si la carrera existe y está marcada como disponible
+     */
     public boolean estaDisponible(UUID id) {
         log.info("[R1] Verificando disponibilidad de carrera: {}", id);
         Carrera carrera = findById(id);
@@ -61,7 +85,13 @@ public class CarreraService {
         return disponible;
     }
 
-    @Operation(summary = "Cambiar disponibilidad de carrera", description = "Marca una carrera como disponible o no disponible para nuevas matrículas")
+    /**
+     * Cambia el estado de disponibilidad de una carrera para nuevas matrículas.
+     *
+     * @param id          identificador de la carrera
+     * @param disponible  nuevo estado de disponibilidad
+     * @return la carrera actualizada
+     */
     @Transactional
     public Carrera cambiarDisponibilidad(UUID id, boolean disponible) {
         log.info("Cambiando disponibilidad de carrera {} a {}", id, disponible);
@@ -70,7 +100,13 @@ public class CarreraService {
         return repository.save(carrera);
     }
 
-    @Operation(summary = "Actualizar carrera", description = "Actualiza los datos de una carrera existente")
+    /**
+     * Actualiza los datos de una carrera existente.
+     *
+     * @param id  identificador de la carrera a actualizar
+     * @param dto datos actualizados de la carrera
+     * @return la carrera actualizada
+     */
     @Transactional
     public Carrera update(UUID id, CarreraDTO dto) {
         log.info("Actualizando carrera ID: {}", id);
@@ -84,7 +120,11 @@ public class CarreraService {
         return repository.save(carrera);
     }
 
-    @Operation(summary = "Eliminar carrera", description = "Elimina una carrera del catálogo")
+    /**
+     * Elimina una carrera del catálogo.
+     *
+     * @param id identificador de la carrera a eliminar
+     */
     @Transactional
     public void delete(UUID id) {
         log.info("Eliminando carrera ID: {}", id);

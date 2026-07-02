@@ -25,6 +25,9 @@ public class ContratoController {
     private ContratoService service;
 
     @Operation(summary = "Listar todos los contratos", description = "Retorna todos los contratos registrados")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Lista de contratos encontrada")
+    })
     @GetMapping
     public ResponseEntity<List<Contrato>> listar() {
         return ResponseEntity.ok(service.listarTodos());

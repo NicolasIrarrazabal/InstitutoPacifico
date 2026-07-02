@@ -19,7 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
-@Tag(name = "Practica Service", description = "Lógica de negocio para prácticas profesionales y validación de regla R5")
+/**
+ * Servicio que gestiona la lógica de negocio para prácticas profesionales.
+ * Implementa la validación de la regla R5 (créditos suficientes, arancel al día,
+ * convenio vigente) y se comunica con ms-aranceles, ms-notas y ms-empresas.
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -31,26 +35,49 @@ public class PracticaService {
     private final CreditoClientService creditoClient;
     private final EmpresaClientService empresaClient;
 
-    @Operation(summary = "Listar todas las prácticas", description = "Retorna todas las prácticas registradas")
+    /**
+     * Obtiene todas las prácticas registradas.
+     *
+     * @return lista de prácticas, vacía si no hay registros
+     */
     public List<Practica> findAll() {
         log.info("Listando todas las prácticas");
         return repository.findAll();
     }
 
-    @Operation(summary = "Buscar práctica por ID", description = "Retorna una práctica por su ID")
+    /**
+     * Busca una práctica por su ID.
+     *
+     * @param id identificador único de la práctica
+     * @return la práctica encontrada
+     * @throws jakarta.persistence.EntityNotFoundException si no existe con ese ID
+     */
     public Practica findById(UUID id) {
         log.info("Buscando práctica por ID: {}", id);
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Práctica no encontrada con ID: " + id));
     }
 
-    @Operation(summary = "Listar prácticas por estudiante", description = "Retorna todas las prácticas de un estudiante")
+    /**
+     * Obtiene todas las prácticas de un estudiante.
+     *
+     * @param estudianteId identificador del estudiante
+     * @return lista de prácticas del estudiante
+     */
     public List<Practica> findByEstudiante(UUID estudianteId) {
         log.info("Listando prácticas del estudiante {}", estudianteId);
         return repository.findByEstudianteId(estudianteId);
     }
 
-    @Operation(summary = "Verificar requisitos R5", description = "Verifica si el estudiante cumple los 3 requisitos para inscribir práctica: créditos, arancel y convenio")
+    /**
+     * Verifica si el estudiante cumple los 3 requisitos de la regla R5
+     * para inscribir una práctica profesional: créditos suficientes (R5a),
+     * arancel al día (R5b) y convenio de empresa vigente (R5c).
+     *
+     * @param estudianteId identificador del estudiante
+     * @param empresaId    identificador de la empresa
+     * @return resultado de la validación con cada requisito por separado
+     */
     public ValidacionR5Response verificarRequisitosR5(UUID estudianteId, UUID empresaId) {
         log.info("Verificando requisitos R5 para estudiante {} en empresa {}", estudianteId, empresaId);
 
@@ -79,7 +106,15 @@ public class PracticaService {
         return new ValidacionR5Response(creditosOk, arancelOk, empresaOk, puedeInscribir, mensaje);
     }
 
-    @Operation(summary = "Inscribir práctica", description = "Inscribe una nueva práctica profesional validando la regla R5")
+    /**
+     * Inscribe una nueva práctica profesional tras validar la regla R5.
+     * Verifica que el estudiante no tenga otra práctica activa
+     * y que cumpla los requisitos de créditos, arancel y convenio.
+     *
+     * @param dto datos de la práctica a inscribir
+     * @return la práctica creada con estado EN_CURSO
+     * @throws IllegalStateException si ya tiene práctica activa o no cumple R5
+     */
     @Transactional
     public Practica create(PracticaDTO dto) {
         log.info("Intentando inscribir práctica — estudiante: {} empresa: {}", dto.estudianteId(), dto.empresaId());
@@ -110,7 +145,14 @@ public class PracticaService {
         return guardada;
     }
 
-    @Operation(summary = "Finalizar práctica", description = "Finaliza una práctica con el estado y observaciones correspondientes")
+    /**
+     * Finaliza una práctica en curso con estado COMPLETADA o REPROBADA.
+     *
+     * @param id  identificador de la práctica a finalizar
+     * @param dto datos de finalización (estado, fecha fin, observaciones)
+     * @return la práctica finalizada
+     * @throws IllegalStateException si la práctica no está EN_CURSO
+     */
     @Transactional
     public Practica finalizar(UUID id, FinalizarPracticaDTO dto) {
         log.info("Finalizando práctica ID: {}", id);
@@ -132,7 +174,12 @@ public class PracticaService {
         return finalizada;
     }
 
-    @Operation(summary = "Anular práctica", description = "Anula lógicamente una práctica")
+    /**
+     * Anula lógicamente una práctica. No permite anular prácticas ya completadas.
+     *
+     * @param id identificador de la práctica a anular
+     * @throws IllegalStateException si la práctica ya está completada
+     */
     @Transactional
     public void delete(UUID id) {
         log.info("Anulando práctica ID: {}", id);

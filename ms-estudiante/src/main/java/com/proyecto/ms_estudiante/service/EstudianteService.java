@@ -22,7 +22,11 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
-@Tag(name = "Estudiante Service", description = "Lógica de negocio para gestión de estudiantes")
+/**
+ * Servicio que gestiona la lógica de negocio para estudiantes.
+ * Administra el CRUD de estudiantes con validación de RUT y email únicos,
+ * y se comunica con ms-notas y ms-matriculas para obtener el detalle enriquecido.
+ */
 @Service
 @RequiredArgsConstructor
 public class EstudianteService {
@@ -33,24 +37,46 @@ public class EstudianteService {
     private final NotaClientService notaClient;
     private final MatriculaClientService matriculaClient;
 
-    @Operation(summary = "Listar todos los estudiantes", description = "Retorna todos los estudiantes registrados")
+    /**
+     * Obtiene todos los estudiantes registrados.
+     *
+     * @return lista de estudiantes, vacía si no hay registros
+     */
     public List<Estudiante> findAll() {
         return repository.findAll();
     }
 
-    @Operation(summary = "Buscar estudiante por ID", description = "Retorna un estudiante por su ID")
+    /**
+     * Busca un estudiante por su ID.
+     *
+     * @param id identificador único del estudiante
+     * @return el estudiante encontrado
+     * @throws jakarta.persistence.EntityNotFoundException si no existe con ese ID
+     */
     public Estudiante findById(UUID id) {
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Estudiante no encontrado con ID: " + id));
     }
 
-    @Operation(summary = "Buscar estudiante por RUT", description = "Retorna un estudiante por su RUT")
+    /**
+     * Busca un estudiante por su RUT.
+     *
+     * @param rut RUT del estudiante (formato: 12345678-9)
+     * @return el estudiante encontrado
+     * @throws jakarta.persistence.EntityNotFoundException si no existe con ese RUT
+     */
     public Estudiante findByRut(String rut) {
         return repository.findByRut(rut)
                 .orElseThrow(() -> new EntityNotFoundException("Estudiante no encontrado con RUT: " + rut));
     }
 
-    @Operation(summary = "Guardar estudiante", description = "Registra un nuevo estudiante validando RUT y email únicos")
+    /**
+     * Crea un nuevo estudiante validando que el RUT y el email sean únicos.
+     *
+     * @param dto datos del estudiante (nombre, RUT, email, teléfono, dirección)
+     * @return el estudiante creado con su ID asignado
+     * @throws IllegalArgumentException si el RUT o email ya están registrados
+     */
     public Estudiante save(EstudianteDTO dto) {
         if (repository.existsByRut(dto.rut())) {
             throw new IllegalArgumentException("Ya existe un estudiante registrado con el RUT: " + dto.rut());
@@ -73,7 +99,15 @@ public class EstudianteService {
         return guardado;
     }
 
-    @Operation(summary = "Actualizar estudiante", description = "Actualiza los datos de un estudiante existente")
+    /**
+     * Actualiza los datos de un estudiante existente.
+     * No permite modificar estudiantes inactivos.
+     *
+     * @param id  identificador del estudiante a actualizar
+     * @param dto datos actualizados del estudiante
+     * @return el estudiante actualizado
+     * @throws IllegalStateException si el estudiante está inactivo
+     */
     public Estudiante update(UUID id, EstudianteDTO dto) {
         Estudiante est = findById(id);
 
@@ -95,7 +129,12 @@ public class EstudianteService {
         return actualizado;
     }
 
-    @Operation(summary = "Desactivar estudiante", description = "Desactiva lógicamente un estudiante")
+    /**
+     * Desactiva lógicamente un estudiante cambiando su estado a INACTIVO.
+     *
+     * @param id identificador del estudiante a desactivar
+     * @throws IllegalStateException si el estudiante ya está inactivo
+     */
     public void delete(UUID id) {
         Estudiante est = findById(id);
 
@@ -108,13 +147,24 @@ public class EstudianteService {
         log.info("Estudiante marcado como INACTIVO, ID {}", id);
     }
 
-    @Operation(summary = "Verificar si puede matricular", description = "Verifica si el estudiante puede matricularse según su estado")
+    /**
+     * Verifica si el estudiante puede matricularse según su estado actual.
+     *
+     * @param estudianteId identificador del estudiante
+     * @return true si el estudiante está en estado ACTIVO
+     */
     public boolean puedeMatricular(UUID estudianteId) {
         Estudiante est = findById(estudianteId);
         return EstadoEstudiante.ACTIVO.equals(est.getEstado());
     }
 
-    @Operation(summary = "Obtener detalle completo", description = "Retorna el detalle enriquecido del estudiante con notas y matrículas")
+    /**
+     * Obtiene el detalle enriquecido de un estudiante incluyendo
+     * sus notas (desde ms-notas) y matrículas activas (desde ms-matriculas).
+     *
+     * @param id identificador del estudiante
+     * @return detalle completo con datos personales, promedios, notas y matrículas
+     */
     public DetalleEstudianteResponse obtenerDetalle(UUID id) {
         log.info("Construyendo detalle enriquecido para estudiante {}", id);
 

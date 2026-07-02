@@ -18,7 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
-@Tag(name = "Asistencia Service", description = "Lógica de negocio para asistencia y evaluación de regla R2")
+/**
+ * Servicio que gestiona el registro de asistencia de estudiantes.
+ * Implementa la evaluación de la regla R2 (límite de inasistencia del 25%)
+ * y se comunica con ms-matriculas para validar matrículas activas.
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -29,7 +33,15 @@ public class AsistenciaService {
 
     private static final double LIMITE_INASISTENCIA = 25.0;
 
-    @Operation(summary = "Registrar asistencia", description = "Crea un registro de asistencia y evalúa la regla R2")
+    /**
+     * Registra una nueva asistencia y evalúa automáticamente la regla R2.
+     * Valida que el estudiante tenga una matrícula activa en la sección
+     * y que no exista un registro previo para la misma fecha.
+     *
+     * @param dto datos del registro de asistencia (estudiante, sección, fecha, tipo)
+     * @return el registro creado junto con el resumen de asistencia R2
+     * @throws IllegalStateException si el estudiante no está matriculado o ya tiene registro
+     */
     @Transactional
     public RegistroAsistenciaResponseDTO registrar(AsistenciaDTO dto) {
         log.info("Registrando asistencia — estudiante: {} | sección: {} | fecha: {} | tipo: {}",
@@ -70,7 +82,15 @@ public class AsistenciaService {
         return new RegistroAsistenciaResponseDTO(guardada, resumen);
     }
 
-    @Operation(summary = "Actualizar asistencia", description = "Corrige un registro de asistencia y recalcula R2")
+    /**
+     * Actualiza un registro de asistencia existente y recalcula la regla R2.
+     * No permite modificar registros anulados.
+     *
+     * @param id  identificador del registro de asistencia
+     * @param dto datos actualizados (tipo, observación)
+     * @return el registro actualizado con el resumen R2 recalculado
+     * @throws IllegalStateException si el registro está anulado
+     */
     @Transactional
     public RegistroAsistenciaResponseDTO actualizar(UUID id, AsistenciaDTO dto) {
         log.info("Actualizando asistencia ID: {}", id);
@@ -93,7 +113,11 @@ public class AsistenciaService {
         return new RegistroAsistenciaResponseDTO(actualizada, resumen);
     }
 
-    @Operation(summary = "Anular asistencia", description = "Anula lógicamente un registro de asistencia")
+    /**
+     * Anula lógicamente un registro de asistencia.
+     *
+     * @param id identificador del registro a anular
+     */
     @Transactional
     public void anular(UUID id) {
         log.info("Anulando registro de asistencia ID: {}", id);
@@ -103,32 +127,61 @@ public class AsistenciaService {
         log.info("Asistencia anulada ID: {}", id);
     }
 
-    @Operation(summary = "Buscar asistencia por ID", description = "Retorna un registro de asistencia por su ID")
+    /**
+     * Busca un registro de asistencia por su ID.
+     *
+     * @param id identificador del registro
+     * @return el registro de asistencia encontrado
+     * @throws jakarta.persistence.EntityNotFoundException si no existe con ese ID
+     */
     public Asistencia findById(UUID id) {
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Registro de asistencia no encontrado con ID: " + id));
     }
 
-    @Operation(summary = "Listar por sección", description = "Retorna todas las asistencias de una sección")
+    /**
+     * Obtiene todos los registros de asistencia activos de una sección.
+     *
+     * @param seccionId identificador de la sección
+     * @return lista de asistencias activas de la sección
+     */
     public List<Asistencia> findBySeccion(UUID seccionId) {
         log.info("Listando asistencias de sección: {}", seccionId);
         return repository.findBySeccionIdAndEstado(seccionId, "ACTIVO");
     }
 
-    @Operation(summary = "Listar por estudiante", description = "Retorna todas las asistencias de un estudiante")
+    /**
+     * Obtiene todos los registros de asistencia activos de un estudiante.
+     *
+     * @param estudianteId identificador del estudiante
+     * @return lista de asistencias activas del estudiante
+     */
     public List<Asistencia> findByEstudiante(UUID estudianteId) {
         log.info("Listando asistencias del estudiante: {}", estudianteId);
         return repository.findByEstudianteIdAndEstado(estudianteId, "ACTIVO");
     }
 
-    @Operation(summary = "Listar por estudiante y sección", description = "Retorna las asistencias de un estudiante en una sección")
+    /**
+     * Obtiene los registros de asistencia activos de un estudiante en una sección específica.
+     *
+     * @param estudianteId identificador del estudiante
+     * @param seccionId    identificador de la sección
+     * @return lista de asistencias activas del estudiante en la sección
+     */
     public List<Asistencia> findByEstudianteYSeccion(UUID estudianteId, UUID seccionId) {
         log.info("Listando asistencias de estudiante {} en sección {}", estudianteId, seccionId);
         return repository.findByEstudianteIdAndSeccionIdAndEstado(estudianteId, seccionId, "ACTIVO");
     }
 
-    @Operation(summary = "Calcular resumen R2", description = "Calcula el porcentaje de inasistencia y determina si el estudiante reprobó por R2")
+    /**
+     * Calcula el resumen de asistencia de un estudiante en una sección
+     * y determina si ha reprobado por la regla R2 (más de 25% de inasistencias).
+     *
+     * @param estudianteId identificador del estudiante
+     * @param seccionId    identificador de la sección
+     * @return resumen con totales, porcentaje de inasistencia y estado R2
+     */
     public ResumenAsistenciaDTO calcularResumenR2(UUID estudianteId, UUID seccionId) {
         log.info("R2: Calculando resumen de asistencia — estudiante: {} | sección: {}",
                 estudianteId, seccionId);

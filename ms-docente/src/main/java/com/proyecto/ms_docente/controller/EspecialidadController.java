@@ -26,6 +26,9 @@ public class EspecialidadController {
     private EspecialidadService service;
 
     @Operation(summary = "Listar todas las especialidades", description = "Retorna todas las especialidades registradas")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Lista de especialidades encontrada")
+    })
     @GetMapping
     public ResponseEntity<List<Especialidad>> listar() {
         return ResponseEntity.ok(service.listarTodas());

@@ -24,6 +24,9 @@ public class CreditoController {
     private final CreditoService creditoService;
 
     @Operation(summary = "Listar todos los créditos", description = "Retorna todos los créditos registrados")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Lista de créditos encontrada")
+    })
     @GetMapping()
     public ResponseEntity<List<Credito>> listar() {
         return ResponseEntity.ok(creditoService.listarTodos());

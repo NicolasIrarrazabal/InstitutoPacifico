@@ -10,7 +10,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Tag(name = "Credito Service", description = "Lógica de negocio para créditos académicos")
+/**
+ * Servicio que gestiona los créditos académicos asociados a las asignaturas.
+ * Proporciona operaciones para listar y registrar créditos.
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -18,12 +21,21 @@ public class CreditoService {
 
     private final CreditoRepository  creditoRepository;
 
-    @Operation(summary = "Listar todos los créditos", description = "Retorna todos los créditos académicos registrados")
+    /**
+     * Obtiene todos los créditos académicos registrados.
+     *
+     * @return lista de créditos, vacía si no hay registros
+     */
     public List<Credito> listarTodos(){
         return creditoRepository.findAll();
     }
 
-    @Operation(summary = "Guardar crédito", description = "Registra un nuevo crédito académico")
+    /**
+     * Registra un nuevo crédito académico.
+     *
+     * @param credito datos del crédito a registrar
+     * @return el crédito creado con su ID asignado
+     */
     public Credito guardar(Credito credito){
         log.info("El credito se guardo, cantidad de creditos: {}", credito.getCantidad());
         return creditoRepository.save(credito);

@@ -16,7 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
-@Tag(name = "Docente Service", description = "Lógica de negocio para gestión de docentes")
+/**
+ * Servicio que gestiona la lógica de negocio para docentes.
+ * Administra el CRUD de docentes con validación de email único
+ * y asociación con especialidades.
+ */
 @Service
 @Slf4j
 @AllArgsConstructor
@@ -25,20 +29,37 @@ public class DocenteService {
     private DocenteRepository repository;
     private EspecialidadRepository especialidadRepository;
 
-    @Operation(summary = "Listar todos los docentes", description = "Retorna todos los docentes registrados")
+    /**
+     * Obtiene todos los docentes registrados.
+     *
+     * @return lista de docentes, vacía si no hay registros
+     */
     public List<Docente> listarTodos() {
         log.info("Listando todos los docentes");
         return repository.findAll();
     }
 
-    @Operation(summary = "Buscar docente por ID", description = "Retorna un docente por su ID")
+    /**
+     * Busca un docente por su ID.
+     *
+     * @param id identificador único del docente
+     * @return el docente encontrado
+     * @throws jakarta.persistence.EntityNotFoundException si no existe con ese ID
+     */
     public Docente buscarPorId(UUID id) {
         log.info("Buscando docente por ID: {}", id);
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Docente no encontrado con ID: " + id));
     }
 
-    @Operation(summary = "Guardar docente", description = "Registra un nuevo docente validando email único")
+    /**
+     * Crea un nuevo docente validando que el email sea único
+     * y asociándolo a una especialidad existente.
+     *
+     * @param dto datos del docente (nombre, apellido, email, especialidad)
+     * @return el docente creado con su ID asignado
+     * @throws IllegalArgumentException si el email ya está registrado
+     */
     @Transactional
     public Docente guardar(DocenteDTO dto) {
         log.info("Guardando nuevo docente con email: {}", dto.email());
@@ -62,7 +83,15 @@ public class DocenteService {
         return guardado;
     }
 
-    @Operation(summary = "Actualizar docente", description = "Actualiza los datos de un docente existente")
+    /**
+     * Actualiza los datos de un docente existente.
+     * Valida que el email no esté en uso por otro docente.
+     *
+     * @param id  identificador del docente a actualizar
+     * @param dto datos actualizados del docente
+     * @return el docente actualizado
+     * @throws IllegalArgumentException si el email ya está en uso
+     */
     @Transactional
     public Docente actualizar(UUID id, DocenteDTO dto) {
         log.info("Actualizando docente con ID: {}", id);
@@ -87,7 +116,11 @@ public class DocenteService {
         return repository.save(docente);
     }
 
-    @Operation(summary = "Eliminar docente", description = "Elimina un docente del sistema")
+    /**
+     * Elimina un docente del sistema.
+     *
+     * @param id identificador del docente a eliminar
+     */
     @Transactional
     public void eliminar(UUID id) {
         log.info("Eliminando docente con ID: {}", id);

@@ -11,7 +11,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
-@Tag(name = "Prerequisito Service", description = "Lógica de negocio para prerrequisitos de asignaturas (R1)")
+/**
+ * Servicio que gestiona los prerrequisitos entre asignaturas (regla R1).
+ * Permite listar los prerrequisitos de una asignatura y asignar nuevos.
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -19,13 +22,23 @@ public class PrerequisitoService {
 
     private final PrerequisitoRepository prerequisitoRepository;
 
-    @Operation(summary = "Listar prerrequisitos por asignatura", description = "Retorna los prerrequisitos de una asignatura (R1)")
+    /**
+     * Obtiene todos los prerrequisitos de una asignatura (regla R1).
+     *
+     * @param asignaturaId identificador de la asignatura principal
+     * @return lista de prerrequisitos de la asignatura
+     */
     public List<Prerequisito> listarPorAsignatura(UUID asignaturaId) {
         log.info("Listando prerrequisitos de la asignatura ID: {}", asignaturaId);
         return prerequisitoRepository.findByAsignaturaPrincipalId(asignaturaId);
     }
 
-    @Operation(summary = "Asignar prerrequisito", description = "Asigna un prerrequisito a una asignatura principal")
+    /**
+     * Asigna un prerrequisito a una asignatura principal.
+     *
+     * @param prerequisito relación de prerrequisito a crear
+     * @return la relación de prerrequisito creada
+     */
     public Prerequisito asignarPrerequisito(Prerequisito prerequisito) {
         log.info("Asignando prerrequisito: {} requiere {}",
                 prerequisito.getAsignaturaPrincipal().getNombre(),

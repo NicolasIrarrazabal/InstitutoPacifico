@@ -1,4 +1,4 @@
-package com.proyecto.ms_carreras;
+package com.proyecto.ms_gateway;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -15,10 +15,10 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("ms-carreras")
-                        .description("Microservicio de gestión de carreras - Instituto Pacífico. " +
-                                "Gestiona el catálogo de carreras disponibles en el instituto.")
+                        .title("ms-gateway")
+                        .description("API Gateway - Instituto Pacífico. " +
+                                "Centraliza y administra el enrutamiento hacia los 10 microservicios del sistema.")
                         .version("1.0.0"))
-                .servers(List.of(new Server().url("http://localhost:8084").description("Local")));
+                .servers(List.of(new Server().url("http://localhost:9000").description("Local")));
     }
 }

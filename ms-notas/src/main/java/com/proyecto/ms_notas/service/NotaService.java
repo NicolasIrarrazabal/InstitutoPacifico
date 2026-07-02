@@ -20,7 +20,11 @@ import java.math.RoundingMode;
 import java.util.List;
 import java.util.UUID;
 
-@Tag(name = "Nota Service", description = "Lógica de negocio para notas, promedios (R3) y avance académico (R5)")
+/**
+ * Servicio que gestiona la lógica de negocio para notas y evaluación académica.
+ * Implementa la regla R3 (promedio ponderado con estados: aprobado, recuperación, reprobado),
+ * la regla R4 (bloqueo por deuda vencida) y la regla R5 (avance académico mínimo 80%).
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -39,7 +43,11 @@ public class NotaService {
 
     private static final double PORCENTAJE_AVANCE_MINIMO = 80.0;
 
-    @Operation(summary = "Listar todas las notas", description = "Retorna todas las notas activas registradas")
+    /**
+     * Obtiene todas las notas activas registradas.
+     *
+     * @return lista de notas activas, vacía si no hay registros
+     */
     public List<Nota> findAll() {
         log.info("Listando todas las notas activas");
         return repository.findAll()
@@ -48,14 +56,26 @@ public class NotaService {
                 .toList();
     }
 
-    @Operation(summary = "Buscar nota por ID", description = "Retorna una nota por su ID")
+    /**
+     * Busca una nota por su ID.
+     *
+     * @param id identificador único de la nota
+     * @return la nota encontrada
+     * @throws jakarta.persistence.EntityNotFoundException si no existe con ese ID
+     */
     public Nota findById(UUID id) {
         log.info("Buscando nota por ID: {}", id);
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Nota no encontrada con ID: " + id));
     }
 
-    @Operation(summary = "Listar notas por estudiante", description = "Retorna las notas activas de un estudiante (valida R4)")
+    /**
+     * Obtiene las notas activas de un estudiante previa validación de deuda (R4).
+     *
+     * @param estudianteId identificador del estudiante
+     * @return lista de notas activas del estudiante
+     * @throws IllegalStateException si el estudiante tiene deuda vencida (R4)
+     */
     public List<Nota> findByEstudiante(UUID estudianteId) {
         log.info("Buscando notas activas del estudiante: {}", estudianteId);
 
@@ -64,7 +84,14 @@ public class NotaService {
         return repository.findByEstudianteIdAndEstado(estudianteId, "ACTIVA");
     }
 
-    @Operation(summary = "Crear nota", description = "Registra una nueva nota validando R1 (matrícula activa)")
+    /**
+     * Crea una nueva nota validando que el estudiante tenga matrícula activa (R1)
+     * y que no exista una nota del mismo tipo duplicada.
+     *
+     * @param dto datos de la nota (estudiante, sección, nota, tipo, ponderación)
+     * @return la nota creada con su ID asignado
+     * @throws IllegalStateException si ya existe una nota del mismo tipo
+     */
     @Transactional
     public Nota create(NotaDTO dto) {
         log.info("Creando nota para estudiante {} en sección {}", dto.estudianteId(), dto.seccionId());
@@ -95,7 +122,14 @@ public class NotaService {
         return guardada;
     }
 
-    @Operation(summary = "Actualizar nota", description = "Actualiza una nota existente")
+    /**
+     * Actualiza una nota existente. No permite modificar notas anuladas.
+     *
+     * @param id  identificador de la nota a actualizar
+     * @param dto datos actualizados de la nota
+     * @return la nota actualizada
+     * @throws IllegalStateException si la nota está anulada
+     */
     @Transactional
     public Nota update(UUID id, NotaDTO dto) {
         log.info("Actualizando nota ID: {}", id);
@@ -115,7 +149,11 @@ public class NotaService {
         return actualizada;
     }
 
-    @Operation(summary = "Anular nota", description = "Anula lógicamente una nota")
+    /**
+     * Anula lógicamente una nota cambiando su estado a ANULADA.
+     *
+     * @param id identificador de la nota a anular
+     */
     @Transactional
     public void delete(UUID id) {
         log.info("Anulando (eliminación lógica) nota ID: {}", id);
@@ -125,7 +163,15 @@ public class NotaService {
         log.info("Nota marcada como ANULADA, ID: {}", id);
     }
 
-    @Operation(summary = "Calcular promedio global (R3)", description = "Calcula el promedio ponderado global del estudiante y evalúa R3")
+    /**
+     * Calcula el promedio ponderado global del estudiante y evalúa la regla R3.
+     * Determina el estado académico: APROBADO (>= 4.0),
+     * PENDIENTE_EXAMEN_RECUPERACION (>= 3.5) o REPROBADO (< 3.5).
+     *
+     * @param estudianteId identificador del estudiante
+     * @return respuesta con promedios, estado académico y mensaje R3
+     * @throws IllegalStateException si el estudiante tiene deuda vencida (R4)
+     */
     public PromedioResponseDTO calcularPromedio(UUID estudianteId) {
         log.info("[R3] Calculando promedio global para estudiante: {}", estudianteId);
 
@@ -160,7 +206,14 @@ public class NotaService {
         );
     }
 
-    @Operation(summary = "Calcular promedio por sección (R3)", description = "Calcula el promedio ponderado del estudiante en una sección específica (R3)")
+    /**
+     * Calcula el promedio ponderado del estudiante en una sección específica (regla R3).
+     *
+     * @param estudianteId identificador del estudiante
+     * @param seccionId    identificador de la sección
+     * @return respuesta con promedios, estado académico y mensaje R3
+     * @throws IllegalStateException si el estudiante tiene deuda vencida (R4)
+     */
     public PromedioResponseDTO calcularPromedioSeccion(UUID estudianteId, UUID seccionId) {
         log.info("[R3] Calculando promedio por sección — estudiante: {} | sección: {}",
                 estudianteId, seccionId);
@@ -199,7 +252,14 @@ public class NotaService {
         );
     }
 
-    @Operation(summary = "Calcular avance académico (R5)", description = "Calcula el porcentaje de avance del estudiante y verifica si cumple el 80% mínimo (R5)")
+    /**
+     * Calcula el porcentaje de avance académico del estudiante (regla R5).
+     * Evalúa cuántas secciones ha aprobado vs. el total cursado
+     * y verifica si cumple el mínimo del 80% requerido para prácticas.
+     *
+     * @param estudianteId identificador del estudiante
+     * @return respuesta con porcentaje de avance y si cumple el 80% mínimo
+     */
     public AvanceResponseDTO calcularAvance(UUID estudianteId) {
         log.info("Calculando avance académico del 80% para estudiante: {}", estudianteId);
 

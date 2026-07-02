@@ -18,7 +18,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Tag(name = "Matricula Service", description = "Lógica de negocio para matrículas y validación de regla R1")
+/**
+ * Servicio que gestiona la lógica de negocio para matrículas.
+ * Implementa la validación de la regla R1 (prerrequisitos) consultando
+ * ms-asignaturas y ms-notas para verificar que el estudiante cumpla
+ * los requisitos académicos antes de matricularse.
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -28,26 +33,49 @@ public class MatriculaService {
     private final AsignaturaClientService asignaturaClient;
     private final NotaClientService notaClient;
 
-    @Operation(summary = "Listar todas las matrículas", description = "Retorna todas las matrículas registradas")
+    /**
+     * Obtiene todas las matrículas registradas.
+     *
+     * @return lista de matrículas, vacía si no hay registros
+     */
     public List<Matricula> findAll() {
         log.info("Listando todas las matrículas");
         return repository.findAll();
     }
 
-    @Operation(summary = "Buscar matrícula por ID", description = "Retorna una matrícula por su ID")
+    /**
+     * Busca una matrícula por su ID.
+     *
+     * @param id identificador único de la matrícula
+     * @return la matrícula encontrada
+     * @throws jakarta.persistence.EntityNotFoundException si no existe con ese ID
+     */
     public Matricula findById(UUID id) {
         log.info("Buscando matrícula por ID: {}", id);
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Matrícula no encontrada con ID: " + id));
     }
 
-    @Operation(summary = "Listar matrículas por estudiante", description = "Retorna las matrículas activas de un estudiante")
+    /**
+     * Obtiene las matrículas activas de un estudiante.
+     *
+     * @param estudianteId identificador del estudiante
+     * @return lista de matrículas activas del estudiante
+     */
     public List<Matricula> findByEstudiante(UUID estudianteId) {
         log.info("Listando matrículas activas del estudiante {}", estudianteId);
         return repository.findByEstudianteIdAndEstado(estudianteId, "ACTIVA");
     }
 
-    @Operation(summary = "Crear matrícula", description = "Registra una nueva matrícula validando la regla R1 (prerrequisitos)")
+    /**
+     * Crea una nueva matrícula validando la regla R1 (prerrequisitos).
+     * Verifica que el estudiante no esté duplicado en la sección
+     * y que haya aprobado todos los prerrequisitos de la asignatura.
+     *
+     * @param dto datos de la matrícula (estudiante, sección, fecha)
+     * @return la matrícula creada con estado ACTIVA
+     * @throws IllegalStateException si ya está matriculado o no cumple R1
+     */
     @Transactional
     public Matricula create(MatriculaDTO dto) {
         log.info("Intentando matricular estudiante {} en sección {}", dto.estudianteId(), dto.seccionId());
@@ -70,7 +98,15 @@ public class MatriculaService {
         return guardada;
     }
 
-    @Operation(summary = "Actualizar matrícula", description = "Actualiza el estado de una matrícula existente")
+    /**
+     * Actualiza el estado de una matrícula existente.
+     * No permite modificar matrículas inactivas.
+     *
+     * @param id  identificador de la matrícula a actualizar
+     * @param dto datos actualizados (nuevo estado)
+     * @return la matrícula actualizada
+     * @throws IllegalStateException si la matrícula está inactiva
+     */
     @Transactional
     public Matricula update(UUID id, MatriculaDTO dto) {
         log.info("Actualizando matrícula ID: {}", id);
@@ -84,7 +120,11 @@ public class MatriculaService {
         return repository.save(m);
     }
 
-    @Operation(summary = "Eliminar matrícula", description = "Elimina lógicamente una matrícula")
+    /**
+     * Elimina lógicamente una matrícula cambiando su estado a INACTIVA.
+     *
+     * @param id identificador de la matrícula a eliminar
+     */
     @Transactional
     public void delete(UUID id) {
         log.info("Eliminando (lógica) matrícula ID: {}", id);

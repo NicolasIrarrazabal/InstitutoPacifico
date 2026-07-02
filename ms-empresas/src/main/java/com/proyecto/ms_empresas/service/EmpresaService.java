@@ -15,7 +15,11 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-@Tag(name = "Empresa Service", description = "Lógica de negocio para gestión de empresas y convenios")
+/**
+ * Servicio que gestiona la lógica de negocio para empresas y convenios.
+ * Administra el CRUD de empresas con validación de RUT único
+ * y verificación de convenios vigentes para la regla R5.
+ */
 @Service
 @RequiredArgsConstructor
 public class EmpresaService {
@@ -24,18 +28,34 @@ public class EmpresaService {
 
     private final EmpresaRepository repository;
 
-    @Operation(summary = "Listar todas las empresas", description = "Retorna todas las empresas registradas")
+    /**
+     * Obtiene todas las empresas registradas.
+     *
+     * @return lista de empresas, vacía si no hay registros
+     */
     public List<Empresa> findAll() {
         return repository.findAll();
     }
 
-    @Operation(summary = "Buscar empresa por ID", description = "Retorna una empresa por su ID")
+    /**
+     * Busca una empresa por su ID.
+     *
+     * @param id identificador único de la empresa
+     * @return la empresa encontrada
+     * @throws jakarta.persistence.EntityNotFoundException si no existe con ese ID
+     */
     public Empresa findById(UUID id) {
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Empresa no encontrada con ID: " + id));
     }
 
-    @Operation(summary = "Guardar empresa", description = "Registra una nueva empresa con convenio validando RUT único")
+    /**
+     * Crea una nueva empresa con convenio validando que el RUT sea único.
+     *
+     * @param dto datos de la empresa (nombre, RUT, rubro, contacto, fechas de convenio)
+     * @return la empresa creada con su ID asignado
+     * @throws IllegalArgumentException si ya existe una empresa con ese RUT
+     */
     public Empresa save(EmpresaDTO dto) {
         if (repository.existsByRut(dto.rut())) {
             throw new IllegalArgumentException("Ya existe una empresa registrada con el RUT: " + dto.rut());
@@ -58,7 +78,15 @@ public class EmpresaService {
         return guardada;
     }
 
-    @Operation(summary = "Actualizar empresa", description = "Actualiza los datos de una empresa existente")
+    /**
+     * Actualiza los datos de una empresa existente.
+     * No permite modificar empresas inactivas.
+     *
+     * @param id  identificador de la empresa a actualizar
+     * @param dto datos actualizados de la empresa
+     * @return la empresa actualizada
+     * @throws IllegalStateException si la empresa está inactiva
+     */
     public Empresa update(UUID id, EmpresaDTO dto) {
         Empresa empresa = findById(id);
 
@@ -85,7 +113,12 @@ public class EmpresaService {
         return actualizada;
     }
 
-    @Operation(summary = "Desactivar empresa", description = "Desactiva lógicamente una empresa")
+    /**
+     * Desactiva lógicamente una empresa cambiando su estado a INACTIVO.
+     *
+     * @param id identificador de la empresa a desactivar
+     * @throws IllegalStateException si la empresa ya está inactiva
+     */
     public void delete(UUID id) {
         Empresa empresa = findById(id);
 
@@ -98,7 +131,14 @@ public class EmpresaService {
         log.info("Empresa marcada como INACTIVO, ID {}", id);
     }
 
-    @Operation(summary = "Verificar convenio vigente", description = "Verifica si la empresa tiene un convenio vigente según las fechas registradas (R5)")
+    /**
+     * Verifica si la empresa tiene un convenio vigente según sus fechas registradas (regla R5).
+     * El convenio es vigente si la empresa está ACTIVA y la fecha actual
+     * está dentro del rango de inicio y fin del convenio.
+     *
+     * @param id identificador de la empresa
+     * @return true si la empresa tiene un convenio vigente
+     */
     public boolean tieneConvenioVigente(UUID id) {
         Empresa empresa = findById(id);
 
