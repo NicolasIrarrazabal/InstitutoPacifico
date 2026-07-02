@@ -109,7 +109,7 @@ flowchart LR
 
 | # | Microservicio | Puerto | Path base | Render URL | Responsabilidad |
 |---|---|---|---|---|---|---|
-| 1 | `ms-carreras` | 8084 | `/api/v1/carreras` | [institutopacifico-ms-carreras.onrender.com](https://institutopacifico-ms-carreras.onrender.com) | CRUD carreras universitarias |
+| 1 | `ms-carreras` | 8084 | `/api/v1/carreras` | [institutopacifico-ms-carreras-aho4.onrender.com](https://institutopacifico-ms-carreras-aho4.onrender.com) | CRUD carreras universitarias |
 | 2 | `ms-asignaturas` | 8080 | `/api/v1/asignaturas` | — | CRUD asignaturas y prerrequisitos |
 | 3 | `ms-docente` | 8082 | `/api/v1/docentes` | — | CRUD docentes, especialidades y contratos |
 | 4 | `ms-empresas` | 8089 | `/api/v1/empresas` | — | CRUD empresas y convenios |
@@ -134,9 +134,9 @@ El Gateway queda en `http://localhost:9000`.
 
 Solo `ms-carreras` está desplegado en Render (los otros 9 microservicios se ejecutan localmente vía Docker Compose para la defensa).
 
-- **ms-carreras:** [https://institutopacifico-ms-carreras.onrender.com](https://institutopacifico-ms-carreras.onrender.com)
-- Swagger: [https://institutopacifico-ms-carreras.onrender.com/swagger-ui.html](https://institutopacifico-ms-carreras.onrender.com/swagger-ui.html)
-- Health: [https://institutopacifico-ms-carreras.onrender.com/actuator/health](https://institutopacifico-ms-carreras.onrender.com/actuator/health)
+- **ms-carreras:** [https://institutopacifico-ms-carreras-aho4.onrender.com](https://institutopacifico-ms-carreras-aho4.onrender.com)
+- Swagger: [https://institutopacifico-ms-carreras-aho4.onrender.com/swagger-ui.html](https://institutopacifico-ms-carreras-aho4.onrender.com/swagger-ui.html)
+- Health: [https://institutopacifico-ms-carreras-aho4.onrender.com/actuator/health](https://institutopacifico-ms-carreras-aho4.onrender.com/actuator/health)
 
 **Cómo se desplegó (Blueprint):** el repo incluye un `render.yaml` en la raíz que define el web service (`rootDir: ms-carreras`, build con el `Dockerfile` del propio microservicio) más una base de datos PostgreSQL free administrada por Render. Para reproducirlo:
 
