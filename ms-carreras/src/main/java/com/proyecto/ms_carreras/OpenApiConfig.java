@@ -19,6 +19,9 @@ public class OpenApiConfig {
                         .description("Microservicio de gestión de carreras - Instituto Pacífico. " +
                                 "Gestiona el catálogo de carreras disponibles en el instituto.")
                         .version("1.0.0"))
-                .servers(List.of(new Server().url("http://localhost:8084").description("Local")));
+                .servers(List.of(
+                        new Server().url("https://institutopacifico-ms-carreras.onrender.com").description("Render (producción)"),
+                        new Server().url("http://localhost:8084").description("Local")
+                ));
     }
 }
