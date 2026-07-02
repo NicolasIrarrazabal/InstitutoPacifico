@@ -45,33 +45,52 @@ public class CarreraService {
 <span class="fc" id="L45">        carrera.setDescripcion(dto.descripcion());</span>
 <span class="fc" id="L46">        carrera.setDuracionSemestres(dto.duracionSemestres());</span>
 <span class="fc" id="L47">        carrera.setSede(dto.sede());</span>
+<span class="fc" id="L48">        carrera.setDisponible(true);</span>
 
-<span class="fc" id="L49">        Carrera guardada = repository.save(carrera);</span>
-<span class="fc" id="L50">        log.info(&quot;Carrera creada con ID: {}&quot;, guardada.getId());</span>
-<span class="fc" id="L51">        return guardada;</span>
+<span class="fc" id="L50">        Carrera guardada = repository.save(carrera);</span>
+<span class="fc" id="L51">        log.info(&quot;Carrera creada con ID: {}&quot;, guardada.getId());</span>
+<span class="fc" id="L52">        return guardada;</span>
+    }
+
+    @Operation(summary = &quot;Verificar disponibilidad de carrera (R1)&quot;, description = &quot;Valida que la carrera exista y esté marcada como disponible&quot;)
+    public boolean estaDisponible(UUID id) {
+<span class="fc" id="L57">        log.info(&quot;[R1] Verificando disponibilidad de carrera: {}&quot;, id);</span>
+<span class="fc" id="L58">        Carrera carrera = findById(id);</span>
+<span class="fc" id="L59">        boolean disponible = Boolean.TRUE.equals(carrera.getDisponible());</span>
+<span class="fc" id="L60">        log.info(&quot;[R1] Carrera {} disponible={}&quot;, id, disponible);</span>
+<span class="fc" id="L61">        return disponible;</span>
+    }
+
+    @Operation(summary = &quot;Cambiar disponibilidad de carrera&quot;, description = &quot;Marca una carrera como disponible o no disponible para nuevas matrículas&quot;)
+    @Transactional
+    public Carrera cambiarDisponibilidad(UUID id, boolean disponible) {
+<span class="fc" id="L67">        log.info(&quot;Cambiando disponibilidad de carrera {} a {}&quot;, id, disponible);</span>
+<span class="fc" id="L68">        Carrera carrera = findById(id);</span>
+<span class="fc" id="L69">        carrera.setDisponible(disponible);</span>
+<span class="fc" id="L70">        return repository.save(carrera);</span>
     }
 
     @Operation(summary = &quot;Actualizar carrera&quot;, description = &quot;Actualiza los datos de una carrera existente&quot;)
     @Transactional
     public Carrera update(UUID id, CarreraDTO dto) {
-<span class="fc" id="L57">        log.info(&quot;Actualizando carrera ID: {}&quot;, id);</span>
-<span class="fc" id="L58">        Carrera carrera = findById(id);</span>
+<span class="fc" id="L76">        log.info(&quot;Actualizando carrera ID: {}&quot;, id);</span>
+<span class="fc" id="L77">        Carrera carrera = findById(id);</span>
 
-<span class="fc" id="L60">        carrera.setNombre(dto.nombre());</span>
-<span class="fc" id="L61">        carrera.setDescripcion(dto.descripcion());</span>
-<span class="fc" id="L62">        carrera.setDuracionSemestres(dto.duracionSemestres());</span>
-<span class="fc" id="L63">        carrera.setSede(dto.sede());</span>
+<span class="fc" id="L79">        carrera.setNombre(dto.nombre());</span>
+<span class="fc" id="L80">        carrera.setDescripcion(dto.descripcion());</span>
+<span class="fc" id="L81">        carrera.setDuracionSemestres(dto.duracionSemestres());</span>
+<span class="fc" id="L82">        carrera.setSede(dto.sede());</span>
 
-<span class="fc" id="L65">        return repository.save(carrera);</span>
+<span class="fc" id="L84">        return repository.save(carrera);</span>
     }
 
     @Operation(summary = &quot;Eliminar carrera&quot;, description = &quot;Elimina una carrera del catálogo&quot;)
     @Transactional
     public void delete(UUID id) {
-<span class="fc" id="L71">        log.info(&quot;Eliminando carrera ID: {}&quot;, id);</span>
-<span class="fc" id="L72">        Carrera carrera = findById(id);</span>
-<span class="fc" id="L73">        repository.delete(carrera);</span>
-<span class="fc" id="L74">        log.info(&quot;Carrera eliminada, ID: {}&quot;, id);</span>
-<span class="fc" id="L75">    }</span>
+<span class="fc" id="L90">        log.info(&quot;Eliminando carrera ID: {}&quot;, id);</span>
+<span class="fc" id="L91">        Carrera carrera = findById(id);</span>
+<span class="fc" id="L92">        repository.delete(carrera);</span>
+<span class="fc" id="L93">        log.info(&quot;Carrera eliminada, ID: {}&quot;, id);</span>
+<span class="fc" id="L94">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

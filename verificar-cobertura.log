@@ -1,0 +1,200 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20260701202426
+Username: DESKTOP-4KG91C1\NiiKo
+RunAs User: DESKTOP-4KG91C1\NiiKo
+Configuration Name: 
+Machine: DESKTOP-4KG91C1 (Microsoft Windows NT 10.0.19045.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -Command if((Get-ExecutionPolicy ) -ne 'AllSigned') { Set-ExecutionPolicy -Scope Process Bypass }; & 'C:\Users\NiiKo\Desktop\Git Clones\Universidad\InstitutoPacifico\verificar-cobertura.ps1'
+Process ID: 15576
+PSVersion: 5.1.19041.6328
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.19041.6328
+BuildVersion: 10.0.19041.6328
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is verificar-cobertura.log
+=== INICIO 07/01/2026 20:24:26 ===
+Directorio actual: C:\Users\NiiKo\Desktop\Git Clones\Universidad\InstitutoPacifico
+Log completo se esta guardando en: verificar-cobertura.log
+
+=== Verificando ms-aranceles ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-asignaturas ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-asistencia ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-carreras ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-docente ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-empresas ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-estudiante ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-matriculas ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-notas ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-practicas ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+
+========== RESUMEN FINAL ==========
+
+Microservicio  Resultado Detalle
+-------------  --------- -------
+ms-aranceles   OK        Cobertura >= 80%
+ms-asignaturas OK        Cobertura >= 80%
+ms-asistencia  OK        Cobertura >= 80%
+ms-carreras    OK        Cobertura >= 80%
+ms-docente     OK        Cobertura >= 80%
+ms-empresas    OK        Cobertura >= 80%
+ms-estudiante  OK        Cobertura >= 80%
+ms-matriculas  OK        Cobertura >= 80%
+ms-notas       OK        Cobertura >= 80%
+ms-practicas   OK        Cobertura >= 80%
+
+
+
+Todos los microservicios pasaron el 80% de cobertura.
+
+=== FIN 07/01/2026 20:25:57 ===
+Revisa el log completo en: verificar-cobertura.log
+**********************
+Windows PowerShell transcript end
+End time: 20260701202557
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20260701203132
+Username: DESKTOP-4KG91C1\NiiKo
+RunAs User: DESKTOP-4KG91C1\NiiKo
+Configuration Name: 
+Machine: DESKTOP-4KG91C1 (Microsoft Windows NT 10.0.19045.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -Command if((Get-ExecutionPolicy ) -ne 'AllSigned') { Set-ExecutionPolicy -Scope Process Bypass }; & 'C:\Users\NiiKo\Desktop\Git Clones\Universidad\InstitutoPacifico\verificar-cobertura.ps1'
+Process ID: 22052
+PSVersion: 5.1.19041.6328
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.19041.6328
+BuildVersion: 10.0.19041.6328
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is verificar-cobertura.log
+=== INICIO 07/01/2026 20:31:32 ===
+Directorio actual: C:\Users\NiiKo\Desktop\Git Clones\Universidad\InstitutoPacifico
+Log completo se esta guardando en: verificar-cobertura.log
+
+=== Verificando ms-aranceles ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-asignaturas ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-asistencia ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-carreras ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-docente ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-empresas ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-estudiante ===
+**********************
+Windows PowerShell transcript start
+Start time: 20260701203254
+Username: DESKTOP-4KG91C1\NiiKo
+RunAs User: DESKTOP-4KG91C1\NiiKo
+Configuration Name: 
+Machine: DESKTOP-4KG91C1 (Microsoft Windows NT 10.0.19045.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -Command if((Get-ExecutionPolicy ) -ne 'AllSigned') { Set-ExecutionPolicy -Scope Process Bypass }; & 'C:\Users\NiiKo\Desktop\Git Clones\Universidad\InstitutoPacifico\verificar-cobertura.ps1'
+Process ID: 9820
+PSVersion: 5.1.19041.6328
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.19041.6328
+BuildVersion: 10.0.19041.6328
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is verificar-cobertura.log
+=== INICIO 07/01/2026 20:32:54 ===
+Directorio actual: C:\Users\NiiKo\Desktop\Git Clones\Universidad\InstitutoPacifico
+Log completo se esta guardando en: verificar-cobertura.log
+
+=== Verificando ms-aranceles ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-asignaturas ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-asistencia ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-carreras ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-docente ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-empresas ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-estudiante ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-matriculas ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-notas ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-practicas ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+
+========== RESUMEN FINAL ==========
+
+Microservicio  Resultado Detalle
+-------------  --------- -------
+ms-aranceles   OK        Cobertura >= 80%
+ms-asignaturas OK        Cobertura >= 80%
+ms-asistencia  OK        Cobertura >= 80%
+ms-carreras    OK        Cobertura >= 80%
+ms-docente     OK        Cobertura >= 80%
+ms-empresas    OK        Cobertura >= 80%
+ms-estudiante  OK        Cobertura >= 80%
+ms-matriculas  OK        Cobertura >= 80%
+ms-notas       OK        Cobertura >= 80%
+ms-practicas   OK        Cobertura >= 80%
+
+
+
+Todos los microservicios pasaron el 80% de cobertura.
+
+=== FIN 07/01/2026 20:34:20 ===
+Revisa el log completo en: verificar-cobertura.log
+**********************
+Windows PowerShell transcript end
+End time: 20260701203420
+**********************

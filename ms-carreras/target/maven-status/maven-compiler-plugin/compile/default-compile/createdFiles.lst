@@ -1,8 +1,8 @@
-com\proyecto\ms_carreras\repository\CarreraRepository.class
-com\proyecto\ms_carreras\model\Carrera.class
 com\proyecto\ms_carreras\exception\GlobalExceptionHandler.class
-com\proyecto\ms_carreras\OpenApiConfig.class
-com\proyecto\ms_carreras\service\CarreraService.class
 com\proyecto\ms_carreras\dto\CarreraDTO.class
 com\proyecto\ms_carreras\controller\CarreraController.class
+com\proyecto\ms_carreras\repository\CarreraRepository.class
+com\proyecto\ms_carreras\model\Carrera.class
+com\proyecto\ms_carreras\OpenApiConfig.class
+com\proyecto\ms_carreras\service\CarreraService.class
 com\proyecto\ms_carreras\MsCarrerasApplication.class

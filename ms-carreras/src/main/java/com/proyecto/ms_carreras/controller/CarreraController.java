@@ -69,6 +69,31 @@ public class CarreraController {
         return ResponseEntity.ok(service.update(id, dto));
     }
 
+    @Operation(summary = "Verificar disponibilidad de carrera (R1)", description = "Verifica si la carrera existe y está disponible para matrícula")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Resultado de la verificación"),
+        @ApiResponse(responseCode = "404", description = "Carrera no encontrada")
+    })
+    @GetMapping("/{id}/disponible")
+    public ResponseEntity<Map<String, Boolean>> estaDisponible(@PathVariable @Schema(description = "ID de la carrera") UUID id) {
+        log.info("GET /api/v1/carreras/{}/disponible", id);
+        boolean resultado = service.estaDisponible(id);
+        return ResponseEntity.ok(Map.of("disponible", resultado));
+    }
+
+    @Operation(summary = "Cambiar disponibilidad de carrera", description = "Marca una carrera como disponible o no disponible para nuevas matrículas")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Disponibilidad actualizada"),
+        @ApiResponse(responseCode = "404", description = "Carrera no encontrada")
+    })
+    @PatchMapping("/{id}/disponibilidad")
+    public ResponseEntity<Carrera> cambiarDisponibilidad(@PathVariable @Schema(description = "ID de la carrera") UUID id,
+                                                          @RequestBody @Schema(description = "Nuevo estado de disponibilidad") Map<String, Boolean> body) {
+        log.info("PATCH /api/v1/carreras/{}/disponibilidad", id);
+        boolean disponible = Boolean.TRUE.equals(body.get("disponible"));
+        return ResponseEntity.ok(service.cambiarDisponibilidad(id, disponible));
+    }
+
     @Operation(summary = "Eliminar carrera", description = "Elimina lógicamente una carrera")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Carrera eliminada"),

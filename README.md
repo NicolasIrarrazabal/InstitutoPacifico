@@ -154,8 +154,10 @@ Solo `ms-carreras` está desplegado en Render (los otros 9 microservicios se eje
 Las **5 reglas obligatorias** del caso están codificadas en la capa `Service` de los MS correspondientes y son verificables con Postman.
 
 ### R1 — Disponibilidad de carrera
-- **MS responsable:** `ms-carreras`
-- Validar que la carrera existe y está disponible.
+- **MS responsable:** `ms-carreras` (`CarreraService.estaDisponible`)
+- Cada carrera tiene un campo `disponible` (boolean, default `true` al crearse).
+- `GET /api/v1/carreras/{id}/disponible` valida que la carrera exista (404 si no) y retorna `{ "disponible": true|false }`.
+- `PATCH /api/v1/carreras/{id}/disponibilidad` permite marcar una carrera como no disponible (por ejemplo, cupos cerrados o carrera dada de baja) sin eliminarla del catálogo.
 
 ### R2 — Asistencia mínima 75%
 - **MS responsable:** `ms-asistencia` (`AsistenciaService.calcularResumen`)
@@ -271,6 +273,24 @@ sequenceDiagram
 }
 ```
 - **Captura:** ![img_4.png](INFORME/img_4.png)
+
+---
+
+#### GET Verificar disponibilidad (R1)
+- **URL:** `http://localhost:8084/api/v1/carreras/{carreraId}/disponible`
+- **Response:** `{ "disponible": true }`
+
+---
+
+#### PATCH Cambiar disponibilidad
+- **URL:** `http://localhost:8084/api/v1/carreras/{carreraId}/disponibilidad`
+- **Request Body:**
+```json
+{
+  "disponible": false
+}
+```
+- **Response:** Carrera actualizada con el nuevo valor de `disponible`.
 
 ---
 

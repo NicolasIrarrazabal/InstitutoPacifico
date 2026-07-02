@@ -45,10 +45,29 @@ public class CarreraService {
         carrera.setDescripcion(dto.descripcion());
         carrera.setDuracionSemestres(dto.duracionSemestres());
         carrera.setSede(dto.sede());
+        carrera.setDisponible(true);
 
         Carrera guardada = repository.save(carrera);
         log.info("Carrera creada con ID: {}", guardada.getId());
         return guardada;
+    }
+
+    @Operation(summary = "Verificar disponibilidad de carrera (R1)", description = "Valida que la carrera exista y esté marcada como disponible")
+    public boolean estaDisponible(UUID id) {
+        log.info("[R1] Verificando disponibilidad de carrera: {}", id);
+        Carrera carrera = findById(id);
+        boolean disponible = Boolean.TRUE.equals(carrera.getDisponible());
+        log.info("[R1] Carrera {} disponible={}", id, disponible);
+        return disponible;
+    }
+
+    @Operation(summary = "Cambiar disponibilidad de carrera", description = "Marca una carrera como disponible o no disponible para nuevas matrículas")
+    @Transactional
+    public Carrera cambiarDisponibilidad(UUID id, boolean disponible) {
+        log.info("Cambiando disponibilidad de carrera {} a {}", id, disponible);
+        Carrera carrera = findById(id);
+        carrera.setDisponible(disponible);
+        return repository.save(carrera);
     }
 
     @Operation(summary = "Actualizar carrera", description = "Actualiza los datos de una carrera existente")

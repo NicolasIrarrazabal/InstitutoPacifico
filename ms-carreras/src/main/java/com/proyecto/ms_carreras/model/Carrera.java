@@ -28,4 +28,7 @@ public class Carrera {
 
     @Column(nullable = false)
     private String sede;
+
+    @Column(nullable = false)
+    private Boolean disponible = Boolean.TRUE;
 }

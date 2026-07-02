@@ -142,6 +142,68 @@ class CarreraServiceTest {
         c.setDescripcion("Descripción de prueba");
         c.setDuracionSemestres(8);
         c.setSede("Santiago");
+        c.setDisponible(true);
         return c;
+    }
+
+    // ── estaDisponible (R1) ─────────────────────────────────────────
+
+    @Test
+    void estaDisponible_cuandoCarreraDisponible_retornaTrue() {
+        UUID id = UUID.randomUUID();
+        Carrera c = carrera(id, "Ingeniería Civil");
+        c.setDisponible(true);
+        when(repository.findById(id)).thenReturn(Optional.of(c));
+
+        boolean resultado = service.estaDisponible(id);
+
+        assertThat(resultado).isTrue();
+    }
+
+    @Test
+    void estaDisponible_cuandoCarreraNoDisponible_retornaFalse() {
+        UUID id = UUID.randomUUID();
+        Carrera c = carrera(id, "Ingeniería Civil");
+        c.setDisponible(false);
+        when(repository.findById(id)).thenReturn(Optional.of(c));
+
+        boolean resultado = service.estaDisponible(id);
+
+        assertThat(resultado).isFalse();
+    }
+
+    @Test
+    void estaDisponible_cuandoNoExiste_lanzaEntityNotFoundException() {
+        UUID id = UUID.randomUUID();
+        when(repository.findById(id)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.estaDisponible(id))
+                .isInstanceOf(EntityNotFoundException.class);
+    }
+
+    // ── cambiarDisponibilidad ────────────────────────────────────────
+
+    @Test
+    void cambiarDisponibilidad_actualizaFlagYPersiste() {
+        UUID id = UUID.randomUUID();
+        Carrera c = carrera(id, "Ingeniería Civil");
+        c.setDisponible(true);
+        when(repository.findById(id)).thenReturn(Optional.of(c));
+        when(repository.save(any(Carrera.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        Carrera resultado = service.cambiarDisponibilidad(id, false);
+
+        assertThat(resultado.getDisponible()).isFalse();
+        verify(repository).save(c);
+    }
+
+    @Test
+    void create_carreraNueva_quedaDisponiblePorDefecto() {
+        CarreraDTO dto = new CarreraDTO("Ingeniería Civil", "desc", 8, "Santiago");
+        when(repository.save(any(Carrera.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        Carrera resultado = service.create(dto);
+
+        assertThat(resultado.getDisponible()).isTrue();
     }
 }
