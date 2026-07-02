@@ -4,12 +4,15 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -64,10 +67,43 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT).body(body);
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, Object>> handleNotReadable(HttpMessageNotReadableException ex) {
+        log.error("JSON del request ilegible o mal formado: {}", ex.getMessage());
+        return buildResponse(HttpStatus.BAD_REQUEST, "JSON_INVALIDO", "El cuerpo de la petición no es un JSON válido o no coincide con el formato esperado");
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Map<String, Object>> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        log.error("Tipo de argumento inválido en '{}': {}", ex.getName(), ex.getMessage());
+        return buildResponse(HttpStatus.BAD_REQUEST, "TIPO_INVALIDO",
+                "El valor recibido para '" + ex.getName() + "' no tiene el formato esperado");
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, Object>> handleDataIntegrity(DataIntegrityViolationException ex) {
+        Throwable causa = ex.getMostSpecificCause();
+        log.error("Violación de integridad de datos: {}", causa.getMessage(), ex);
+        return buildResponse(HttpStatus.CONFLICT, "VIOLACION_DE_INTEGRIDAD", causa.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex) {
-        log.error("Error interno no controlado: {}", ex.getMessage(), ex);
-        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "ERROR_INTERNO", "Ocurrió un error interno en el servidor");
+        // Se loguea la excepción real con stacktrace completo para diagnóstico en el servidor.
+        log.error("Error interno no controlado [{}]: {}", ex.getClass().getName(), ex.getMessage(), ex);
+
+        // Se incluye el tipo de excepción en la respuesta para poder diagnosticar rápido
+        // errores no mapeados sin depender solo de los logs del servidor.
+        // TODO: quitar "tipoExcepcion" del body antes de exponer esto en un entorno público final,
+        // una vez identificada y resuelta la causa raíz del POST.
+        Map<String, Object> body = new HashMap<>();
+        body.put("timestamp", LocalDateTime.now().toString());
+        body.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        body.put("error", "ERROR_INTERNO");
+        body.put("mensaje", "Ocurrió un error interno en el servidor");
+        body.put("tipoExcepcion", ex.getClass().getSimpleName());
+        body.put("detalle", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
 
     private ResponseEntity<Map<String, Object>> buildResponse(HttpStatus status, String error, String mensaje) {
