@@ -13,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -78,6 +79,14 @@ public class GlobalExceptionHandler {
         log.error("Tipo de argumento inválido en '{}': {}", ex.getName(), ex.getMessage());
         return buildResponse(HttpStatus.BAD_REQUEST, "TIPO_INVALIDO",
                 "El valor recibido para '" + ex.getName() + "' no tiene el formato esperado");
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleNoResourceFound(NoResourceFoundException ex) {
+        // Ruta sin handler mapeado (ej. GET a "/" o cualquier path inexistente).
+        // Antes esto caía en el catch-all genérico y devolvía 500; debe ser 404.
+        log.warn("Recurso no encontrado: {}", ex.getMessage());
+        return buildResponse(HttpStatus.NOT_FOUND, "RUTA_NO_ENCONTRADA", "El recurso solicitado no existe");
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
