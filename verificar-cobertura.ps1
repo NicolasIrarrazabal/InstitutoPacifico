@@ -45,6 +45,8 @@ foreach ($ms in $microservicios) {
     try {
         Push-Location $ms
 
+        $env:Path = "C:\tools\apache-maven-3.9.9\bin;$env:Path"
+
         # Usa el wrapper si existe, si no, mvn del sistema
         if (Test-Path ".\mvnw.cmd") {
             $salida = & .\mvnw.cmd clean verify 2>&1

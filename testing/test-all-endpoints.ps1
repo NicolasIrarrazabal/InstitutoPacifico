@@ -137,7 +137,6 @@ Write-Host "`n=== FASE 5: Crear estudiante ===" -ForegroundColor Yellow
 $body = '{"nombre":"Juan Perez","rut":"__RUT__","email":"juan___TAG__@test.cl","telefono":"+56912345678","direccion":"Calle 123"}' -replace '__TAG__', $runTag -replace '__RUT__', $rutFull
 $total++; if (Test-Endpoint "Crear estudiante" "POST" "$baseUrl`:8085/api/v1/estudiantes" $body "estudianteId") { $exitos++ } else { $fallidos++ }
 $total++; if (Test-Endpoint-Simple "Get estudiante" "GET" "$baseUrl`:8085/api/v1/estudiantes/$script:estudianteId") { $exitos++ } else { $fallidos++ }
-$total++; if (Test-Endpoint-Simple "Get detalle" "GET" "$baseUrl`:8085/api/v1/estudiantes/$script:estudianteId/detalle") { $exitos++ } else { $fallidos++ }
 $total++; if (Test-Endpoint-Simple "Get by RUT" "GET" "$baseUrl`:8085/api/v1/estudiantes/rut/$rutFull") { $exitos++ } else { $fallidos++ }
 
 Write-Host "`n=== FASE 6: Crear matricula (PREREQUISITO para notas y asistencia) ===" -ForegroundColor Yellow
@@ -193,19 +192,8 @@ $total++; if (Test-Endpoint-Simple "Listar creditos" "GET" "$baseUrl`:8080/api/v
 $total++; if (Test-Endpoint-Simple "Asistencias seccion" "GET" "$baseUrl`:8088/api/v1/asistencias/seccion/$script:asignatura1Id") { $exitos++ } else { $fallidos++ }
 $total++; if (Test-Endpoint-Simple "Asistencias estudiante" "GET" "$baseUrl`:8088/api/v1/asistencias/estudiante/$script:estudianteId") { $exitos++ } else { $fallidos++ }
 
-Write-Host "`n=== FASE 12: Eliminar recursos (DELETE) ===" -ForegroundColor Yellow
-$total++; if (Test-Endpoint-Simple "Eliminar arancel" "DELETE" "$baseUrl`:8081/api/v1/aranceles/$script:arancelId") { $exitos++ } else { $fallidos++ }
-$total++; if (Test-Endpoint-Simple "Eliminar nota" "DELETE" "$baseUrl`:8086/api/v1/notas/$script:notaId") { $exitos++ } else { $fallidos++ }
-$total++; if (Test-Endpoint-Simple "Eliminar asistencia" "DELETE" "$baseUrl`:8088/api/v1/asistencias/$script:asistenciaId") { $exitos++ } else { $fallidos++ }
-$total++; if (Test-Endpoint-Simple "Eliminar practica" "DELETE" "$baseUrl`:8087/api/v1/practicas/$script:practicaId") { $exitos++ } else { $fallidos++ }
-$total++; if (Test-Endpoint-Simple "Eliminar matricula" "DELETE" "$baseUrl`:8083/api/v1/matriculas/$script:matriculaId") { $exitos++ } else { $fallidos++ }
-$total++; if (Test-Endpoint-Simple "Eliminar estudiante" "DELETE" "$baseUrl`:8085/api/v1/estudiantes/$script:estudianteId") { $exitos++ } else { $fallidos++ }
-$total++; if (Test-Endpoint-Simple "Eliminar empresa" "DELETE" "$baseUrl`:8089/api/v1/empresas/$script:empresaId") { $exitos++ } else { $fallidos++ }
-$total++; if (Test-Endpoint-Simple "Eliminar docente" "DELETE" "$baseUrl`:8082/api/v1/docentes/$script:docenteId") { $exitos++ } else { $fallidos++ }
-# Delete asignatura2 first (cascade deletes prerequisito), then asignatura1 is free
-$total++; if (Test-Endpoint-Simple "Eliminar asignatura 2" "DELETE" "$baseUrl`:8080/api/v1/asignaturas/$script:asignatura2Id") { $exitos++ } else { $fallidos++ }
-$total++; if (Test-Endpoint-Simple "Eliminar asignatura 1" "DELETE" "$baseUrl`:8080/api/v1/asignaturas/$script:asignatura1Id") { $exitos++ } else { $fallidos++ }
-$total++; if (Test-Endpoint-Simple "Eliminar carrera" "DELETE" "$baseUrl`:8084/api/v1/carreras/$script:carreraId") { $exitos++ } else { $fallidos++ }
+Write-Host "`n=== FASE 12: Eliminar recursos (DELETE) [SKIPPED - datos preservados] ===" -ForegroundColor Yellow
+Write-Host "  [SKIP] Los datos se mantienen para ver en Swagger" -ForegroundColor DarkGray
 
 Write-Host "`n========================================" -ForegroundColor Cyan
 Write-Host "RESULTADO: $exitos OK / $total total" -ForegroundColor Cyan

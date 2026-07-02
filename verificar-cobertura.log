@@ -277,3 +277,428 @@ Revisa el log completo en: verificar-cobertura.log
 Windows PowerShell transcript end
 End time: 20260701230259
 **********************
+**********************
+Windows PowerShell transcript start
+Start time: 20260702081355
+Username: DESKTOP-IG1TBMP\delirioporuncafe
+RunAs User: DESKTOP-IG1TBMP\delirioporuncafe
+Configuration Name: 
+Machine: DESKTOP-IG1TBMP (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.EXE -NoLogo -NoProfile -NonInteractive -Command .\verificar-cobertura.ps1
+Process ID: 7564
+PSVersion: 5.1.26100.7920
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7920
+BuildVersion: 10.0.26100.7920
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is verificar-cobertura.log
+=== INICIO 07/02/2026 08:13:55 ===
+Directorio actual: C:\Users\delirioporuncafe\Desktop\Project\InstitutoPacifico
+Log completo se esta guardando en: verificar-cobertura.log
+
+=== Verificando ms-aranceles ===
+  ERROR INESPERADO al procesar ms-aranceles : The term 'mvn' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+
+=== Verificando ms-asignaturas ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-asistencia ===
+  ERROR INESPERADO al procesar ms-asistencia : The term 'mvn' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+
+=== Verificando ms-carreras ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-docente ===
+﻿**********************
+PowerShell transcript start
+Start time: 20260702081504
+Username: DESKTOP-IG1TBMP\delirioporuncafe
+RunAs User: DESKTOP-IG1TBMP\delirioporuncafe
+Configuration Name: 
+Machine: DESKTOP-IG1TBMP (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Program Files\PowerShell\7\pwsh.dll -noexit -command try { . "c:\Users\delirioporuncafe\AppData\Local\Programs\Microsoft VS Code\4fe60c8b1c\resources\app\out\vs\workbench\contrib\terminal\common\scripts\shellIntegration.ps1" } catch {}
+Process ID: 7052
+PSVersion: 7.6.0
+PSEdition: Core
+GitCommitId: 7.6.0
+OS: Microsoft Windows 10.0.26200
+Platform: Win32NT
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1, 6.0, 7.0
+PSRemotingProtocolVersion: 2.4
+SerializationVersion: 1.1.0.1
+WSManStackVersion: 3.0
+**********************
+Transcript started, output file is verificar-cobertura.log
+=== INICIO 07/02/2026 08:15:04 ===
+Directorio actual: C:\Users\delirioporuncafe\Desktop\Project\InstitutoPacifico
+Log completo se esta guardando en: verificar-cobertura.log
+
+=== Verificando ms-aranceles ===
+  ERROR INESPERADO al procesar ms-aranceles : The term 'mvn' is not recognized as a name of a cmdlet, function, script file, or executable program.
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+
+=== Verificando ms-asignaturas ===
+PS>TerminatingError(): "The pipeline has been stopped."
+PS>TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> CommandInvocation(Get-Command): "Get-Command"
+>> ParameterBinding(Get-Command): name="UseFuzzyMatching"; value="True"
+>> ParameterBinding(Get-Command): name="FuzzyMinimumDistance"; value="1"
+>> ParameterBinding(Get-Command): name="Name"; value="mvn"
+>> CommandInvocation(Select-Object): "Select-Object"
+>> ParameterBinding(Select-Object): name="First"; value="5"
+>> ParameterBinding(Select-Object): name="Unique"; value="True"
+>> ParameterBinding(Select-Object): name="ExpandProperty"; value="Name"
+>> ParameterBinding(Select-Object): name="InputObject"; value="man"
+>> ParameterBinding(Select-Object): name="InputObject"; value="mv"
+man
+mv
+]633;D;1]633;A]633;P;Cwd=C:\x5cUsers\x5cdelirioporuncafe\x5cDesktop\x5cProject\x5cInstitutoPacificoPS C:\Users\delirioporuncafe\Desktop\Project\InstitutoPacifico> ]633;B
+]633;D]633;A]633;P;Cwd=C:\x5cUsers\x5cdelirioporuncafe\x5cDesktop\x5cProject\x5cInstitutoPacificoPS C:\Users\delirioporuncafe\Desktop\Project\InstitutoPacifico> ]633;B
+]633;D]633;A]633;P;Cwd=C:\x5cUsers\x5cdelirioporuncafe\x5cDesktop\x5cProject\x5cInstitutoPacificoPS C:\Users\delirioporuncafe\Desktop\Project\InstitutoPacifico> ]633;B
+﻿**********************
+PowerShell transcript start
+Start time: 20260702081742
+Username: DESKTOP-IG1TBMP\delirioporuncafe
+RunAs User: DESKTOP-IG1TBMP\delirioporuncafe
+Configuration Name: 
+Machine: DESKTOP-IG1TBMP (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Program Files\PowerShell\7\pwsh.dll -NoExit -ExecutionPolicy Bypass -File C:\Program Files\JetBrains\IntelliJ IDEA 2025.3.3\plugins\terminal\shell-integrations\powershell\powershell-integration.ps1
+Process ID: 15408
+PSVersion: 7.6.0
+PSEdition: Core
+GitCommitId: 7.6.0
+OS: Microsoft Windows 10.0.26200
+Platform: Win32NT
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1, 6.0, 7.0
+PSRemotingProtocolVersion: 2.4
+SerializationVersion: 1.1.0.1
+WSManStackVersion: 3.0
+**********************
+Transcript started, output file is verificar-cobertura.log
+=== INICIO 07/02/2026 08:17:42 ===
+Directorio actual: C:\Users\delirioporuncafe\Desktop\Project\InstitutoPacifico
+Log completo se esta guardando en: verificar-cobertura.log
+
+=== Verificando ms-aranceles ===
+  ERROR INESPERADO al procesar ms-aranceles : The term 'mvn' is not recognized as a name of a cmdlet, function, script file, or executable program.
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+
+=== Verificando ms-asignaturas ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-asistencia ===
+  ERROR INESPERADO al procesar ms-asistencia : The term 'mvn' is not recognized as a name of a cmdlet, function, script file, or executable program.
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+
+=== Verificando ms-carreras ===
+PS>TerminatingError(): "The pipeline has been stopped."
+PS>TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> CommandInvocation(Get-Command): "Get-Command"
+>> ParameterBinding(Get-Command): name="UseFuzzyMatching"; value="True"
+>> ParameterBinding(Get-Command): name="FuzzyMinimumDistance"; value="1"
+>> ParameterBinding(Get-Command): name="Name"; value="mvn"
+>> CommandInvocation(Select-Object): "Select-Object"
+>> ParameterBinding(Select-Object): name="First"; value="5"
+>> ParameterBinding(Select-Object): name="Unique"; value="True"
+>> ParameterBinding(Select-Object): name="ExpandProperty"; value="Name"
+>> ParameterBinding(Select-Object): name="InputObject"; value="man"
+>> ParameterBinding(Select-Object): name="InputObject"; value="mv"
+man
+mv
+]1341;command_finished;exit_code=1;current_directory=433A5C55736572735C64656C6972696F706F72756E636166655C4465736B746F705C50726F6A6563745C496E7374697475746F506163696669636F]1341;prompt_startedPS C:\Users\delirioporuncafe\Desktop\Project\InstitutoPacifico> ]1341;prompt_finished
+PS>clear
+]1341;command_finished;exit_code=0;current_directory=433A5C55736572735C64656C6972696F706F72756E636166655C4465736B746F705C50726F6A6563745C496E7374697475746F506163696669636F]1341;prompt_startedPS C:\Users\delirioporuncafe\Desktop\Project\InstitutoPacifico> ]1341;prompt_finished
+PS>choco install maven -y
+choco: The term 'choco' is not recognized as a name of a cmdlet, function, script file, or executable program.
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+choco: The term 'choco' is not recognized as a name of a cmdlet, function, script file, or executable program.
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+PS>CommandInvocation(Get-Command): "Get-Command"
+>> ParameterBinding(Get-Command): name="UseFuzzyMatching"; value="True"
+>> ParameterBinding(Get-Command): name="FuzzyMinimumDistance"; value="1"
+>> ParameterBinding(Get-Command): name="Name"; value="choco"
+>> CommandInvocation(Select-Object): "Select-Object"
+>> ParameterBinding(Select-Object): name="First"; value="5"
+>> ParameterBinding(Select-Object): name="Unique"; value="True"
+>> ParameterBinding(Select-Object): name="ExpandProperty"; value="Name"
+]1341;command_finished;exit_code=1;current_directory=433A5C55736572735C64656C6972696F706F72756E636166655C4465736B746F705C50726F6A6563745C496E7374697475746F506163696669636F]1341;prompt_startedPS C:\Users\delirioporuncafe\Desktop\Project\InstitutoPacifico> ]1341;prompt_finished
+PS>mvn -N wrapper:wrapper
+mvn: The term 'mvn' is not recognized as a name of a cmdlet, function, script file, or executable program.
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+mvn: The term 'mvn' is not recognized as a name of a cmdlet, function, script file, or executable program.
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+PS>CommandInvocation(Get-Command): "Get-Command"
+>> ParameterBinding(Get-Command): name="UseFuzzyMatching"; value="True"
+>> ParameterBinding(Get-Command): name="FuzzyMinimumDistance"; value="1"
+>> ParameterBinding(Get-Command): name="Name"; value="mvn"
+>> CommandInvocation(Select-Object): "Select-Object"
+>> ParameterBinding(Select-Object): name="First"; value="5"
+>> ParameterBinding(Select-Object): name="Unique"; value="True"
+>> ParameterBinding(Select-Object): name="ExpandProperty"; value="Name"
+>> ParameterBinding(Select-Object): name="InputObject"; value="man"
+>> ParameterBinding(Select-Object): name="InputObject"; value="mv"
+man
+mv
+]1341;command_finished;exit_code=1;current_directory=433A5C55736572735C64656C6972696F706F72756E636166655C4465736B746F705C50726F6A6563745C496E7374697475746F506163696669636F]1341;prompt_startedPS C:\Users\delirioporuncafe\Desktop\Project\InstitutoPacifico> ]1341;prompt_finished
+]1341;prompt_startedPS C:\Users\delirioporuncafe\Desktop\Project\InstitutoPacifico> ]1341;prompt_finished
+PS>clear
+]1341;command_finished;exit_code=0;current_directory=433A5C55736572735C64656C6972696F706F72756E636166655C4465736B746F705C50726F6A6563745C496E7374697475746F506163696669636F]1341;prompt_startedPS C:\Users\delirioporuncafe\Desktop\Project\InstitutoPacifico> ]1341;prompt_finished
+PS>scoop install maven
+scoop: The term 'scoop' is not recognized as a name of a cmdlet, function, script file, or executable program.
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+scoop: The term 'scoop' is not recognized as a name of a cmdlet, function, script file, or executable program.
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+PS>CommandInvocation(Get-Command): "Get-Command"
+>> ParameterBinding(Get-Command): name="UseFuzzyMatching"; value="True"
+>> ParameterBinding(Get-Command): name="FuzzyMinimumDistance"; value="1"
+>> ParameterBinding(Get-Command): name="Name"; value="scoop"
+>> CommandInvocation(Select-Object): "Select-Object"
+>> ParameterBinding(Select-Object): name="First"; value="5"
+>> ParameterBinding(Select-Object): name="Unique"; value="True"
+>> ParameterBinding(Select-Object): name="ExpandProperty"; value="Name"
+]1341;command_finished;exit_code=1;current_directory=433A5C55736572735C64656C6972696F706F72756E636166655C4465736B746F705C50726F6A6563745C496E7374697475746F506163696669636F]1341;prompt_startedPS C:\Users\delirioporuncafe\Desktop\Project\InstitutoPacifico> ]1341;prompt_finished
+PS>clear
+]1341;command_finished;exit_code=0;current_directory=433A5C55736572735C64656C6972696F706F72756E636166655C4465736B746F705C50726F6A6563745C496E7374697475746F506163696669636F]1341;prompt_startedPS C:\Users\delirioporuncafe\Desktop\Project\InstitutoPacifico> ]1341;prompt_finished
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20260702082039
+Username: DESKTOP-IG1TBMP\delirioporuncafe
+RunAs User: DESKTOP-IG1TBMP\delirioporuncafe
+Configuration Name: 
+Machine: DESKTOP-IG1TBMP (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.EXE -NoLogo -NoProfile -NonInteractive -Command $env:Path = "C:\tools\apache-maven-3.9.9\bin;" + $env:Path; .\verificar-cobertura.ps1
+Process ID: 13656
+PSVersion: 5.1.26100.7920
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7920
+BuildVersion: 10.0.26100.7920
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is verificar-cobertura.log
+=== INICIO 07/02/2026 08:20:39 ===
+Directorio actual: C:\Users\delirioporuncafe\Desktop\Project\InstitutoPacifico
+Log completo se esta guardando en: verificar-cobertura.log
+
+=== Verificando ms-aranceles ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-asignaturas ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-asistencia ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-carreras ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-docente ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-empresas ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-estudiante ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-matriculas ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-notas ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-practicas ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+
+========== RESUMEN FINAL ==========
+
+Microservicio  Resultado Detalle
+-------------  --------- -------
+ms-aranceles   OK        Cobertura >= 80%
+ms-asignaturas OK        Cobertura >= 80%
+ms-asistencia  OK        Cobertura >= 80%
+ms-carreras    OK        Cobertura >= 80%
+ms-docente     OK        Cobertura >= 80%
+ms-empresas    OK        Cobertura >= 80%
+ms-estudiante  OK        Cobertura >= 80%
+ms-matriculas  OK        Cobertura >= 80%
+ms-notas       OK        Cobertura >= 80%
+ms-practicas   OK        Cobertura >= 80%
+
+
+
+Todos los microservicios pasaron el 80% de cobertura.
+
+=== FIN 07/02/2026 08:23:52 ===
+Revisa el log completo en: verificar-cobertura.log
+**********************
+Windows PowerShell transcript end
+End time: 20260702082352
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20260702090048
+Username: DESKTOP-IG1TBMP\delirioporuncafe
+RunAs User: DESKTOP-IG1TBMP\delirioporuncafe
+Configuration Name: 
+Machine: DESKTOP-IG1TBMP (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.EXE -NoLogo -NoProfile -NonInteractive -Command $env:Path = "C:\tools\apache-maven-3.9.9\bin;$env:Path"; .\verificar-cobertura.ps1
+Process ID: 10596
+PSVersion: 5.1.26100.7920
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7920
+BuildVersion: 10.0.26100.7920
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is verificar-cobertura.log
+=== INICIO 07/02/2026 09:00:48 ===
+Directorio actual: C:\Users\delirioporuncafe\Desktop\Project\InstitutoPacifico
+Log completo se esta guardando en: verificar-cobertura.log
+
+=== Verificando ms-aranceles ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-asignaturas ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-asistencia ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-carreras ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-docente ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-empresas ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-estudiante ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-matriculas ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-notas ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-practicas ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+
+========== RESUMEN FINAL ==========
+
+Microservicio  Resultado Detalle
+-------------  --------- -------
+ms-aranceles   OK        Cobertura >= 80%
+ms-asignaturas OK        Cobertura >= 80%
+ms-asistencia  OK        Cobertura >= 80%
+ms-carreras    OK        Cobertura >= 80%
+ms-docente     OK        Cobertura >= 80%
+ms-empresas    OK        Cobertura >= 80%
+ms-estudiante  OK        Cobertura >= 80%
+ms-matriculas  OK        Cobertura >= 80%
+ms-notas       OK        Cobertura >= 80%
+ms-practicas   OK        Cobertura >= 80%
+
+
+
+Todos los microservicios pasaron el 80% de cobertura.
+
+=== FIN 07/02/2026 09:04:35 ===
+Revisa el log completo en: verificar-cobertura.log
+**********************
+Windows PowerShell transcript end
+End time: 20260702090435
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20260702093802
+Username: DESKTOP-IG1TBMP\delirioporuncafe
+RunAs User: DESKTOP-IG1TBMP\delirioporuncafe
+Configuration Name: 
+Machine: DESKTOP-IG1TBMP (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.EXE -NoLogo -NoProfile -NonInteractive -Command $env:Path = "C:\tools\apache-maven-3.9.9\bin;$env:Path"; .\verificar-cobertura.ps1
+Process ID: 10004
+PSVersion: 5.1.26100.7920
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7920
+BuildVersion: 10.0.26100.7920
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is verificar-cobertura.log
+=== INICIO 07/02/2026 09:38:02 ===
+Directorio actual: C:\Users\delirioporuncafe\Desktop\Project\InstitutoPacifico
+Log completo se esta guardando en: verificar-cobertura.log
+
+=== Verificando ms-aranceles ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-asignaturas ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-asistencia ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-carreras ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-docente ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-empresas ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-estudiante ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-matriculas ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-notas ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+=== Verificando ms-practicas ===
+  BUILD SUCCESS - cobertura OK (>=80%)
+
+
+========== RESUMEN FINAL ==========
+
+Microservicio  Resultado Detalle
+-------------  --------- -------
+ms-aranceles   OK        Cobertura >= 80%
+ms-asignaturas OK        Cobertura >= 80%
+ms-asistencia  OK        Cobertura >= 80%
+ms-carreras    OK        Cobertura >= 80%
+ms-docente     OK        Cobertura >= 80%
+ms-empresas    OK        Cobertura >= 80%
+ms-estudiante  OK        Cobertura >= 80%
+ms-matriculas  OK        Cobertura >= 80%
+ms-notas       OK        Cobertura >= 80%
+ms-practicas   OK        Cobertura >= 80%
+
+
+
+Todos los microservicios pasaron el 80% de cobertura.
+
+=== FIN 07/02/2026 09:42:26 ===
+Revisa el log completo en: verificar-cobertura.log
+**********************
+Windows PowerShell transcript end
+End time: 20260702094226
+**********************
